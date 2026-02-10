@@ -1,7 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+    allowedDevOrigins: ["https://med.cicap.test", "https://nexus.posgrado.cicap.test"],
+
 };
 
 export default nextConfig;
