@@ -93,10 +93,11 @@ export default function EvaluacionesListClient({ items }: { items: EvaluacionLis
                 </div>
               </ItemContent>
               <ItemActions>
-                <Button size="sm" asChild>
-                  <Link href={`/dashboard/evaluaciones/${item.evaluacion.id}`}>
-                    Ver detalle
-                  </Link>
+                <Button
+                  size="sm"
+                  render={<Link href={`/dashboard/evaluaciones/${item.evaluacion.id}`} />}
+                >
+                  Ver detalle
                 </Button>
               </ItemActions>
             </Item>

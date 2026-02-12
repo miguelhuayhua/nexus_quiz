@@ -1,5 +1,11 @@
+import type { Metadata } from "next";
 import { getServerAuthSession } from "@/lib/auth";
 import { redirect } from "next/navigation";
+
+export const metadata: Metadata = {
+  title: "Inicio",
+  description: "Redirección principal de acceso a Nexus Preguntas.",
+};
 
 export default async function Home() {
   const session = await getServerAuthSession();
@@ -13,7 +19,7 @@ export default async function Home() {
     redirect(`${normalizedMainProjectUrl}/login`);
   }
   else {
-    redirect(`/market`);
+    redirect(`/banqueos`);
   }
 
 }

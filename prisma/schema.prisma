@@ -24,24 +24,6 @@ model auditoria {
   @@index([usuarioId])
 }
 
-model bancoPreguntasFalladas {
-  id                   String              @id
-  estudianteId         String
-  preguntaId           String
-  evaluacionId         String
-  resuelta             Boolean             @default(false)
-  creadoEn             DateTime            @default(now())
-  evaluacionIntentosId String?
-  estudiantes          estudiantes         @relation(fields: [estudianteId], references: [id], onDelete: Cascade)
-  evaluaciones         evaluaciones        @relation(fields: [evaluacionId], references: [id], onDelete: Cascade)
-  evaluacionIntentos   evaluacionIntentos? @relation(fields: [evaluacionIntentosId], references: [id])
-  preguntas            preguntas           @relation(fields: [preguntaId], references: [id], onDelete: Cascade)
-
-  @@unique([estudianteId, preguntaId, evaluacionId])
-  @@index([estudianteId])
-  @@index([resuelta])
-}
-
 model beneficiosCursos {
   id          String   @id
   cursoId     String
@@ -137,6 +119,7 @@ model compras {
   estadoPago            EstadoPago           @default(PENDIENTE)
   updatedAt             DateTime
   conDescuento          Boolean              @default(false)
+  comprobado            Boolean              @default(true)
   edicionesCursos       edicionesCursos      @relation(fields: [edicionId], references: [id], onDelete: Cascade)
   usuariosEstudiantes   usuariosEstudiantes? @relation(fields: [usuariosEstudiantesId], references: [id])
   inscripciones         inscripciones?
@@ -216,108 +199,33 @@ model edicionesCursos {
 }
 
 model estudiantes {
-  id                     String                   @id
-  apellido               String?
-  celular                String?
-  pais                   String                   @default("")
-  genero                 TipoGenero               @default(HOMBRE)
-  fechaNacimiento        DateTime?
-  nombre                 String
-  creadoEn               DateTime                 @default(now())
-  actualizadoEn          DateTime
-  nroUpdates             Int                      @default(0)
-  bancoPreguntasFalladas bancoPreguntasFalladas[]
-  calificaciones         calificaciones[]
-  certificados           certificados[]
-  compraEvaluacions      compraEvaluacion[]
-  evaluacionIntentos     evaluacionIntentos[]
-  inscripciones          inscripciones[]
-  usuariosEstudiantes    usuariosEstudiantes?
+  id                  String               @id
+  apellido            String?
+  celular             String?
+  pais                String               @default("")
+  genero              TipoGenero           @default(HOMBRE)
+  fechaNacimiento     DateTime?
+  nombre              String
+  creadoEn            DateTime             @default(now())
+  actualizadoEn       DateTime
+  nroUpdates          Int                  @default(0)
+  calificaciones      calificaciones[]
+  certificados        certificados[]
+  inscripciones       inscripciones[]
+  usuariosEstudiantes usuariosEstudiantes?
 
   @@index([nombre, apellido])
 }
 
-model evaluacionIntentos {
-  id                     String                   @id
-  estudianteId           String
-  evaluacionId           String
-  estado                 IntentoEstado            @default(EN_PROGRESO)
-  iniciadoEn             DateTime                 @default(now())
-  vence_en               DateTime
-  enviadoEn              DateTime?
-  actualizadoEn          DateTime
-  progreso               Json?
-  tiempoConsumido        Int                      @default(0)
-  bancoPreguntasFalladas bancoPreguntasFalladas[]
-  estudiantes            estudiantes              @relation(fields: [estudianteId], references: [id], onDelete: Cascade)
-  evaluaciones           evaluaciones             @relation(fields: [evaluacionId], references: [id], onDelete: Cascade)
-  respuestasEstudiantes  respuestasEstudiantes[]
-
-  @@index([estado])
-  @@index([estudianteId, evaluacionId])
-  @@index([vence_en])
-}
-
 model temas {
-  id            String          @id
-  nombre        String
+  id            String      @id
+  titulo        String
   descripcion   String?
-  creadoEn      DateTime        @default(now())
+  creadoEn      DateTime    @default(now())
   actualizadoEn DateTime
-  temaPreguntas temaPreguntas[]
-  evaluaciones  evaluaciones[]  @relation("evaluacionesTotemas")
-}
+  preguntas     preguntas[] @relation("preguntasTotemas")
 
-model temaPreguntas {
-  id         String    @id
-  temaId     String
-  preguntaId String
-  puntaje    Float
-  orden      Int       @default(0)
-  creadoEn   DateTime  @default(now())
-  preguntas  preguntas @relation(fields: [preguntaId], references: [id], onDelete: Cascade)
-  temas      temas     @relation(fields: [temaId], references: [id], onDelete: Cascade)
-
-  @@unique([temaId, preguntaId])
-  @@index([temaId, orden])
-  @@index([preguntaId])
-}
-
-model compraEvaluacion {
-  id            String       @id
-  evaluacionId  String
-  estudianteId  String
-  estado        EstadoPago   @default(PENDIENTE)
-  creadoEn      DateTime     @default(now())
-  actualizadoEn DateTime
-  estudiante    estudiantes  @relation(fields: [estudianteId], references: [id], onDelete: Cascade)
-  evaluacion    evaluaciones @relation(fields: [evaluacionId], references: [id], onDelete: Cascade)
-
-  @@unique([evaluacionId, estudianteId])
-}
-
-model evaluaciones {
-  id                     String                   @id
-  titulo                 String
-  tipo                   EvaluacionTipo
-  estado                 EvaluacionEstado         @default(BORRADOR)
-  descripcion            String?
-  tiempo_segundos        Int
-  nota_max               Float
-  nota_min               Float
-  gestion                Int                      @db.SmallInt
-  areas                  Json
-  capitulos              Json
-  creado_en              DateTime                 @default(now())
-  actualizado_en         DateTime
-  precio                 Float                    @default(0)
-  bancoPreguntasFalladas bancoPreguntasFalladas[]
-  compraEvaluacions      compraEvaluacion[]
-  evaluacionIntentos     evaluacionIntentos[]
-  temas                  temas[]                  @relation("evaluacionesTotemas")
-
-  @@index([gestion, estado])
-  @@index([tipo, estado])
+  @@index([titulo])
 }
 
 model examenes {
@@ -424,6 +332,8 @@ model preciosCursos {
   precioOriginal      Float?
   creadoEn            DateTime        @default(now())
   actualizadoEn       DateTime
+  fechaFin            DateTime?       @default(now())
+  fechaInicio         DateTime?       @default(now())
   edicionesCursos     edicionesCursos @relation(fields: [edicionId], references: [id], onDelete: Cascade)
 
   @@index([edicionId, esPrecioDefault])
@@ -431,22 +341,32 @@ model preciosCursos {
 }
 
 model preguntas {
-  id                     String                   @id
-  enunciado              String
-  tipo                   PreguntaTipo
-  estado                 PreguntaEstado           @default(BORRADOR)
-  opciones               Json?
-  assets                 Json?
-  creadoEn               DateTime                 @default(now())
-  actualizadoEn          DateTime
-  codigo                 String                   @unique
-  explicacion            String?
-  solucion               Json
-  bancoPreguntasFalladas bancoPreguntasFalladas[]
-  respuestasEstudiantes  respuestasEstudiantes[]
-  temaPreguntas          temaPreguntas[]
+  id                      String               @id
+  codigo                  String               @unique
+  enunciado               String
+  explicacion             String?
+  opciones                Json
+  solucion                Json
+  estado                  PreguntaEstado       @default(BORRADOR)
+  gestion                 Int
+  creadoEn                DateTime             @default(now())
+  actualizadoEn           DateTime
+  dificultad              PreguntaDificultad   @default(MEDIO)
+  dificultadActualizadaEn DateTime?
+  tasaAcierto             Int                  @default(0)
+  totalBien               Int                  @default(0)
+  totalMal                Int                  @default(0)
+  totalRespondidas        Int                  @default(0)
+  repasoRegistros         repasoRegistros[]
+  respuestasIntentos      respuestasIntentos[]
+  areas                   areas[]              @relation("areasTopreguntas")
+  banqueo                 banqueo[]            @relation("banqueoTopreguntas")
+  capitulos               capitulos[]          @relation("capitulosTopreguntas")
+  temas                   temas[]              @relation("preguntasTotemas")
 
   @@index([estado])
+  @@index([gestion])
+  @@index([dificultad])
 }
 
 model requisitosCursos {
@@ -458,23 +378,6 @@ model requisitosCursos {
   cursos      cursos   @relation(fields: [cursoId], references: [id], onDelete: Cascade)
 
   @@index([cursoId, orden])
-}
-
-model respuestasEstudiantes {
-  id                 String             @id
-  intentoId          String
-  preguntaId         String
-  value              Json
-  esCorrecta         Boolean?
-  puntajeObtenido    Float?
-  feedback           String?
-  creadoEn           DateTime           @default(now())
-  evaluacionIntentos evaluacionIntentos @relation(fields: [intentoId], references: [id], onDelete: Cascade)
-  preguntas          preguntas          @relation(fields: [preguntaId], references: [id], onDelete: Cascade)
-
-  @@unique([intentoId, preguntaId])
-  @@index([intentoId])
-  @@index([preguntaId])
 }
 
 model reviewsCursos {
@@ -511,22 +414,136 @@ model usuariosAdministradores {
 }
 
 model usuariosEstudiantes {
-  id            String          @id
-  correo        String          @unique
-  contrasena    String
-  usuario       String          @unique
-  estado        Boolean         @default(true)
-  creadoEn      DateTime        @default(now())
-  actualizadoEn DateTime
-  avatar        String?
-  estudianteId  String?         @unique
-  registrado    Boolean         @default(false)
-  compras       compras[]
-  reviewsCursos reviewsCursos[]
-  estudiantes   estudiantes?    @relation(fields: [estudianteId], references: [id])
+  id              String            @id
+  correo          String            @unique
+  contrasena      String
+  usuario         String            @unique
+  estado          Boolean           @default(true)
+  creadoEn        DateTime          @default(now())
+  actualizadoEn   DateTime
+  avatar          String?
+  estudianteId    String?           @unique
+  registrado      Boolean           @default(false)
+  compras         compras[]
+  intentos        intentos[]
+  repasoRegistros repasoRegistros[]
+  reviewsCursos   reviewsCursos[]
+  suscripciones   suscripciones[]
+  estudiantes     estudiantes?      @relation(fields: [estudianteId], references: [id])
 
   @@index([correo])
   @@index([estado])
+}
+
+model areas {
+  id            String      @id
+  titulo        String
+  descripcion   String?
+  creadoEn      DateTime    @default(now())
+  actualizadoEn DateTime
+  preguntas     preguntas[] @relation("areasTopreguntas")
+
+  @@index([titulo])
+}
+
+model banqueo {
+  id              String            @id
+  titulo          String
+  tipo            BanqueoTipo
+  tipoCreado      BanqueoTipoCreado
+  duracion        Int
+  maxPreguntas    Int
+  creadoEn        DateTime          @default(now())
+  actualizadoEn   DateTime
+  intentos        intentos[]
+  repasoRegistros repasoRegistros[]
+  preguntas       preguntas[]       @relation("banqueoTopreguntas")
+}
+
+model capitulos {
+  id            String      @id
+  titulo        String
+  descripcion   String?
+  creadoEn      DateTime    @default(now())
+  actualizadoEn DateTime
+  preguntas     preguntas[] @relation("capitulosTopreguntas")
+
+  @@index([titulo])
+}
+
+model intentos {
+  id                  String               @id
+  banqueoId           String
+  tiempoDuracion      Int
+  correctas           Int                  @default(0)
+  incorrectas         Int                  @default(0)
+  creadoEn            DateTime             @default(now())
+  actualizadoEn       DateTime
+  usuarioEstudianteId String?
+  banqueo             banqueo              @relation(fields: [banqueoId], references: [id], onDelete: Cascade)
+  usuariosEstudiantes usuariosEstudiantes? @relation(fields: [usuarioEstudianteId], references: [id], onDelete: Cascade)
+  respuestasIntentos  respuestasIntentos[]
+
+  @@index([banqueoId])
+  @@index([usuarioEstudianteId])
+  @@index([banqueoId, usuarioEstudianteId])
+}
+
+model respuestasIntentos {
+  id                 String             @id
+  intentoId          String
+  preguntaId         String
+  respuesta          Json?
+  resultado          ResultadoRespuesta @default(OMITIDA)
+  esCorrecta         Boolean?
+  respondida         Boolean            @default(false)
+  visitada           Boolean            @default(false)
+  marcadaRevision    Boolean            @default(false)
+  tiempoConsumidoSeg Int                @default(0)
+  orden              Int?
+  respondidaEn       DateTime?
+  creadoEn           DateTime           @default(now())
+  actualizadoEn      DateTime
+  intentos           intentos           @relation(fields: [intentoId], references: [id], onDelete: Cascade)
+  preguntas          preguntas          @relation(fields: [preguntaId], references: [id], onDelete: Cascade)
+
+  @@unique([intentoId, preguntaId])
+  @@index([intentoId])
+  @@index([preguntaId])
+  @@index([resultado])
+}
+
+model repasoRegistros {
+  id                  String              @id
+  usuarioEstudianteId String
+  banqueoId           String
+  preguntaId          String
+  esCorrecta          Boolean
+  creadoEn            DateTime            @default(now())
+  banqueo             banqueo             @relation(fields: [banqueoId], references: [id], onDelete: Cascade)
+  preguntas           preguntas           @relation(fields: [preguntaId], references: [id], onDelete: Cascade)
+  usuariosEstudiantes usuariosEstudiantes @relation(fields: [usuarioEstudianteId], references: [id], onDelete: Cascade)
+
+  @@index([usuarioEstudianteId])
+  @@index([banqueoId])
+  @@index([preguntaId])
+  @@index([usuarioEstudianteId, banqueoId, preguntaId])
+}
+
+model suscripciones {
+  id                  String              @id
+  usuarioEstudianteId String
+  montoUsd            Float
+  fechaInicio         DateTime            @default(now())
+  fechaFin            DateTime
+  estado              EstadoSuscripcion   @default(ACTIVA)
+  creadoEn            DateTime            @default(now())
+  actualizadoEn       DateTime
+  usuariosEstudiantes usuariosEstudiantes @relation(fields: [usuarioEstudianteId], references: [id], onDelete: Cascade)
+
+  @@index([estado])
+  @@index([fechaFin])
+  @@index([usuarioEstudianteId])
 }
 
 enum AccionAuditoria {
@@ -547,24 +564,6 @@ enum EstadoPago {
   COMPLETADO
   RECHAZADO
   REEMBOLSADO
-}
-
-enum EvaluacionEstado {
-  BORRADOR
-  DISPONIBLE
-  ARCHIVADO
-}
-
-enum EvaluacionTipo {
-  PRUEBA
-  OFICIAL
-}
-
-enum IntentoEstado {
-  EN_PROGRESO
-  ENVIADO
-  EXPIRADO
-  ANULADO
 }
 
 enum MetodoPago {
@@ -598,11 +597,6 @@ enum PreguntaEstado {
   ARCHIVADO
 }
 
-enum PreguntaTipo {
-  ABIERTA
-  CERRADA
-}
-
 enum Tabla {
   AUDITORIA
   CATEGORIAS
@@ -626,10 +620,12 @@ enum Tabla {
   PRECIOS_CURSOS
   COMPRAS
   GRABACIONES
-  EVALUACIONES
+  BANQUEO
+  AREA
+  CAPITULO
   TEMA
-  TEMA_PREGUNTA
   PREGUNTA
+  SUSCRIPCION
   PAGOS_DOCENTE
 }
 
@@ -673,4 +669,31 @@ enum TipoMaterial {
   EJERCICIO
   SOLUCION
   OTRO
+}
+
+enum BanqueoTipo {
+  PRO
+  FREE
+}
+
+enum BanqueoTipoCreado {
+  ADMIN
+  ESTUDIANTE
+}
+
+enum EstadoSuscripcion {
+  ACTIVA
+  INACTIVA
+}
+
+enum ResultadoRespuesta {
+  BIEN
+  MAL
+  OMITIDA
+}
+
+enum PreguntaDificultad {
+  DIFICIL
+  MEDIO
+  SENCILLO
 }

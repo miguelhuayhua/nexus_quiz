@@ -439,8 +439,8 @@ export default function EvaluacionDetalleClient({
                 <Button disabled>{resolvedAction.label}</Button>
               ) : (
                 <AlertDialog>
-                  <AlertDialogTrigger asChild>
-                    <Button>{resolvedAction.label}</Button>
+                  <AlertDialogTrigger render={<Button />}>
+                    {resolvedAction.label}
                   </AlertDialogTrigger>
                   <AlertDialogContent>
                     <AlertDialogHeader className="text-center">
@@ -468,8 +468,8 @@ export default function EvaluacionDetalleClient({
                     </AlertDialogHeader>
                     <AlertDialogFooter className="sm:justify-center">
                       <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                      <AlertDialogAction asChild>
-                        <Link href={resolvedAction.href}>Continuar</Link>
+                      <AlertDialogAction render={<Link href={resolvedAction.href} />}>
+                        Continuar
                       </AlertDialogAction>
                     </AlertDialogFooter>
                   </AlertDialogContent>

@@ -262,7 +262,7 @@ export function DataTableFilterMenu<TData>({
           className="w-full max-w-(--radix-popover-content-available-width) p-0"
           {...props}
         >
-          <Command loop className="[&_[cmdk-input-wrapper]_svg]:hidden">
+          <Command>
             <CommandInput
               ref={inputRef}
               placeholder={
@@ -271,7 +271,7 @@ export function DataTableFilterMenu<TData>({
                   : "Search fields..."
               }
               value={inputValue}
-              onValueChange={setInputValue}
+              onChange={(event) => setInputValue(event.target.value)}
               onKeyDown={onInputKeyDown}
             />
             <CommandList>
@@ -404,7 +404,7 @@ function DataTableFilterItem<TData>({
             </Button>
           </PopoverTrigger>
           <PopoverContent align="start" className="w-48 p-0">
-            <Command loop>
+            <Command>
               <CommandInput placeholder="Search fields..." />
               <CommandList>
                 <CommandEmpty>No fields found.</CommandEmpty>
@@ -449,15 +449,16 @@ function DataTableFilterItem<TData>({
           open={showOperatorSelector}
           onOpenChange={setShowOperatorSelector}
           value={filter.operator}
-          onValueChange={(value: FilterOperator) =>
+          onValueChange={(value) => {
+            const nextOperator = (value ?? filter.operator) as FilterOperator;
             onFilterUpdate(filter.filterId, {
-              operator: value,
+              operator: nextOperator,
               value:
-                value === "isEmpty" || value === "isNotEmpty"
+                nextOperator === "isEmpty" || nextOperator === "isNotEmpty"
                   ? ""
                   : filter.value,
-            })
-          }
+            });
+          }}
         >
           <SelectTrigger
             aria-controls={operatorListboxId}
@@ -662,8 +663,8 @@ function onFilterInputRender<TData>({
           open={showValueSelector}
           onOpenChange={setShowValueSelector}
           value={typeof filter.value === "string" ? filter.value : "true"}
-          onValueChange={(value: "true" | "false") =>
-            onFilterUpdate(filter.filterId, { value })
+          onValueChange={(value) =>
+            onFilterUpdate(filter.filterId, { value: value ?? "true" })
           }
         >
           <SelectTrigger

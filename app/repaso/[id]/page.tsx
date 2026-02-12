@@ -1,82 +1,174 @@
-﻿import { prisma } from "@/lib/prisma";
-import { getServerAuthSession } from "@/lib/auth";
-import { notFound } from "next/navigation";
-import RepasoTakeClient, { type RepasoTakeClientProps } from "./client";
+﻿import type { Metadata } from "next";
+import { notFound, redirect } from "next/navigation";
 
-export const dynamic = "force-dynamic";
-export const revalidate = 0;
+import { PreguntaDificultad, ResultadoRespuesta } from "@/generated/prisma/client";
+import { getServerAuthSession } from "@/lib/auth";
+import { prisma } from "@/lib/prisma";
+import { resolveUsuarioEstudianteIdFromSession } from "@/lib/subscription-access";
+import RepasoTakeClient from "./client";
 
 type Params = {
   id: string;
 };
 
-export default async function RepasoTakePage({ params }: { params: Params | Promise<Params> }) {
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<Params>;
+}): Promise<Metadata> {
+  const { id } = await params;
+  const banqueo = await prisma.banqueo.findUnique({
+    where: { id },
+    select: { titulo: true },
+  });
+
+  return {
+    title: banqueo ? `Repaso: ${banqueo.titulo}` : "Detalle de repaso",
+    description: "Preguntas incorrectas para repasar.",
+  };
+}
+
+export default async function RepasoDetailPage({
+  params,
+}: {
+  params: Promise<Params>;
+}) {
   const session = await getServerAuthSession();
   if (!session?.user?.id && !session?.user?.email) {
-    return notFound();
+    redirect("/");
   }
 
-  const resolvedParams = await Promise.resolve(params);
-  const evaluationId = resolvedParams.id;
-
-  const estudianteId = await resolveEstudianteIdFromSession({
+  const usuarioEstudianteId = await resolveUsuarioEstudianteIdFromSession({
     userId: session?.user?.id,
     email: session?.user?.email ?? null,
   });
-
-  if (!estudianteId) {
-    return notFound();
+  if (!usuarioEstudianteId) {
+    redirect("/");
   }
 
-  const entries = await prisma.bancoPreguntasFalladas.findMany({
-    where: {
-      estudianteId,
-      evaluacionId: evaluationId,
-      resuelta: false,
-    },
+  const { id } = await params;
+  const banqueo = await prisma.banqueo.findFirst({
+    where: { id },
     select: {
       id: true,
-      evaluaciones: {
-        select: {
-          id: true,
-          titulo: true,
-        },
-      },
-      preguntas: {
-        select: {
-          id: true,
-          codigo: true,
-          enunciado: true,
-          tipo: true,
-          opciones: true,
-          assets: true,
-          solucion: true,
-        },
-      },
-    },
-    orderBy: {
-      creadoEn: "asc",
+      titulo: true,
     },
   });
 
-  if (entries.length === 0) {
-    return notFound();
+  if (!banqueo) {
+    notFound();
   }
 
-  const evaluacion = entries[0].evaluaciones;
-  const preguntas: RepasoTakeClientProps["preguntas"] = entries.map((entry) => ({
-    id: entry.preguntas.id,
-    bancoId: entry.id,
-    codigo: entry.preguntas.codigo,
-    enunciado: entry.preguntas.enunciado,
-    tipo: entry.preguntas.tipo,
-    opciones: entry.preguntas.opciones,
-    assets: normalizeAssets(entry.preguntas.assets),
-    solucionKind: extractSolucionKind(entry.preguntas.solucion),
-    solucion: extractSolucion(entry.preguntas.solucion),
+  const fallosHistoricos = await prisma.respuestasIntentos.groupBy({
+    by: ["preguntaId"],
+    where: {
+      resultado: ResultadoRespuesta.MAL,
+      intentos: {
+        usuarioEstudianteId,
+        banqueoId: banqueo.id,
+      },
+    },
+    _count: {
+      preguntaId: true,
+    },
+  });
+
+  const repasoRevisado = await prisma.repasoRegistros.findMany({
+    where: {
+      usuarioEstudianteId,
+      banqueoId: banqueo.id,
+    },
+    select: {
+      preguntaId: true,
+      esCorrecta: true,
+    },
+  });
+  const preguntasRevisadas = new Set(repasoRevisado.map((item) => item.preguntaId));
+  const fallosPendientes = fallosHistoricos.filter((item) => !preguntasRevisadas.has(item.preguntaId));
+
+  if (fallosPendientes.length === 0) {
+    return (
+      <main className="mx-auto w-full max-w-4xl space-y-4 p-6">
+        <h1 className="font-semibold text-2xl tracking-tight">{banqueo.titulo}</h1>
+        <p className="text-muted-foreground text-sm">No hay preguntas pendientes para repasar.</p>
+      </main>
+    );
+  }
+
+  const preguntaIds = fallosPendientes.map((item) => item.preguntaId);
+  const preguntasRaw = await prisma.preguntas.findMany({
+    where: {
+      id: { in: preguntaIds },
+      banqueo: {
+        some: {
+          id: banqueo.id,
+        },
+      },
+    },
+    select: {
+      id: true,
+      codigo: true,
+      enunciado: true,
+      explicacion: true,
+      dificultad: true,
+      tasaAcierto: true,
+      opciones: true,
+      solucion: true,
+      temas: {
+        select: {
+          titulo: true,
+          descripcion: true,
+        },
+        orderBy: {
+          titulo: "asc",
+        },
+      },
+    },
+  });
+
+  const falloCountByPregunta = new Map<string, number>();
+  for (const item of fallosPendientes) {
+    falloCountByPregunta.set(item.preguntaId, item._count.preguntaId);
+  }
+
+  const preguntas = preguntasRaw.map((item) => ({
+    id: item.id,
+    bancoId: item.id,
+    codigo: item.codigo,
+    explicacion: item.explicacion,
+    temaNombre: item.temas[0]?.titulo ?? null,
+    temaDescripcion: item.temas[0]?.descripcion ?? null,
+    enunciado: item.enunciado,
+    tipo:
+      Array.isArray(item.opciones) && item.opciones.length > 0
+        ? ("CERRADA" as const)
+        : ("ABIERTA" as const),
+    opciones: item.opciones,
+    assets: [],
+    solucionKind: extractSolucionKind(item.solucion),
+    solucion: {
+      kind: extractSolucionKind(item.solucion) ?? "TEXT",
+      value: extractSolucionValue(item.solucion),
+    },
+    failCount: falloCountByPregunta.get(item.id) ?? 1,
+    dificultad: item.dificultad ?? PreguntaDificultad.MEDIO,
+    tasaAciertoHistorica: item.tasaAcierto ?? 0,
   }));
 
-  return <RepasoTakeClient evaluacion={evaluacion} preguntas={preguntas} />;
+  const correctasPrevias = repasoRevisado.filter((item) => item.esCorrecta).length;
+
+  return (
+    <main className="min-h-screen bg-background py-10 text-foreground">
+      <RepasoTakeClient
+        banqueo={banqueo}
+        preguntas={preguntas}
+        repasoStatsPrevios={{
+          total: repasoRevisado.length,
+          correctas: correctasPrevias,
+        }}
+      />
+    </main>
+  );
 }
 
 function extractSolucionKind(value: unknown): string | null {
@@ -85,78 +177,17 @@ function extractSolucionKind(value: unknown): string | null {
   return typeof candidate.kind === "string" ? candidate.kind : null;
 }
 
-function extractSolucion(
-  value: unknown,
-): RepasoTakeClientProps["preguntas"][number]["solucion"] {
-  if (!value || typeof value !== "object") return null;
-
+function extractSolucionValue(value: unknown): unknown {
+  if (value === null || value === undefined) return null;
+  if (typeof value !== "object") return value;
+  if (Array.isArray(value)) return value;
   const candidate = value as Record<string, unknown>;
-  if (typeof candidate.kind !== "string") return null;
-
-  return {
-    kind: candidate.kind,
-    value: candidate.value,
-  };
-}
-
-function normalizeAssets(value: unknown): RepasoTakeClientProps["preguntas"][number]["assets"] {
-  if (!Array.isArray(value)) return [];
-
-  return value.filter((item): item is { kind: string; url: string; alt?: string; title?: string; orden?: number } => {
-    if (!item || typeof item !== "object") return false;
-    const candidate = item as Record<string, unknown>;
-
-    return (
-      typeof candidate.kind === "string" &&
-      typeof candidate.url === "string" &&
-      (candidate.alt === undefined || typeof candidate.alt === "string") &&
-      (candidate.title === undefined || typeof candidate.title === "string") &&
-      (candidate.orden === undefined || typeof candidate.orden === "number")
-    );
-  });
-}
-
-async function resolveEstudianteIdFromSession(params: {
-  userId?: string | null;
-  email?: string | null;
-}) {
-  const userId = params.userId?.trim();
-  const email = params.email?.trim();
-
-  if (userId) {
-    const usuarioEstudiante = await prisma.usuariosEstudiantes.findUnique({
-      where: { id: userId },
-      select: { estudianteId: true },
-    });
-
-    if (usuarioEstudiante?.estudianteId) {
-      return usuarioEstudiante.estudianteId;
-    }
-
-    const estudiante = await prisma.estudiantes.findUnique({
-      where: { id: userId },
-      select: { id: true },
-    });
-
-    if (estudiante?.id) {
-      return estudiante.id;
-    }
-  }
-
-  if (email) {
-    const estudiante = await prisma.estudiantes.findFirst({
-      where: {
-        usuariosEstudiantes: {
-          correo: email,
-        },
-      },
-      select: { id: true },
-    });
-
-    if (estudiante?.id) {
-      return estudiante.id;
-    }
-  }
-
-  return null;
+  return (
+    candidate.value ??
+    candidate.correcta ??
+    candidate.correct ??
+    candidate.respuesta ??
+    candidate.solucion ??
+    value
+  );
 }

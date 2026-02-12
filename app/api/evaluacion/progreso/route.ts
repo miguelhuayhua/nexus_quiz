@@ -1,15 +1,28 @@
 ﻿import { randomUUID } from "node:crypto";
 import { NextResponse } from "next/server";
 
+import {
+  BanqueoTipo,
+  PreguntaEstado,
+  Prisma,
+  ResultadoRespuesta,
+} from "@/generated/prisma/client";
 import { getServerAuthSession } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import {
+  hasActiveProSubscription,
+  resolveUsuarioEstudianteIdFromSession,
+} from "@/lib/subscription-access";
 import { compareRespuesta, normalizeSolucion, parseRespuesta } from "@/lib/evaluacion-eval";
 
 type ProgresoBody = {
+  bancoId?: unknown;
   evaluacionId?: unknown;
+  intentoId?: unknown;
   respuestas?: unknown;
   finalizar?: unknown;
   tiempoConsumido?: unknown;
+  currentIndex?: unknown;
 };
 
 export async function POST(request: Request) {
@@ -19,22 +32,27 @@ export async function POST(request: Request) {
       return NextResponse.json({ message: "No autenticado." }, { status: 401 });
     }
 
-    const estudianteId = await resolveEstudianteIdFromSession({
+    const body = (await request.json().catch(() => null)) as ProgresoBody | null;
+    const bancoIdRaw =
+      typeof body?.bancoId === "string"
+        ? body.bancoId
+        : typeof body?.evaluacionId === "string"
+          ? body.evaluacionId
+          : "";
+    const bancoId = bancoIdRaw.trim();
+
+    if (!bancoId) {
+      return NextResponse.json({ message: "bancoId es obligatorio." }, { status: 400 });
+    }
+
+    const usuarioEstudianteId = await resolveUsuarioEstudianteIdFromSession({
       userId: session.user.id,
       email: session.user.email ?? null,
     });
-
-    if (!estudianteId) {
+    if (!usuarioEstudianteId) {
       return NextResponse.json({ message: "Estudiante no encontrado." }, { status: 404 });
     }
-
-    const body = (await request.json().catch(() => null)) as ProgresoBody | null;
-    const evaluacionId =
-      typeof body?.evaluacionId === "string" ? body.evaluacionId.trim() : "";
-
-    if (!evaluacionId) {
-      return NextResponse.json({ message: "evaluacionId es obligatorio." }, { status: 400 });
-    }
+    const hasPro = await hasActiveProSubscription(usuarioEstudianteId);
 
     const respuestas = isStringRecord(body?.respuestas) ? body.respuestas : {};
     const finalizar = body?.finalizar === true;
@@ -42,196 +60,218 @@ export async function POST(request: Request) {
     const tiempoConsumido = Number.isFinite(tiempoConsumidoRaw)
       ? Math.max(0, Math.floor(tiempoConsumidoRaw))
       : 0;
+    const currentIndexRaw = Number(body?.currentIndex ?? 0);
+    const currentIndex = Number.isFinite(currentIndexRaw)
+      ? Math.max(0, Math.floor(currentIndexRaw))
+      : 0;
 
-    const evaluacion = await prisma.evaluaciones.findFirst({
+    const banco = await prisma.banqueo.findFirst({
       where: {
-        id: evaluacionId,
-        estado: "DISPONIBLE",
-        compraEvaluacions: {
-          some: {
-            estudianteId,
-            estado: "COMPLETADO",
-          },
-        },
+        id: bancoId,
       },
       select: {
         id: true,
-        tiempo_segundos: true,
-        temas: {
-          orderBy: {
-            nombre: "asc",
+        tipo: true,
+        preguntas: {
+          where: {
+            estado: PreguntaEstado.DISPONIBLE,
           },
-          include: {
-            temaPreguntas: {
-              orderBy: {
-                orden: "asc",
-              },
-              include: {
-                preguntas: {
-                  select: {
-                    id: true,
-                    solucion: true,
-                    estado: true,
-                  },
-                },
-              },
-            },
+          select: {
+            id: true,
+            solucion: true,
           },
         },
       },
     });
 
-    if (!evaluacion) {
-      return NextResponse.json({ message: "Evaluación no disponible." }, { status: 404 });
+    if (!banco) {
+      return NextResponse.json({ message: "Banqueo no disponible." }, { status: 404 });
+    }
+
+    if (banco.tipo === BanqueoTipo.PRO && !hasPro) {
+      return NextResponse.json(
+        { message: "Se requiere suscripcion Pro activa." },
+        { status: 403 },
+      );
     }
 
     const now = new Date();
+    const intentoIdRaw = typeof body?.intentoId === "string" ? body.intentoId.trim() : "";
 
-    let intento = await prisma.evaluacionIntentos.findFirst({
-      where: {
-        evaluacionId,
-        estudianteId,
-        estado: "EN_PROGRESO",
-      },
-      orderBy: {
-        iniciadoEn: "desc",
-      },
-    });
+    let intento = intentoIdRaw
+      ? await prisma.intentos.findFirst({
+          where: {
+            id: intentoIdRaw,
+            banqueoId: banco.id,
+            usuarioEstudianteId,
+          },
+          select: {
+            id: true,
+          },
+        })
+      : null;
 
     if (!intento) {
-      intento = await prisma.evaluacionIntentos.create({
-        data: {
-          id: randomUUID(),
-          estudianteId,
-          evaluacionId,
-          estado: "EN_PROGRESO",
-          iniciadoEn: now,
-          actualizadoEn: now,
-          vence_en: new Date(now.getTime() + evaluacion.tiempo_segundos * 1000),
-          tiempoConsumido,
-          progreso: {
-            respuestas,
-            guardadoEn: now.toISOString(),
-          },
+      const intentosCount = await prisma.intentos.count({
+        where: {
+          banqueoId: banco.id,
+          usuarioEstudianteId,
         },
       });
-    }
-
-    await prisma.evaluacionIntentos.update({
-      where: { id: intento.id },
-      data: {
-        actualizadoEn: now,
-        tiempoConsumido,
-        progreso: {
-          respuestas,
-          guardadoEn: now.toISOString(),
-        },
-      },
-    });
-
-    if (!finalizar) {
-      return NextResponse.json({ ok: true, intentoId: intento.id, estado: "EN_PROGRESO" });
-    }
-
-    const preguntasEvaluacion = getPreguntasFromTemas(evaluacion.temas);
-
-    await prisma.$transaction(async (tx) => {
-      for (const item of preguntasEvaluacion) {
-        const rawRespuesta = respuestas[item.preguntaId];
-        const kind = extractSolucionKind(item.solucion);
-        const respuestaParseada = parseRespuesta(rawRespuesta, kind ?? undefined);
-        const solucionNormalizada = normalizeSolucion(
-          extractSolucionValue(item.solucion),
-          kind ?? undefined,
+      if (intentosCount >= 3) {
+        return NextResponse.json(
+          { message: "Se alcanzó el máximo de 3 intentos para este banqueo." },
+          { status: 409 },
         );
-
-        const respondida = respuestaParseada !== null;
-        const correcta =
-          respondida && solucionNormalizada !== null
-            ? compareRespuesta(respuestaParseada, solucionNormalizada)
-            : false;
-
-        if (respondida) {
-          await tx.respuestasEstudiantes.upsert({
-            where: {
-              intentoId_preguntaId: {
-                intentoId: intento!.id,
-                preguntaId: item.preguntaId,
-              },
-            },
-            create: {
-              id: randomUUID(),
-              intentoId: intento!.id,
-              preguntaId: item.preguntaId,
-              value: respuestaParseada as object,
-              esCorrecta: correcta,
-              puntajeObtenido: correcta ? item.puntaje : 0,
-            },
-            update: {
-              value: respuestaParseada as object,
-              esCorrecta: correcta,
-              puntajeObtenido: correcta ? item.puntaje : 0,
-            },
-          });
-        }
-
-        if (correcta) {
-          await tx.bancoPreguntasFalladas.updateMany({
-            where: {
-              estudianteId,
-              evaluacionId,
-              preguntaId: item.preguntaId,
-            },
-            data: {
-              resuelta: true,
-              evaluacionIntentosId: intento!.id,
-            },
-          });
-        } else {
-          await tx.bancoPreguntasFalladas.upsert({
-            where: {
-              estudianteId_preguntaId_evaluacionId: {
-                estudianteId,
-                preguntaId: item.preguntaId,
-                evaluacionId,
-              },
-            },
-            create: {
-              id: randomUUID(),
-              estudianteId,
-              preguntaId: item.preguntaId,
-              evaluacionId,
-              resuelta: false,
-              evaluacionIntentosId: intento!.id,
-            },
-            update: {
-              resuelta: false,
-              evaluacionIntentosId: intento!.id,
-            },
-          });
-        }
       }
 
-      await tx.evaluacionIntentos.update({
-        where: { id: intento!.id },
+      intento = await prisma.intentos.create({
         data: {
-          estado: "ENVIADO",
-          enviadoEn: now,
+          id: randomUUID(),
+          banqueoId: banco.id,
+          usuarioEstudianteId,
+          tiempoDuracion: 0,
+          correctas: 0,
+          incorrectas: 0,
+          creadoEn: now,
           actualizadoEn: now,
-          tiempoConsumido,
-          progreso: {
-            respuestas,
-            guardadoEn: now.toISOString(),
-            finalizadoEn: now.toISOString(),
-          },
+        },
+        select: {
+          id: true,
         },
       });
+
+      if (banco.preguntas.length > 0) {
+        await prisma.respuestasIntentos.createMany({
+          data: banco.preguntas.map((pregunta, index) => ({
+            id: randomUUID(),
+            intentoId: intento!.id,
+            preguntaId: pregunta.id,
+            resultado: ResultadoRespuesta.OMITIDA,
+            esCorrecta: null,
+            respondida: false,
+            visitada: false,
+            marcadaRevision: false,
+            tiempoConsumidoSeg: 0,
+            orden: index,
+            respondidaEn: null,
+            creadoEn: now,
+            actualizadoEn: now,
+          })),
+        });
+      }
+    }
+
+    if (!intento) {
+      return NextResponse.json({ message: "No se pudo iniciar el intento." }, { status: 500 });
+    }
+    const intentoId = intento.id;
+
+    const evaluadas = banco.preguntas.map((pregunta, index) => {
+      const rawRespuesta = respuestas[pregunta.id] ?? "";
+      const kind = extractSolucionKind(pregunta.solucion);
+      const parsedRespuesta = parseRespuesta(rawRespuesta, kind ?? undefined);
+      const parsedSolucion = normalizeSolucion(
+        extractSolucionValue(pregunta.solucion),
+        kind ?? undefined,
+      );
+      const respondida = parsedRespuesta !== null;
+
+      const esCorrecta =
+        respondida && parsedSolucion !== null
+          ? compareRespuesta(parsedRespuesta, parsedSolucion)
+          : false;
+
+      const resultado = !respondida
+        ? ResultadoRespuesta.OMITIDA
+        : esCorrecta
+          ? ResultadoRespuesta.BIEN
+          : ResultadoRespuesta.MAL;
+
+      return {
+        preguntaId: pregunta.id,
+        orden: index,
+        respondida,
+        esCorrecta: respondida ? esCorrecta : null,
+        resultado,
+        rawRespuesta,
+      };
     });
 
-    return NextResponse.json({ ok: true, intentoId: intento.id, estado: "ENVIADO" });
+    const correctas = evaluadas.filter((item) => item.resultado === ResultadoRespuesta.BIEN).length;
+    const incorrectas = evaluadas.filter((item) => item.resultado === ResultadoRespuesta.MAL).length;
+
+    await prisma.$transaction(async (tx) => {
+      for (const item of evaluadas) {
+        await tx.respuestasIntentos.upsert({
+          where: {
+            intentoId_preguntaId: {
+              intentoId,
+              preguntaId: item.preguntaId,
+            },
+          },
+          create: {
+            id: randomUUID(),
+            intentoId,
+            preguntaId: item.preguntaId,
+            respuesta: item.respondida ? item.rawRespuesta : Prisma.DbNull,
+            resultado: item.resultado,
+            esCorrecta: item.esCorrecta,
+            respondida: item.respondida,
+            visitada: item.respondida || currentIndex === item.orden,
+            marcadaRevision: false,
+            tiempoConsumidoSeg: 0,
+            orden: item.orden,
+            respondidaEn: item.respondida ? now : null,
+            creadoEn: now,
+            actualizadoEn: now,
+          },
+          update: {
+            respuesta: item.respondida ? item.rawRespuesta : Prisma.DbNull,
+            resultado: item.resultado,
+            esCorrecta: item.esCorrecta,
+            respondida: item.respondida,
+            visitada: item.respondida || currentIndex === item.orden,
+            respondidaEn: item.respondida ? now : null,
+            actualizadoEn: now,
+          },
+        });
+      }
+
+      await tx.intentos.update({
+        where: { id: intentoId },
+        data: {
+          correctas,
+          incorrectas,
+          tiempoDuracion: tiempoConsumido,
+          actualizadoEn: now,
+        },
+      });
+
+      if (finalizar) {
+        await tx.repasoRegistros.createMany({
+          data: evaluadas
+            .filter((item) => item.respondida)
+            .map((item) => ({
+              id: randomUUID(),
+              usuarioEstudianteId,
+              banqueoId: banco.id,
+              preguntaId: item.preguntaId,
+              esCorrecta: item.esCorrecta === true,
+              creadoEn: now,
+            })),
+        });
+      }
+    });
+
+    return NextResponse.json({
+      ok: true,
+      intentoId,
+      estado: finalizar ? "ENVIADO" : "EN_PROGRESO",
+    });
   } catch {
     return NextResponse.json(
-      { message: "No se pudo guardar el progreso de la evaluación." },
+      { message: "No se pudo guardar el progreso del banqueo." },
       { status: 500 },
     );
   }
@@ -243,35 +283,6 @@ function isStringRecord(value: unknown): value is Record<string, string> {
   return Object.values(value).every((item) => typeof item === "string");
 }
 
-function getPreguntasFromTemas(
-  temas: {
-    temaPreguntas: {
-      preguntaId: string;
-      puntaje: number;
-      preguntas: { solucion: unknown; estado: string };
-    }[];
-  }[],
-) {
-  const seen = new Set<string>();
-  const result: { preguntaId: string; puntaje: number; solucion: unknown }[] = [];
-
-  for (const tema of temas) {
-    for (const item of tema.temaPreguntas) {
-      if (item.preguntas.estado !== "DISPONIBLE") continue;
-      if (seen.has(item.preguntaId)) continue;
-      seen.add(item.preguntaId);
-
-      result.push({
-        preguntaId: item.preguntaId,
-        puntaje: item.puntaje,
-        solucion: item.preguntas.solucion,
-      });
-    }
-  }
-
-  return result;
-}
-
 function extractSolucionKind(value: unknown): string | null {
   if (!value || typeof value !== "object") return null;
   const candidate = value as Record<string, unknown>;
@@ -279,52 +290,16 @@ function extractSolucionKind(value: unknown): string | null {
 }
 
 function extractSolucionValue(value: unknown): unknown {
-  if (!value || typeof value !== "object") return null;
+  if (value === null || value === undefined) return null;
+  if (typeof value !== "object") return value;
+  if (Array.isArray(value)) return value;
   const candidate = value as Record<string, unknown>;
-  return candidate.value ?? null;
-}
-
-async function resolveEstudianteIdFromSession(params: {
-  userId?: string | null;
-  email?: string | null;
-}) {
-  const userId = params.userId?.trim();
-  const email = params.email?.trim();
-
-  if (userId) {
-    const usuarioEstudiante = await prisma.usuariosEstudiantes.findUnique({
-      where: { id: userId },
-      select: { estudianteId: true },
-    });
-
-    if (usuarioEstudiante?.estudianteId) {
-      return usuarioEstudiante.estudianteId;
-    }
-
-    const estudiante = await prisma.estudiantes.findUnique({
-      where: { id: userId },
-      select: { id: true },
-    });
-
-    if (estudiante?.id) {
-      return estudiante.id;
-    }
-  }
-
-  if (email) {
-    const estudiante = await prisma.estudiantes.findFirst({
-      where: {
-        usuariosEstudiantes: {
-          correo: email,
-        },
-      },
-      select: { id: true },
-    });
-
-    if (estudiante?.id) {
-      return estudiante.id;
-    }
-  }
-
-  return null;
+  return (
+    candidate.value ??
+    candidate.correcta ??
+    candidate.correct ??
+    candidate.respuesta ??
+    candidate.solucion ??
+    value
+  );
 }

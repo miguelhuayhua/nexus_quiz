@@ -1,7 +1,7 @@
-import { LayoutGrid, LogOut, User } from "lucide-react";
-import { signOut } from "next-auth/react";
+import { CircleIcon, LayoutGrid, SparklesIcon, User } from "lucide-react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
 import {
   Menu,
   MenuGroup,
@@ -15,27 +15,30 @@ import {
 interface NavUserProps {
   email?: string | null;
   image?: string | null;
-  isRegistered?: boolean;
   mainProjectUrl: string;
   name?: string | null;
+  plan?: "FREE" | "PRO";
+  triggerClassName?: string;
+  avatarClassName?: string;
 }
 
 export function NavUser({
   email,
   image,
-  isRegistered,
   mainProjectUrl,
   name,
+  plan = "FREE",
+  triggerClassName,
+  avatarClassName,
 }: NavUserProps) {
   const initial = name?.charAt(0)?.toUpperCase() ?? "U";
-  const normalizedMainProjectUrl = mainProjectUrl.endsWith("/")
-    ? mainProjectUrl.slice(0, -1)
-    : mainProjectUrl;
+  const PlanIcon = plan === "PRO" ? SparklesIcon : CircleIcon;
+  const planLabel = plan === "PRO" ? "PRO" : "BASIC";
 
   return (
     <Menu>
-      <MenuTrigger className="cursor-pointer">
-        <Avatar>
+      <MenuTrigger className={triggerClassName ?? "cursor-pointer"}>
+        <Avatar className={avatarClassName}>
           <AvatarImage alt={name ?? "Usuario"} src={image ?? ""} />
           <AvatarFallback className="rounded-lg">{initial}</AvatarFallback>
         </Avatar>
@@ -48,9 +51,12 @@ export function NavUser({
             <p className="truncate text-muted-foreground text-xs">
               {email ?? "Sin correo"}
             </p>
-            <p className="text-muted-foreground text-xs">
-              {isRegistered ? "Perfil registrado" : "Perfil no registrado"}
-            </p>
+            <div className="pt-1">
+              <Badge className="gap-1" variant={plan === "PRO" ? "default" : "outline"}>
+                <PlanIcon className="size-3" />
+                {planLabel}
+              </Badge>
+            </div>
           </div>
         </MenuItem>
         <MenuSeparator />
@@ -72,20 +78,6 @@ export function NavUser({
             Perfil y registro
           </MenuItem>
         </MenuGroup>
-        <MenuSeparator />
-        <MenuItem
-          className="cursor-pointer"
-          onClick={() =>
-            signOut({
-              callbackUrl: `${normalizedMainProjectUrl}/login`,
-              redirect: true,
-            })
-          }
-          variant="destructive"
-        >
-          <LogOut />
-          Cerrar sesión
-        </MenuItem>
       </MenuPopup>
     </Menu>
   );

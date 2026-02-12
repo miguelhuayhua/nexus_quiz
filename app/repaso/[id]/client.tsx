@@ -24,6 +24,9 @@ type Pregunta = {
     id: string;
     bancoId: string;
     codigo?: string | null;
+    explicacion?: string | null;
+    temaNombre?: string | null;
+    temaDescripcion?: string | null;
     enunciado: string;
     tipo: PreguntaTipo;
     opciones?: any;
@@ -33,17 +36,41 @@ type Pregunta = {
         kind: string;
         value: any;
     } | null;
+    failCount?: number;
+    dificultad?: "DIFICIL" | "MEDIO" | "SENCILLO";
+    tasaAciertoHistorica?: number;
 };
 
 export type RepasoTakeClientProps = {
-    evaluacion: { id: string; titulo: string };
+    banqueo: { id: string; titulo: string };
     preguntas: Pregunta[];
+    repasoStatsPrevios?: {
+        total: number;
+        correctas: number;
+    };
 };
 
 export default function RepasoTakeClient({
-    evaluacion,
+    banqueo,
     preguntas: initialPreguntas,
+    repasoStatsPrevios,
 }: RepasoTakeClientProps) {
+    const getDificultadLabel = (value?: "DIFICIL" | "MEDIO" | "SENCILLO") => {
+        if (value === "DIFICIL") return "Difícil";
+        if (value === "SENCILLO") return "Sencillo";
+        return "Medio";
+    };
+
+    const getDificultadClass = (value?: "DIFICIL" | "MEDIO" | "SENCILLO") => {
+        if (value === "DIFICIL") {
+            return "border-rose-200 bg-rose-50 text-rose-700 dark:border-rose-900/40 dark:bg-rose-950/30 dark:text-rose-300";
+        }
+        if (value === "SENCILLO") {
+            return "border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-900/40 dark:bg-emerald-950/30 dark:text-emerald-300";
+        }
+        return "border-amber-200 bg-amber-50 text-amber-700 dark:border-amber-900/40 dark:bg-amber-950/30 dark:text-amber-300";
+    };
+
     const router = useRouter();
     const [activeQuestions, setActiveQuestions] = React.useState<Pregunta[]>(initialPreguntas);
     const [sessionResolvedIds, setSessionResolvedIds] = React.useState<Set<string>>(new Set());
@@ -55,6 +82,7 @@ export default function RepasoTakeClient({
     const [isCorrect, setIsCorrect] = React.useState(false);
     const [isValidating, setIsValidating] = React.useState(false);
     const [isMarking, setIsMarking] = React.useState(false);
+    const [resultadosRepaso, setResultadosRepaso] = React.useState<Record<string, boolean>>({});
 
     if (!activeQuestions.length && !isFinished) {
         return null;
@@ -102,6 +130,13 @@ export default function RepasoTakeClient({
         if (v && typeof v === "object" && v.url) return String(v.url).trim().toLowerCase();
         if (v && typeof v === "object" && v.value) return String(v.value).trim().toLowerCase();
         return String(v).trim().toLowerCase();
+    };
+
+    const getOptionCandidateValues = (opt: any) => {
+        const values = [getVal(opt?.value)];
+        const rawLabel = opt?.label || opt?.text;
+        if (rawLabel !== undefined && rawLabel !== null) values.push(getVal(rawLabel));
+        return Array.from(new Set(values.filter((item) => item.length > 0)));
     };
 
     const renderContent = (item: any) => {
@@ -167,7 +202,7 @@ export default function RepasoTakeClient({
         const c = normalizeSolucion(solValueRaw, kind);
 
         // Normalize both to sets of values for easier inclusion check in the UI map
-        const correct = kind && u !== null && c !== null ? compareRespuesta(u, c) : false;
+        const correct = u !== null && c !== null ? compareRespuesta(u, c) : false;
 
         setIsCorrect(correct);
         setShowFeedback(true);
@@ -179,6 +214,7 @@ export default function RepasoTakeClient({
                 return next;
             });
         }
+        setResultadosRepaso((prev) => ({ ...prev, [currentQuestion.id]: correct }));
         setIsValidating(false);
     };
 
@@ -207,24 +243,37 @@ export default function RepasoTakeClient({
     const handleFinalize = async () => {
         setIsMarking(true);
         try {
-            const ids = Array.from(sessionResolvedIds);
-            if (ids.length > 0) {
-                await Promise.all(ids.map(bancoId =>
-                    fetch("/api/evaluacion/preguntas-falladas", {
-                        method: "PATCH",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({ entryId: bancoId, resuelta: true }),
-                    })
-                ));
+            const payload = Object.entries(resultadosRepaso).map(([preguntaId, esCorrecta]) => ({
+                preguntaId,
+                esCorrecta,
+            }));
+            if (payload.length > 0) {
+                await fetch("/api/repaso/finalizar", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        bancoId: banqueo.id,
+                        resultados: payload,
+                    }),
+                });
             }
             router.replace("/repaso");
-        } catch (e) { toast.error("Error al guardar"); }
+        } catch (e) { toast.error("Error al cerrar repaso"); }
         finally { setIsMarking(false); }
     };
 
     const totalQuestions = initialPreguntas.length;
     const correctCount = sessionResolvedIds.size;
     const incorrectCount = Math.max(0, totalQuestions - correctCount);
+    const prevTotal = repasoStatsPrevios?.total ?? 0;
+    const prevCorrectas = repasoStatsPrevios?.correctas ?? 0;
+    const prevRate = prevTotal > 0 ? (prevCorrectas / prevTotal) * 100 : 0;
+    const newRate =
+        prevTotal + totalQuestions > 0
+            ? ((prevCorrectas + correctCount) / (prevTotal + totalQuestions)) * 100
+            : 0;
+    const deltaRate = Math.round(newRate - prevRate);
+    const fallosHistoricos = initialPreguntas.reduce((acc, item) => acc + (item.failCount ?? 0), 0);
 
     const loadingOverlay = (
         <AnimatePresence>
@@ -266,6 +315,16 @@ export default function RepasoTakeClient({
                         <span>Fallos</span>
                         <span className="font-semibold text-destructive">{incorrectCount}</span>
                     </div>
+                    <div className="flex items-center justify-between rounded-lg border px-3 py-2">
+                        <span>Fallos históricos revisados</span>
+                        <span className="font-semibold">{fallosHistoricos}</span>
+                    </div>
+                    <div className="flex items-center justify-between rounded-lg border px-3 py-2">
+                        <span>Mejora histórica</span>
+                        <span className={`font-semibold ${deltaRate >= 0 ? "text-emerald-600" : "text-destructive"}`}>
+                            {deltaRate >= 0 ? "+" : ""}{deltaRate}%
+                        </span>
+                    </div>
                 </div>
                 <div className="flex flex-col gap-2 w-full">
                     <Button onClick={handleFinalize} disabled={isMarking}>
@@ -288,7 +347,7 @@ export default function RepasoTakeClient({
             {loadingOverlay}
             <header className="text-center space-y-2">
                 <div className="flex flex-col items-center gap-1">
-                    <h1 className="text-xl font-bold">{evaluacion.titulo}</h1>
+                    <h1 className="text-xl font-bold">{banqueo.titulo}</h1>
                     <Badge variant="outline" className="font-semibold">
                         MODO REPASO
                     </Badge>
@@ -301,6 +360,20 @@ export default function RepasoTakeClient({
             <div className="w-full flex-1 space-y-4">
                 <motion.div key={currentQuestion.id} initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="w-full space-y-6">
                     <div className="space-y-3">
+                        {(currentQuestion.temaNombre || currentQuestion.temaDescripcion) && (
+                            <div >
+                                {currentQuestion.temaNombre && (
+                                    <p className="text-xs font-semibold text-center uppercase tracking-wide text-primary">
+                                        {currentQuestion.temaNombre}
+                                    </p>
+                                )}
+                                {currentQuestion.temaDescripcion && (
+                                    <p className="text-sm text-center text-muted-foreground">
+                                        {currentQuestion.temaDescripcion}
+                                    </p>
+                                )}
+                            </div>
+                        )}
                         {currentQuestion.codigo && (
                             <Badge variant="outline">{currentQuestion.codigo}</Badge>
                         )}
@@ -309,6 +382,27 @@ export default function RepasoTakeClient({
                             <span className="font-bold text-primary shrink-0">Pregunta.-</span>
                             <span className="text-foreground">{currentQuestion.enunciado}</span>
                         </h2>
+                        <p className="text-xs text-muted-foreground">
+                            Fallada anteriormente: {currentQuestion.failCount ?? 1} vez/veces
+                        </p>
+                        <div className="flex flex-wrap items-center gap-2">
+                            <Badge variant="outline" className={getDificultadClass(currentQuestion.dificultad)}>
+                                Dificultad: {getDificultadLabel(currentQuestion.dificultad)}
+                            </Badge>
+                            <span className="text-muted-foreground text-xs">
+                                Histórica: {currentQuestion.tasaAciertoHistorica ?? 0}% de acierto
+                            </span>
+                        </div>
+                        {showFeedback && currentQuestion.explicacion?.trim() && (
+                            <div className="rounded-lg border border-emerald-500/50 bg-emerald-500/10 p-3">
+                                <p className="text-xs font-medium text-emerald-500">
+                                    Explicación
+                                </p>
+                                <p className="mt-1 text-sm text-emerald-500">
+                                    {currentQuestion.explicacion}
+                                </p>
+                            </div>
+                        )}
                         {currentQuestion.assets?.map((asset, i) => (
                             <div key={i} className="flex justify-center py-1">
                                 <Image src={asset.url} alt="recurso" width={500} height={300} className="rounded-lg border w-full max-h-60 object-contain" />
@@ -326,10 +420,13 @@ export default function RepasoTakeClient({
                                 const effectiveShowFeedback = isPreview ? true : showFeedback;
 
                                 // Comparison logic for UI feedback
-                                const solValue = normalizeSolucion(currentQuestion.solucion?.value);
-                                const isOptionCorrect = Array.isArray(solValue)
-                                    ? solValue.some(sv => getVal(sv) === val)
-                                    : getVal(solValue) === val;
+                                const kind = currentQuestion.solucionKind || currentQuestion.solucion?.kind || undefined;
+                                const solValue = normalizeSolucion(currentQuestion.solucion?.value, kind);
+                                const optionCandidates = getOptionCandidateValues(opt);
+                                const solvedValues = Array.isArray(solValue) ? solValue : [solValue];
+                                const isOptionCorrect = solValue !== null && optionCandidates.some((candidate) =>
+                                    solvedValues.some((solved) => compareRespuesta(candidate, solved))
+                                );
                                 const correctAlt = Array.isArray(solValue)
                                     ? (solValue as any[]).find(sv => getVal(sv) === val)?.alt
                                     : (getVal(solValue) === val ? (solValue as any)?.alt : undefined);
@@ -342,8 +439,8 @@ export default function RepasoTakeClient({
                                         bgClass = isOptionCorrect ? "bg-emerald-500/10 border-emerald-500" : "bg-destructive/10 border-destructive";
                                         icon = isOptionCorrect ? <CheckCircle2 className="w-5 h-5 text-emerald-600" /> : <XCircle className="w-5 h-5 text-destructive" />;
                                     } else if (isOptionCorrect) {
-                                        bgClass = "border-emerald-500/40 bg-emerald-50/5";
-                                        icon = <CheckCircle2 className="w-5 h-5 text-emerald-600/40" />;
+                                        bgClass = "border-emerald-500 bg-emerald-500/10";
+                                        icon = <CheckCircle2 className="w-5 h-5 text-emerald-600" />;
                                     }
                                 } else {
                                     if (isMulti) {
@@ -400,12 +497,16 @@ export default function RepasoTakeClient({
                                                     )}
                                                 </div>
                                             ) : (
-                                                <span className={cn("font-medium", showFeedback && isSelected && !isOptionCorrect ? "text-destructive" : "")}>
+                                                <span className={cn(
+                                                    "font-medium",
+                                                    showFeedback && isOptionCorrect && "text-emerald-700 dark:text-emerald-300",
+                                                    showFeedback && isSelected && !isOptionCorrect && "text-destructive"
+                                                )}>
                                                     {opt.label || opt.text || opt.value}
                                                 </span>
                                             )}
                                         </div>
-                                        {(effectiveShowFeedback && isOptionCorrect) || (isPreview && isOptionCorrect) && (
+                                        {((effectiveShowFeedback && isOptionCorrect) || (isPreview && isOptionCorrect)) && (
                                             <Badge variant="secondary" className="ml-auto">
                                                 Correcta
                                             </Badge>

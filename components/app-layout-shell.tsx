@@ -3,14 +3,19 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
+  BriefcaseBusinessIcon,
   BookOpenCheckIcon,
-  ClipboardListIcon,
+  CircleIcon,
   HistoryIcon,
   HouseIcon,
+  SparklesIcon,
 } from "lucide-react";
 import { FaFacebook, FaInstagram, FaTiktok, FaYoutube } from "react-icons/fa";
 
+import { NavUser } from "@/components/auth/nav-user";
 import { Navbar } from "@/components/auth/navbar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Group, GroupSeparator } from "@/components/ui/group";
 import {
@@ -18,7 +23,6 @@ import {
   SidebarContent,
   SidebarFooter,
   SidebarGroup,
-  SidebarGroupLabel,
   SidebarInset,
   SidebarMenu,
   SidebarMenuButton,
@@ -34,6 +38,7 @@ type LayoutUser = {
   image?: string | null;
   name?: string | null;
   registrado?: boolean;
+  plan?: "FREE" | "PRO";
 };
 
 const socialLinks = {
@@ -46,12 +51,12 @@ const socialLinks = {
 function getNavbarTitle(pathname: string): string {
   if (pathname === "/") return "Inicio";
 
-  if (pathname.startsWith("/market")) {
-    return pathname === "/market" ? "Banco de preguntas" : "Detalle de evaluación";
+  if (pathname.startsWith("/banqueos")) {
+    return pathname === "/banqueos" ? "Banqueos" : "Detalle de banqueo";
   }
 
-  if (pathname.startsWith("/evaluaciones")) {
-    return pathname === "/evaluaciones" ? "Evaluaciones" : "Detalle de evaluación";
+  if (pathname.startsWith("/mis-banqueos")) {
+    return "Mis banqueos";
   }
 
   if (pathname.startsWith("/historial")) {
@@ -71,7 +76,10 @@ function getNavbarTitle(pathname: string): string {
   return "Nexus Preguntas";
 }
 
-function AppSidebar(props: React.ComponentProps<typeof Sidebar>) {
+function AppSidebar({
+  user,
+  ...props
+}: React.ComponentProps<typeof Sidebar> & { user: LayoutUser | null }) {
   const { isMobile, open } = useSidebar();
   const pathname = usePathname();
   const isCompact = isMobile || !open;
@@ -85,31 +93,27 @@ function AppSidebar(props: React.ComponentProps<typeof Sidebar>) {
 
   const getMenuButtonClassName = (isActive: boolean) =>
     cn("data-[active=true]:font-normal", isActive && "bg-primary/5 [&>svg]:text-primary");
+  const misBanqueosIsActive = isActivePath("/mis-banqueos");
+  const userInitial = user?.name?.trim().charAt(0)?.toUpperCase() ?? "U";
+  const userName = user?.name?.trim() || "Usuario";
+  const userEmail = user?.email?.trim() || "Sin correo";
+  const userPlan = user?.plan ?? "FREE";
+  const planLabel = userPlan === "PRO" ? "PRO" : "BASIC";
+  const PlanIcon = userPlan === "PRO" ? SparklesIcon : CircleIcon;
 
   return (
     <Sidebar collapsible="icon" variant="inset" {...props}>
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>Opciones</SidebarGroupLabel>
           <SidebarMenu className="mx-auto pl-1">
             <SidebarMenuItem>
               <SidebarMenuButton
-                className={getMenuButtonClassName(isActivePath("/market"))}
-                isActive={isActivePath("/market")}
-                render={<Link href="/market" />}
+                className={getMenuButtonClassName(isActivePath("/banqueos"))}
+                isActive={isActivePath("/banqueos")}
+                render={<Link href="/banqueos" />}
               >
                 <HouseIcon />
-                <span>Banco de preguntas</span>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-            <SidebarMenuItem>
-              <SidebarMenuButton
-                className={getMenuButtonClassName(isActivePath("/evaluaciones"))}
-                isActive={isActivePath("/evaluaciones")}
-                render={<Link href="/evaluaciones" />}
-              >
-                <ClipboardListIcon />
-                <span>Evaluaciones</span>
+                <span>Banqueos</span>
               </SidebarMenuButton>
             </SidebarMenuItem>
             <SidebarMenuItem>
@@ -119,7 +123,27 @@ function AppSidebar(props: React.ComponentProps<typeof Sidebar>) {
                 render={<Link href="/repaso" />}
               >
                 <BookOpenCheckIcon />
-                <span>Área de repaso</span>
+                <span>Repaso</span>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+            <SidebarMenuItem>
+              <SidebarMenuButton
+                className={cn(
+                  "data-[active=true]:font-normal",
+                  misBanqueosIsActive &&
+                    "bg-amber-100 text-amber-900 dark:bg-amber-500/20 dark:text-amber-200 [&>svg]:text-amber-500",
+                )}
+                isActive={misBanqueosIsActive}
+                render={<Link href="/mis-banqueos" />}
+              >
+                <BriefcaseBusinessIcon />
+                <span className="flex items-center gap-2">
+                  Mis banqueos
+                  <Badge className="gap-1 border-amber-300 bg-amber-100 text-amber-900 dark:border-amber-500/40 dark:bg-amber-500/20 dark:text-amber-300" variant="outline">
+                    <SparklesIcon className="size-3" />
+                    Pro
+                  </Badge>
+                </span>
               </SidebarMenuButton>
             </SidebarMenuItem>
             <SidebarMenuItem>
@@ -138,6 +162,39 @@ function AppSidebar(props: React.ComponentProps<typeof Sidebar>) {
 
       <SidebarFooter>
         <div className="space-y-2 px-2 pb-1 text-center">
+          {open || isMobile ? (
+            <div className="rounded-lg border bg-background/70 px-2 py-2 text-left">
+              <div className="flex items-center gap-2">
+                <Avatar className="size-9">
+                  <AvatarImage alt={userName} src={user?.image ?? ""} />
+                  <AvatarFallback>{userInitial}</AvatarFallback>
+                </Avatar>
+                <div className="min-w-0 flex-1">
+                  <p className="truncate font-medium text-sm">{userName}</p>
+                  <p className="truncate text-muted-foreground text-xs">{userEmail}</p>
+                </div>
+                <Badge variant={userPlan === "PRO" ? "default" : "outline"}>
+                  <PlanIcon className="size-3" />
+                  {planLabel}
+                </Badge>
+              </div>
+            </div>
+          ) : (
+            <div className="flex w-full items-center justify-center pl-2">
+              <NavUser
+                email={userEmail}
+                image={user?.image}
+                mainProjectUrl={
+                  process.env.NEXT_PUBLIC_MAIN_PROJECT_URL ?? "https://nexus.posgrado.cicap.test"
+                }
+                name={userName}
+                plan={userPlan}
+                triggerClassName="mx-auto inline-flex cursor-pointer items-center justify-center rounded-full border bg-background/70 p-1"
+                avatarClassName="size-8"
+              />
+            </div>
+          )}
+
           {open && (
             <p className="text-center text-muted-foreground text-xs">Nuestras redes sociales</p>
           )}
@@ -194,15 +251,20 @@ export function AppLayoutShell({
 }>) {
   const pathname = usePathname();
   const isFullScreenExam = /^\/prueba\/[^/]+(?:\/(?:resultado|solucionario))?$/.test(pathname);
+  const pathSegments = pathname.split("/").filter(Boolean);
+  const isMisBanqueoScopedRoute =
+    pathSegments[0] === "mis-banqueos" &&
+    pathSegments.length >= 3 &&
+    pathSegments[1] !== "crear";
   const title = getNavbarTitle(pathname);
 
-  if (isFullScreenExam) {
+  if (isFullScreenExam || isMisBanqueoScopedRoute) {
     return <>{children}</>;
   }
 
   return (
     <SidebarProvider>
-      <AppSidebar />
+      <AppSidebar user={user} />
       <SidebarInset className="overflow-hidden">
         <Navbar title={title} user={user} />
         {children}

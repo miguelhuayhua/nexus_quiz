@@ -33,18 +33,27 @@ export function parseRespuesta(raw: unknown, kind?: string): unknown {
   }
 
   if (kind === "CHOICE_MULTI") {
-    try {
-      const parsed = JSON.parse(rawText);
-      if (!Array.isArray(parsed)) return null;
+    if (rawText.startsWith("[") && rawText.endsWith("]")) {
+      try {
+        const parsed = JSON.parse(rawText);
+        if (!Array.isArray(parsed)) return null;
 
-      const normalized = parsed
-        .map((item) => normalizeChoiceValue(item))
-        .filter((item) => item.length > 0);
+        const normalized = parsed
+          .map((item) => normalizeChoiceValue(item))
+          .filter((item) => item.length > 0);
 
-      return normalized.length > 0 ? normalized : null;
-    } catch {
-      return null;
+        return normalized.length > 0 ? normalized : null;
+      } catch {
+        return null;
+      }
     }
+
+    const normalized = rawText
+      .split("|")
+      .map((item) => normalizeChoiceValue(item))
+      .filter((item) => item.length > 0);
+
+    return normalized.length > 0 ? normalized : null;
   }
 
   return normalizeChoiceValue(rawText);

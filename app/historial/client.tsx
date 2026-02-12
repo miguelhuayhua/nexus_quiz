@@ -1,21 +1,15 @@
-"use client";
+﻿"use client";
 
-import { type ColumnDef } from "@tanstack/react-table";
-import { parseAsArrayOf, parseAsString, useQueryState } from "nuqs";
 import * as React from "react";
+import { type ColumnDef } from "@tanstack/react-table";
+import Link from "next/link";
 import { Bar, BarChart, CartesianGrid, Cell, Pie, PieChart, XAxis, YAxis } from "recharts";
 
 import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header";
 import { DataTable } from "@/components/data-table/data-table";
 import { DataTableToolbar } from "@/components/data-table/data-table-toolbar";
 import { Badge } from "@/components/ui/badge";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import {
   ChartContainer,
   ChartLegend,
@@ -31,28 +25,24 @@ import { formatDateTime } from "@/lib/utils";
 export type HistorialIntentoRow = {
   id: string;
   numero: number;
-  estado: string;
+  estado: "COMPLETADO" | "INCOMPLETO";
   iniciadoEn: string;
-  enviadoEn: string | null;
-  venceEn: string;
-  evaluacionId: string;
-  evaluacionTitulo: string;
-  evaluacionTipo: string;
-  gestion: number;
+  enviadoEn: string;
+  bancoId: string;
+  bancoTitulo: string;
+  bancoTipo: "PRO" | "FREE";
+  bancoTipoCreado: "ADMIN" | "ESTUDIANTE";
   respondidas: number;
   totalPreguntas: number;
   correctas: number;
   incorrectas: number;
   precision: number;
-  puntaje: number;
   puntajePorcentaje: number;
+  tiempoDuracion: number;
 };
 
-function getEstadoBadgeVariant(estado: string) {
-  if (estado === "ENVIADO") return "success";
-  if (estado === "EN_PROGRESO") return "secondary";
-  if (estado === "EXPIRADO") return "destructive";
-  return "outline";
+function resolveHistorialBasePath(row: HistorialIntentoRow) {
+  return row.bancoTipoCreado === "ESTUDIANTE" ? `/mis-banqueos/${row.bancoId}` : `/prueba/${row.bancoId}`;
 }
 
 const precisionChartConfig = {
@@ -79,7 +69,7 @@ const histogramConfig = {
     color: "#0ea5e9",
   },
   cohorte: {
-    label: "Otros ",
+    label: "Otros",
     color: "#f59e0b",
   },
 } satisfies ChartConfig;
@@ -98,10 +88,7 @@ const HIST_RANGES = [
   { min: 81, max: 100, label: "81-100" },
 ];
 
-function buildHistogram(
-  personalScores: number[],
-  cohortScores: number[],
-): HistBin[] {
+function buildHistogram(personalScores: number[], cohortScores: number[]): HistBin[] {
   return HIST_RANGES.map((range) => {
     const inRange = (score: number) => score >= range.min && score <= range.max;
     return {
@@ -119,313 +106,134 @@ export default function HistorialClient({
   intentos: HistorialIntentoRow[];
   cohortPuntajesPorcentaje: number[];
 }) {
-  const [evaluacionFilter] = useQueryState("evaluacion", parseAsString.withDefault(""));
-  const [estadoFilter] = useQueryState(
-    "estado",
-    parseAsArrayOf(parseAsString).withDefault([]),
-  );
-  const [tipoFilter] = useQueryState(
-    "tipo",
-    parseAsArrayOf(parseAsString).withDefault([]),
+  const totalRespuestasGlobales = React.useMemo(
+    () => intentos.reduce((acc, item) => acc + item.correctas + item.incorrectas, 0),
+    [intentos],
   );
 
-  const filteredIntentos = React.useMemo(() => {
-    return intentos.filter((item) => {
-      const matchesSearch =
-        evaluacionFilter === "" ||
-        item.evaluacionTitulo.toLowerCase().includes(evaluacionFilter.toLowerCase());
-      const matchesEstado =
-        estadoFilter.length === 0 || estadoFilter.includes(item.estado);
-      const matchesTipo =
-        tipoFilter.length === 0 || tipoFilter.includes(item.evaluacionTipo);
-
-      return matchesSearch && matchesEstado && matchesTipo;
-    });
-  }, [intentos, evaluacionFilter, estadoFilter, tipoFilter]);
-
-  const resultadosRows = React.useMemo(() => filteredIntentos, [filteredIntentos]);
-
-  const personalPuntajesPorcentaje = React.useMemo(
-    () => resultadosRows.map((row) => row.puntajePorcentaje),
-    [resultadosRows],
-  );
-
-  const intentosColumns = React.useMemo<ColumnDef<HistorialIntentoRow>[]>(
+  const columns = React.useMemo<ColumnDef<HistorialIntentoRow>[]>(
     () => [
       {
-        id: "evaluacion",
-        accessorFn: (row) => row.evaluacionTitulo,
-        header: ({ column }) => (
-          <DataTableColumnHeader column={column} label="Evaluacion" />
-        ),
+        id: "banqueo",
+        accessorFn: (row) => row.bancoTitulo,
+        header: ({ column }) => <DataTableColumnHeader column={column} label="Banqueo" />,
         cell: ({ row }) => (
           <div className="space-y-1">
-            <p className="font-medium">{row.original.evaluacionTitulo}</p>
-            <p className="text-muted-foreground text-xs">
-              {row.original.evaluacionTipo} - Gestion {row.original.gestion}
-            </p>
+            <p className="font-medium">{row.original.bancoTitulo}</p>
+            <p className="text-muted-foreground text-xs">Intento #{row.original.numero}</p>
           </div>
         ),
         meta: {
-          label: "Evaluacion",
-          placeholder: "Buscar evaluacion...",
+          label: "Banqueo",
+          placeholder: "Buscar banqueo...",
           variant: "text",
         },
         enableColumnFilter: true,
       },
       {
         id: "tipo",
-        accessorFn: (row) => row.evaluacionTipo,
+        accessorFn: (row) => row.bancoTipo,
         header: ({ column }) => <DataTableColumnHeader column={column} label="Tipo" />,
-        cell: ({ row }) => <Badge variant="outline">{row.original.evaluacionTipo}</Badge>,
-        meta: {
-          label: "Tipo",
-          variant: "multiSelect",
-          options: [
-            { label: "PRUEBA", value: "PRUEBA" },
-            { label: "OFICIAL", value: "OFICIAL" },
-          ],
-        },
-        enableColumnFilter: true,
+        cell: ({ row }) =>
+          row.original.bancoTipoCreado === "ESTUDIANTE" ? (
+            <Badge variant="secondary">PERSONAL</Badge>
+          ) : (
+            <div className="flex flex-wrap items-center gap-1.5">
+              <Badge
+                className={
+                  row.original.bancoTipo === "PRO"
+                    ? "border-amber-300 bg-amber-100 text-amber-900 dark:border-amber-500/40 dark:bg-amber-500/20 dark:text-amber-300"
+                    : undefined
+                }
+                variant="outline"
+              >
+                {row.original.bancoTipo === "PRO" ? "PRO" : "BASIC"}
+              </Badge>
+              <Badge variant="outline">GENERAL</Badge>
+            </div>
+          ),
       },
       {
         id: "estado",
         accessorFn: (row) => row.estado,
         header: ({ column }) => <DataTableColumnHeader column={column} label="Estado" />,
         cell: ({ row }) => (
-          <Badge variant={getEstadoBadgeVariant(row.original.estado)}>
+          <Badge variant={row.original.estado === "COMPLETADO" ? "success" : "secondary"}>
             {row.original.estado}
           </Badge>
         ),
-        meta: {
-          label: "Estado",
-          variant: "multiSelect",
-          options: [
-            { label: "EN_PROGRESO", value: "EN_PROGRESO" },
-            { label: "ENVIADO", value: "ENVIADO" },
-            { label: "EXPIRADO", value: "EXPIRADO" },
-            { label: "ANULADO", value: "ANULADO" },
-          ],
-        },
-        enableColumnFilter: true,
       },
       {
-        id: "iniciado",
-        accessorFn: (row) => row.iniciadoEn,
-        header: ({ column }) => <DataTableColumnHeader column={column} label="Inicio" />,
-        cell: ({ row }) => (
-          <span className="text-sm">{formatDateTime(new Date(row.original.iniciadoEn))}</span>
-        ),
-        meta: {
-          label: "Inicio",
-        },
-      },
-      {
-        id: "enviado",
-        accessorFn: (row) => row.enviadoEn ?? "",
-        header: ({ column }) => <DataTableColumnHeader column={column} label="Envio" />,
-        cell: ({ row }) => (
-          <span className="text-sm">
-            {row.original.enviadoEn
-              ? formatDateTime(new Date(row.original.enviadoEn))
-              : "-"}
-          </span>
-        ),
-        meta: {
-          label: "Envio",
-        },
+        id: "fecha",
+        accessorFn: (row) => row.enviadoEn,
+        header: ({ column }) => <DataTableColumnHeader column={column} label="Fecha" />,
+        cell: ({ row }) => formatDateTime(new Date(row.original.enviadoEn)),
       },
       {
         id: "respondidas",
         accessorFn: (row) => row.respondidas,
-        header: ({ column }) => (
-          <DataTableColumnHeader column={column} label="Respondidas" />
-        ),
-        cell: ({ row }) => (
-          <span className="text-sm">
-            {row.original.respondidas}/{row.original.totalPreguntas}
-          </span>
-        ),
-        meta: {
-          label: "Respondidas",
-        },
+        header: ({ column }) => <DataTableColumnHeader column={column} label="Respondidas" />,
+        cell: ({ row }) => `${row.original.respondidas}/${row.original.totalPreguntas}`,
       },
       {
         id: "correctas",
         accessorFn: (row) => row.correctas,
-        header: ({ column }) => (
-          <DataTableColumnHeader column={column} label="Correctas" />
-        ),
+        header: ({ column }) => <DataTableColumnHeader column={column} label="Correctas" />,
         cell: ({ row }) => (
-          <span className="font-medium text-emerald-600 text-sm dark:text-emerald-400">
+          <span className="font-medium text-emerald-600 dark:text-emerald-400">
             {row.original.correctas}
           </span>
         ),
-        meta: {
-          label: "Correctas",
-        },
       },
       {
         id: "incorrectas",
         accessorFn: (row) => row.incorrectas,
-        header: ({ column }) => (
-          <DataTableColumnHeader column={column} label="Incorrectas" />
-        ),
+        header: ({ column }) => <DataTableColumnHeader column={column} label="Incorrectas" />,
         cell: ({ row }) => (
-          <span className="font-medium text-rose-600 text-sm dark:text-rose-400">
-            {row.original.incorrectas}
-          </span>
+          <span className="font-medium text-destructive">{row.original.incorrectas}</span>
         ),
-        meta: {
-          label: "Incorrectas",
-        },
       },
       {
         id: "precision",
         accessorFn: (row) => row.precision,
         header: ({ column }) => <DataTableColumnHeader column={column} label="Precision" />,
-        cell: ({ row }) => <span className="font-medium text-sm">{row.original.precision}%</span>,
-        meta: {
-          label: "Precision",
-        },
+        cell: ({ row }) => `${row.original.precision}%`,
       },
       {
         id: "puntaje",
-        accessorFn: (row) => row.puntaje,
+        accessorFn: (row) => row.puntajePorcentaje,
         header: ({ column }) => <DataTableColumnHeader column={column} label="Puntaje" />,
-        cell: ({ row }) => (
-          <span className="font-medium text-sm">{row.original.puntaje.toFixed(2)}</span>
-        ),
-        meta: {
-          label: "Puntaje",
-        },
+        cell: ({ row }) => `${row.original.puntajePorcentaje}%`,
       },
-    ],
-    [],
-  );
-
-  const resultadosColumns = React.useMemo<ColumnDef<HistorialIntentoRow>[]>(
-    () => [
       {
-        id: "evaluacion",
-        accessorFn: (row) => row.evaluacionTitulo,
-        header: ({ column }) => (
-          <DataTableColumnHeader column={column} label="Evaluacion" />
-        ),
+        id: "accion",
+        accessorFn: (row) => row.id,
+        header: () => null,
         cell: ({ row }) => (
-          <div className="space-y-1">
-            <p className="font-medium">{row.original.evaluacionTitulo}</p>
-            <p className="text-muted-foreground text-xs">
-              Intento #{row.original.numero}
-            </p>
+          <div className="flex flex-wrap gap-2">
+            {(() => {
+              const basePath = resolveHistorialBasePath(row.original);
+              return (
+                <>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    render={<Link href={`${basePath}/resultado?intentoId=${row.original.id}`} />}
+                  >
+                    Ver resultado
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    render={<Link href={`${basePath}/solucionario?intentoId=${row.original.id}`} />}
+                  >
+                    Ver solucionario
+                  </Button>
+                </>
+              );
+            })()}
           </div>
         ),
-        meta: {
-          label: "Evaluacion",
-          placeholder: "Buscar evaluacion...",
-          variant: "text",
-        },
-        enableColumnFilter: true,
-      },
-      {
-        id: "tipo",
-        accessorFn: (row) => row.evaluacionTipo,
-        header: ({ column }) => <DataTableColumnHeader column={column} label="Tipo" />,
-        cell: ({ row }) => <Badge variant="outline">{row.original.evaluacionTipo}</Badge>,
-        meta: {
-          label: "Tipo",
-          variant: "multiSelect",
-          options: [
-            { label: "PRUEBA", value: "PRUEBA" },
-            { label: "OFICIAL", value: "OFICIAL" },
-          ],
-        },
-        enableColumnFilter: true,
-      },
-      {
-        id: "estado",
-        accessorFn: (row) => row.estado,
-        header: ({ column }) => <DataTableColumnHeader column={column} label="Estado" />,
-        cell: ({ row }) => (
-          <Badge variant={getEstadoBadgeVariant(row.original.estado)}>
-            {row.original.estado}
-          </Badge>
-        ),
-        meta: {
-          label: "Estado",
-        },
-      },
-      {
-        id: "total",
-        accessorFn: (row) => row.totalPreguntas,
-        header: ({ column }) => <DataTableColumnHeader column={column} label="Total" />,
-        cell: ({ row }) => <span className="text-sm">{row.original.totalPreguntas}</span>,
-        meta: {
-          label: "Total",
-        },
-      },
-      {
-        id: "correctas",
-        accessorFn: (row) => row.correctas,
-        header: ({ column }) => (
-          <DataTableColumnHeader column={column} label="Correctas" />
-        ),
-        cell: ({ row }) => (
-          <span className="font-medium text-emerald-600 text-sm dark:text-emerald-400">
-            {row.original.correctas}
-          </span>
-        ),
-        meta: {
-          label: "Correctas",
-        },
-      },
-      {
-        id: "incorrectas",
-        accessorFn: (row) => row.incorrectas,
-        header: ({ column }) => (
-          <DataTableColumnHeader column={column} label="Incorrectas" />
-        ),
-        cell: ({ row }) => (
-          <span className="font-medium text-rose-600 text-sm dark:text-rose-400">
-            {row.original.incorrectas}
-          </span>
-        ),
-        meta: {
-          label: "Incorrectas",
-        },
-      },
-      {
-        id: "precision",
-        accessorFn: (row) => row.precision,
-        header: ({ column }) => <DataTableColumnHeader column={column} label="Precision" />,
-        cell: ({ row }) => <span className="font-medium text-sm">{row.original.precision}%</span>,
-        meta: {
-          label: "Precision",
-        },
-      },
-      {
-        id: "puntaje",
-        accessorFn: (row) => row.puntaje,
-        header: ({ column }) => <DataTableColumnHeader column={column} label="Puntaje" />,
-        cell: ({ row }) => (
-          <span className="font-medium text-sm">{row.original.puntaje.toFixed(2)}</span>
-        ),
-        meta: {
-          label: "Puntaje",
-        },
-      },
-      {
-        id: "enviado",
-        accessorFn: (row) => row.enviadoEn ?? row.venceEn,
-        header: ({ column }) => <DataTableColumnHeader column={column} label="Cierre" />,
-        cell: ({ row }) => (
-          <span className="text-sm">
-            {formatDateTime(new Date(row.original.enviadoEn ?? row.original.venceEn))}
-          </span>
-        ),
-        meta: {
-          label: "Cierre",
-        },
       },
     ],
     [],
@@ -433,159 +241,157 @@ export default function HistorialClient({
 
   const precisionByIntento = React.useMemo(
     () =>
-      resultadosRows
+      intentos
         .slice()
         .reverse()
         .map((item, index) => ({
           intento: `I${index + 1}`,
           precision: item.precision,
         })),
-    [resultadosRows],
+    [intentos],
   );
 
   const respuestasPieData = React.useMemo(() => {
-    const totalCorrectas = resultadosRows.reduce((acc, item) => acc + item.correctas, 0);
-    const totalIncorrectas = resultadosRows.reduce((acc, item) => acc + item.incorrectas, 0);
+    const totalCorrectas = intentos.reduce((acc, item) => acc + item.correctas, 0);
+    const totalIncorrectas = intentos.reduce((acc, item) => acc + item.incorrectas, 0);
     return [
       { name: "correctas", value: totalCorrectas, fill: "var(--color-correctas)" },
       { name: "incorrectas", value: totalIncorrectas, fill: "var(--color-incorrectas)" },
     ];
-  }, [resultadosRows]);
+  }, [intentos]);
+
+  const personalPuntajesPorcentaje = React.useMemo(
+    () => intentos.map((row) => row.puntajePorcentaje),
+    [intentos],
+  );
 
   const histogramData = React.useMemo(
     () => buildHistogram(personalPuntajesPorcentaje, cohortPuntajesPorcentaje),
-    [personalPuntajesPorcentaje, cohortPuntajesPorcentaje],
+    [cohortPuntajesPorcentaje, personalPuntajesPorcentaje],
   );
 
-  const personalHistogramData = React.useMemo(
-    () =>
-      histogramData.map((item) => ({
-        rango: item.rango,
-        personal: item.personal,
-      })),
-    [histogramData],
-  );
-
-  const { table: historialTable } = useDataTable({
-    data: filteredIntentos,
-    columns: intentosColumns,
-    pageCount: Math.ceil(Math.max(filteredIntentos.length, 1) / 8),
-    initialState: { pagination: { pageIndex: 0, pageSize: 8 } },
-    getRowId: (row) => row.id,
-  });
-
-  const { table: resultadosTable } = useDataTable({
-    data: resultadosRows,
-    columns: resultadosColumns,
-    pageCount: Math.ceil(Math.max(resultadosRows.length, 1) / 8),
+  const { table } = useDataTable({
+    data: intentos,
+    columns,
+    pageCount: Math.ceil(Math.max(intentos.length, 1) / 8),
     initialState: { pagination: { pageIndex: 0, pageSize: 8 } },
     getRowId: (row) => row.id,
   });
 
   return (
-    <Tabs defaultValue="historial" className="w-full">
+    <Tabs className="w-full" defaultValue="tabla">
       <TabsList className="bg-muted/40 p-1">
-        <TabsTrigger value="historial">Historial</TabsTrigger>
-        <TabsTrigger value="resultados">Resultados</TabsTrigger>
+        <TabsTrigger value="tabla">Tabla</TabsTrigger>
         <TabsTrigger value="graficos">Graficos</TabsTrigger>
       </TabsList>
 
-      <TabsContent value="historial" className="mt-3">
-        <DataTable table={historialTable}>
-          <DataTableToolbar table={historialTable} />
-        </DataTable>
-      </TabsContent>
-
-      <TabsContent value="resultados" className="mt-3">
-        <DataTable table={resultadosTable}>
-          <DataTableToolbar table={resultadosTable} />
+      <TabsContent value="tabla" className="mt-3">
+        <DataTable table={table}>
+          <DataTableToolbar table={table} />
         </DataTable>
       </TabsContent>
 
       <TabsContent value="graficos" className="mt-3 space-y-4">
         <div className="grid gap-4 lg:grid-cols-2">
-          <Card>
-            <CardHeader>
-              <CardTitle>Precision por intento</CardTitle>
-              <CardDescription>Todos los intentos filtrados</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <ChartContainer config={precisionChartConfig} className="h-[260px] w-full">
-                <BarChart data={precisionByIntento}>
-                  <CartesianGrid vertical={false} />
-                  <XAxis dataKey="intento" tickLine={false} axisLine={false} />
-                  <ChartTooltip content={<ChartTooltipContent />} />
-                  <ChartLegend content={<ChartLegendContent />} />
-                  <Bar
-                    dataKey="precision"
-                    fill="var(--color-precision)"
-                    radius={[8, 8, 0, 0]}
+          <section className="space-y-2 rounded-lg border border-border/60 bg-background p-4">
+            <h3 className="font-semibold text-base">Precision por intento</h3>
+            <ChartContainer config={precisionChartConfig} className="h-[260px] w-full">
+              <BarChart data={precisionByIntento}>
+                <CartesianGrid vertical={false} />
+                <XAxis dataKey="intento" tickLine={false} axisLine={false} />
+                <ChartTooltip
+                  content={
+                    <ChartTooltipContent
+                      labelFormatter={(value) => `Intento ${value}`}
+                      formatter={(value) => {
+                        const numeric = typeof value === "number" ? value : Number(value ?? 0);
+                        return (
+                          <div className="flex w-full items-center justify-between gap-2">
+                            <span className="text-muted-foreground">Precisión de respuestas</span>
+                            <span className="font-mono font-semibold">{numeric.toFixed(0)}%</span>
+                          </div>
+                        );
+                      }}
+                    />
+                  }
+                />
+                <ChartLegend content={<ChartLegendContent />} />
+                <Bar dataKey="precision" fill="var(--color-precision)" radius={[8, 8, 0, 0]} />
+              </BarChart>
+            </ChartContainer>
+          </section>
+
+          <section className="space-y-2 rounded-lg border border-border/60 bg-background p-4">
+            <h3 className="font-semibold text-base">Correctas vs Incorrectas</h3>
+            <ChartContainer config={resultadosChartConfig} className="h-[260px] w-full">
+              <PieChart>
+                <ChartTooltip
+                  content={
+                    <ChartTooltipContent
+                      nameKey="name"
+                      formatter={(value, name) => {
+                        const numeric = typeof value === "number" ? value : Number(value ?? 0);
+                        const pct =
+                          totalRespuestasGlobales > 0
+                            ? Math.round((numeric / totalRespuestasGlobales) * 100)
+                            : 0;
+                        const label =
+                          name === "correctas" ? "Respuestas correctas" : "Respuestas incorrectas";
+                        return (
+                          <div className="flex w-full items-center justify-between gap-2">
+                            <span className="text-muted-foreground">{label}</span>
+                            <span className="font-mono font-semibold">
+                              {numeric} ({pct}%)
+                            </span>
+                          </div>
+                        );
+                      }}
+                    />
+                  }
+                />
+                <ChartLegend content={<ChartLegendContent nameKey="name" />} />
+                <Pie data={respuestasPieData} dataKey="value" nameKey="name" innerRadius={55}>
+                  <Cell fill="var(--color-correctas)" />
+                  <Cell fill="var(--color-incorrectas)" />
+                </Pie>
+              </PieChart>
+            </ChartContainer>
+          </section>
+        </div>
+
+        <section className="space-y-2 rounded-lg border border-border/60 bg-background p-4">
+          <h3 className="font-semibold text-base">Distribucion de puntajes</h3>
+          <ChartContainer config={histogramConfig} className="h-[260px] w-full">
+            <BarChart data={histogramData}>
+              <CartesianGrid vertical={false} />
+              <XAxis dataKey="rango" tickLine={false} axisLine={false} />
+              <YAxis allowDecimals={false} />
+              <ChartTooltip
+                content={
+                  <ChartTooltipContent
+                    labelFormatter={(value) => `Rango de puntaje ${value}%`}
+                    formatter={(value, name) => {
+                      const numeric = typeof value === "number" ? value : Number(value ?? 0);
+                      const label =
+                        name === "personal"
+                          ? "Tus intentos en este rango"
+                          : "Intentos de otros en este rango";
+                      return (
+                        <div className="flex w-full items-center justify-between gap-2">
+                          <span className="text-muted-foreground">{label}</span>
+                          <span className="font-mono font-semibold">{numeric}</span>
+                        </div>
+                      );
+                    }}
                   />
-                </BarChart>
-              </ChartContainer>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>Correctas vs Incorrectas</CardTitle>
-              <CardDescription>Acumulado de respuestas</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <ChartContainer config={resultadosChartConfig} className="h-[260px] w-full">
-                <PieChart>
-                  <ChartTooltip content={<ChartTooltipContent nameKey="name" />} />
-                  <ChartLegend content={<ChartLegendContent nameKey="name" />} />
-                  <Pie data={respuestasPieData} dataKey="value" nameKey="name" innerRadius={55}>
-                    <Cell fill="var(--color-correctas)" />
-                    <Cell fill="var(--color-incorrectas)" />
-                  </Pie>
-                </PieChart>
-              </ChartContainer>
-            </CardContent>
-          </Card>
-        </div>
-
-        <div className="grid gap-4 lg:grid-cols-2">
-          <Card>
-            <CardHeader>
-              <CardTitle>Histograma de puntajes personales</CardTitle>
-              <CardDescription>Distribucion por rangos porcentuales</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <ChartContainer config={histogramConfig} className="h-[260px] w-full">
-                <BarChart data={personalHistogramData}>
-                  <CartesianGrid vertical={false} />
-                  <XAxis dataKey="rango" tickLine={false} axisLine={false} />
-                  <YAxis allowDecimals={false} />
-                  <ChartTooltip content={<ChartTooltipContent />} />
-                  <ChartLegend content={<ChartLegendContent />} />
-                  <Bar dataKey="personal" fill="var(--color-personal)" radius={[8, 8, 0, 0]} />
-                </BarChart>
-              </ChartContainer>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>Mis puntajes vs otros</CardTitle>
-              <CardDescription>Comparativa por rangos de porcentaje</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <ChartContainer config={histogramConfig} className="h-[260px] w-full">
-                <BarChart data={histogramData}>
-                  <CartesianGrid vertical={false} />
-                  <XAxis dataKey="rango" tickLine={false} axisLine={false} />
-                  <YAxis allowDecimals={false} />
-                  <ChartTooltip content={<ChartTooltipContent />} />
-                  <ChartLegend content={<ChartLegendContent />} />
-                  <Bar dataKey="personal" fill="var(--color-personal)" radius={[8, 8, 0, 0]} />
-                  <Bar dataKey="cohorte" fill="var(--color-cohorte)" radius={[8, 8, 0, 0]} />
-                </BarChart>
-              </ChartContainer>
-            </CardContent>
-          </Card>
-        </div>
+                }
+              />
+              <ChartLegend content={<ChartLegendContent />} />
+              <Bar dataKey="personal" fill="var(--color-personal)" radius={[8, 8, 0, 0]} />
+              <Bar dataKey="cohorte" fill="var(--color-cohorte)" radius={[8, 8, 0, 0]} />
+            </BarChart>
+          </ChartContainer>
+        </section>
       </TabsContent>
     </Tabs>
   );

@@ -3,14 +3,6 @@
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts"
 
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
-import {
   ChartContainer,
   ChartLegend,
   ChartLegendContent,
@@ -20,7 +12,6 @@ import {
 } from "@/components/ui/chart"
 
 type BarData = { x: string; y: number }
-
 type EvaluacionTipo = "SIMULACRO" | "OFICIAL"
 
 interface Props {
@@ -36,46 +27,59 @@ interface Props {
 }
 
 const distributionConfig = {
-  y: {
-    label: "Intentos",
-    color: "var(--chart-1)",
-  },
+  y: { label: "Intentos", color: "var(--chart-1)" },
 } satisfies ChartConfig
 
 const topScoresConfig = {
-  y: {
-    label: "Puntaje",
-    color: "var(--chart-2)",
-  },
+  y: { label: "Puntaje", color: "var(--chart-2)" },
 } satisfies ChartConfig
 
 const scoreTrendConfig = {
-  y: {
-    label: "Puntaje",
-    color: "var(--chart-3)",
-  },
+  y: { label: "Puntaje", color: "var(--chart-3)" },
 } satisfies ChartConfig
 
 const timeConfig = {
-  y: {
-    label: "Minutos",
-    color: "var(--chart-4)",
-  },
+  y: { label: "Minutos", color: "var(--chart-4)" },
 } satisfies ChartConfig
 
 const comparisonConfig = {
-  y: {
-    label: "Puntaje",
-    color: "var(--chart-5)",
-  },
+  y: { label: "Puntaje", color: "var(--chart-5)" },
 } satisfies ChartConfig
 
 const timeComparisonConfig = {
-  y: {
-    label: "Minutos",
-    color: "var(--chart-6)",
-  },
+  y: { label: "Minutos", color: "var(--chart-6)" },
 } satisfies ChartConfig
+
+function ChartSection({
+  title,
+  description,
+  footer,
+  children,
+}: {
+  title: string
+  description: string
+  footer: string
+  children: React.ReactNode
+}) {
+  return (
+    <section className="space-y-3 rounded-lg border border-border/60 bg-background p-4">
+      <header className="space-y-1">
+        <h3 className="font-semibold text-base">{title}</h3>
+        <p className="text-muted-foreground text-sm">{description}</p>
+      </header>
+      {children}
+      <p className="text-muted-foreground text-sm">{footer}</p>
+    </section>
+  )
+}
+
+function EmptyChartMessage({ message }: { message: string }) {
+  return (
+    <div className="flex h-[280px] items-center justify-center">
+      <p className="text-muted-foreground">{message}</p>
+    </div>
+  )
+}
 
 export function Charts({
   distribution,
@@ -94,287 +98,175 @@ export function Charts({
     <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
       {isOficial ? (
         <>
-          <Card>
-            <CardHeader>
-              <CardTitle>Distribución de puntajes (cohorte)</CardTitle>
-              <CardDescription>
-                Comparación de resultados entre estudiantes.
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              {cohortDistribution.length > 0 ? (
-                <ChartContainer config={distributionConfig}>
-                  <BarChart data={cohortDistribution} accessibilityLayer>
-                    <CartesianGrid vertical={false} />
-                    <XAxis dataKey="x" tickLine={false} axisLine={false} />
-                    <YAxis hide />
-                    <ChartTooltip
-                      cursor={false}
-                      content={<ChartTooltipContent indicator="dashed" />}
-                    />
-                    <ChartLegend content={<ChartLegendContent />} />
-                    <Bar dataKey="y" radius={[10, 10, 10, 10]} fill="var(--chart-1)" />
-                  </BarChart>
-                </ChartContainer>
-              ) : (
-                <div className="flex h-[280px] items-center justify-center">
-                  <p className="text-muted-foreground">
-                    No hay datos suficientes para la distribución.
-                  </p>
-                </div>
-              )}
-            </CardContent>
-            <CardFooter className="text-sm text-muted-foreground">
-              Distribución basada en estudiantes con intento finalizado.
-            </CardFooter>
-          </Card>
+          <ChartSection
+            title="Distribucion de puntajes (cohorte)"
+            description="Comparacion de resultados entre estudiantes."
+            footer="Distribucion basada en estudiantes con intento finalizado."
+          >
+            {cohortDistribution.length > 0 ? (
+              <ChartContainer config={distributionConfig}>
+                <BarChart data={cohortDistribution} accessibilityLayer>
+                  <CartesianGrid vertical={false} />
+                  <XAxis dataKey="x" tickLine={false} axisLine={false} />
+                  <YAxis hide />
+                  <ChartTooltip cursor={false} content={<ChartTooltipContent indicator="dashed" />} />
+                  <ChartLegend content={<ChartLegendContent />} />
+                  <Bar dataKey="y" radius={[10, 10, 10, 10]} fill="var(--chart-1)" />
+                </BarChart>
+              </ChartContainer>
+            ) : (
+              <EmptyChartMessage message="No hay datos suficientes para la distribucion." />
+            )}
+          </ChartSection>
 
-          <Card>
-            <CardHeader>
-              <CardTitle>Top puntajes (cohorte)</CardTitle>
-              <CardDescription>
-                Ranking de los mejores resultados.
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              {cohortTopScores.length > 0 ? (
-                <ChartContainer config={topScoresConfig}>
-                  <BarChart data={cohortTopScores} accessibilityLayer>
-                    <CartesianGrid vertical={false} />
-                    <XAxis dataKey="x" tickLine={false} axisLine={false} />
-                    <YAxis hide />
-                    <ChartTooltip
-                      cursor={false}
-                      content={<ChartTooltipContent indicator="dashed" />}
-                    />
-                    <ChartLegend content={<ChartLegendContent />} />
-                    <Bar dataKey="y" radius={[10, 10, 10, 10]} fill="var(--chart-2)" />
-                  </BarChart>
-                </ChartContainer>
-              ) : (
-                <div className="flex h-[280px] items-center justify-center">
-                  <p className="text-muted-foreground">
-                    No hay resultados suficientes para el ranking.
-                  </p>
-                </div>
-              )}
-            </CardContent>
-            <CardFooter className="text-sm text-muted-foreground mt-auto">
-              Comparación entre estudiantes con intento oficial.
-            </CardFooter>
-          </Card>
+          <ChartSection
+            title="Top puntajes (cohorte)"
+            description="Ranking de los mejores resultados."
+            footer="Comparacion entre estudiantes con intento oficial."
+          >
+            {cohortTopScores.length > 0 ? (
+              <ChartContainer config={topScoresConfig}>
+                <BarChart data={cohortTopScores} accessibilityLayer>
+                  <CartesianGrid vertical={false} />
+                  <XAxis dataKey="x" tickLine={false} axisLine={false} />
+                  <YAxis hide />
+                  <ChartTooltip cursor={false} content={<ChartTooltipContent indicator="dashed" />} />
+                  <ChartLegend content={<ChartLegendContent />} />
+                  <Bar dataKey="y" radius={[10, 10, 10, 10]} fill="var(--chart-2)" />
+                </BarChart>
+              </ChartContainer>
+            ) : (
+              <EmptyChartMessage message="No hay resultados suficientes para el ranking." />
+            )}
+          </ChartSection>
 
-          <Card>
-            <CardHeader>
-              <CardTitle>Tu puntaje vs promedio</CardTitle>
-              <CardDescription>
-                Comparación directa con el promedio del grupo.
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              {cohortComparison.length > 0 ? (
-                <ChartContainer config={comparisonConfig}>
-                  <BarChart data={cohortComparison} accessibilityLayer>
-                    <CartesianGrid vertical={false} />
-                    <XAxis dataKey="x" tickLine={false} axisLine={false} />
-                    <YAxis hide />
-                    <ChartTooltip
-                      cursor={false}
-                      content={<ChartTooltipContent indicator="dashed" />}
-                    />
-                    <ChartLegend content={<ChartLegendContent />} />
-                    <Bar dataKey="y" radius={[10, 10, 10, 10]} fill="var(--chart-5)" />
-                  </BarChart>
-                </ChartContainer>
-              ) : (
-                <div className="flex h-[280px] items-center justify-center">
-                  <p className="text-muted-foreground">
-                    No hay datos suficientes para comparar.
-                  </p>
-                </div>
-              )}
-            </CardContent>
-            <CardFooter className="text-sm text-muted-foreground">
-              Puntaje del estudiante vs promedio del curso.
-            </CardFooter>
-          </Card>
+          <ChartSection
+            title="Tu puntaje vs promedio"
+            description="Comparacion directa con el promedio del grupo."
+            footer="Puntaje del estudiante vs promedio del curso."
+          >
+            {cohortComparison.length > 0 ? (
+              <ChartContainer config={comparisonConfig}>
+                <BarChart data={cohortComparison} accessibilityLayer>
+                  <CartesianGrid vertical={false} />
+                  <XAxis dataKey="x" tickLine={false} axisLine={false} />
+                  <YAxis hide />
+                  <ChartTooltip cursor={false} content={<ChartTooltipContent indicator="dashed" />} />
+                  <ChartLegend content={<ChartLegendContent />} />
+                  <Bar dataKey="y" radius={[10, 10, 10, 10]} fill="var(--chart-5)" />
+                </BarChart>
+              </ChartContainer>
+            ) : (
+              <EmptyChartMessage message="No hay datos suficientes para comparar." />
+            )}
+          </ChartSection>
 
-          <Card>
-            <CardHeader>
-              <CardTitle>Tu tiempo vs promedio</CardTitle>
-              <CardDescription>
-                Tiempo empleado comparado con el grupo.
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              {cohortTimeComparison.length > 0 ? (
-                <ChartContainer config={timeComparisonConfig}>
-                  <BarChart data={cohortTimeComparison} accessibilityLayer>
-                    <CartesianGrid vertical={false} />
-                    <XAxis dataKey="x" tickLine={false} axisLine={false} />
-                    <YAxis hide />
-                    <ChartTooltip
-                      cursor={false}
-                      content={<ChartTooltipContent indicator="dashed" />}
-                    />
-                    <ChartLegend content={<ChartLegendContent />} />
-                    <Bar dataKey="y" radius={[10, 10, 10, 10]} fill="var(--chart-6)" />
-                  </BarChart>
-                </ChartContainer>
-              ) : (
-                <div className="flex h-[280px] items-center justify-center">
-                  <p className="text-muted-foreground">
-                    No hay datos suficientes para tiempos.
-                  </p>
-                </div>
-              )}
-            </CardContent>
-            <CardFooter className="text-sm text-muted-foreground">
-              Tiempo del estudiante vs promedio del curso.
-            </CardFooter>
-          </Card>
+          <ChartSection
+            title="Tu tiempo vs promedio"
+            description="Tiempo empleado comparado con el grupo."
+            footer="Tiempo del estudiante vs promedio del curso."
+          >
+            {cohortTimeComparison.length > 0 ? (
+              <ChartContainer config={timeComparisonConfig}>
+                <BarChart data={cohortTimeComparison} accessibilityLayer>
+                  <CartesianGrid vertical={false} />
+                  <XAxis dataKey="x" tickLine={false} axisLine={false} />
+                  <YAxis hide />
+                  <ChartTooltip cursor={false} content={<ChartTooltipContent indicator="dashed" />} />
+                  <ChartLegend content={<ChartLegendContent />} />
+                  <Bar dataKey="y" radius={[10, 10, 10, 10]} fill="var(--chart-6)" />
+                </BarChart>
+              </ChartContainer>
+            ) : (
+              <EmptyChartMessage message="No hay datos suficientes para tiempos." />
+            )}
+          </ChartSection>
         </>
       ) : (
         <>
-          <Card>
-            <CardHeader>
-              <CardTitle>Distribución de puntajes</CardTitle>
-              <CardDescription>
-                Rangos de puntaje estimado por intento.
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              {distribution.length > 0 ? (
-                <ChartContainer config={distributionConfig}>
-                  <BarChart data={distribution} accessibilityLayer>
-                    <CartesianGrid vertical={false} />
-                    <XAxis dataKey="x" tickLine={false} axisLine={false} />
-                    <YAxis hide />
-                    <ChartTooltip
-                      cursor={false}
-                      content={<ChartTooltipContent indicator="dashed" />}
-                    />
-                    <ChartLegend content={<ChartLegendContent />} />
-                    <Bar dataKey="y" radius={[10, 10, 10, 10]} fill="var(--chart-1)" />
-                  </BarChart>
-                </ChartContainer>
-              ) : (
-                <div className="flex h-[280px] items-center justify-center">
-                  <p className="text-muted-foreground">
-                    No hay datos suficientes para la distribución.
-                  </p>
-                </div>
-              )}
-            </CardContent>
-            <CardFooter className="text-sm text-muted-foreground">
-              Se agrupan los intentos por rango de puntaje calculado.
-            </CardFooter>
-          </Card>
+          <ChartSection
+            title="Distribucion de puntajes"
+            description="Rangos de puntaje estimado por intento."
+            footer="Se agrupan los intentos por rango de puntaje calculado."
+          >
+            {distribution.length > 0 ? (
+              <ChartContainer config={distributionConfig}>
+                <BarChart data={distribution} accessibilityLayer>
+                  <CartesianGrid vertical={false} />
+                  <XAxis dataKey="x" tickLine={false} axisLine={false} />
+                  <YAxis hide />
+                  <ChartTooltip cursor={false} content={<ChartTooltipContent indicator="dashed" />} />
+                  <ChartLegend content={<ChartLegendContent />} />
+                  <Bar dataKey="y" radius={[10, 10, 10, 10]} fill="var(--chart-1)" />
+                </BarChart>
+              </ChartContainer>
+            ) : (
+              <EmptyChartMessage message="No hay datos suficientes para la distribucion." />
+            )}
+          </ChartSection>
 
-          <Card>
-            <CardHeader>
-              <CardTitle>Mejores puntajes</CardTitle>
-              <CardDescription>
-                Top de intentos con puntaje más alto.
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              {topScores.length > 0 ? (
-                <ChartContainer config={topScoresConfig}>
-                  <BarChart data={topScores} accessibilityLayer>
-                    <CartesianGrid vertical={false} />
-                    <XAxis dataKey="x" tickLine={false} axisLine={false} />
-                    <YAxis hide />
-                    <ChartTooltip
-                      cursor={false}
-                      content={<ChartTooltipContent indicator="dashed" />}
-                    />
-                    <ChartLegend content={<ChartLegendContent />} />
-                    <Bar dataKey="y" radius={[10, 10, 10, 10]} fill="var(--chart-2)" />
-                  </BarChart>
-                </ChartContainer>
-              ) : (
-                <div className="flex h-[280px] items-center justify-center">
-                  <p className="text-muted-foreground">
-                    No hay intentos suficientes para el ranking.
-                  </p>
-                </div>
-              )}
-            </CardContent>
-            <CardFooter className="text-sm text-muted-foreground mt-auto">
-              Basado en el puntaje estimado de cada intento.
-            </CardFooter>
-          </Card>
+          <ChartSection
+            title="Mejores puntajes"
+            description="Top de intentos con puntaje mas alto."
+            footer="Basado en el puntaje estimado de cada intento."
+          >
+            {topScores.length > 0 ? (
+              <ChartContainer config={topScoresConfig}>
+                <BarChart data={topScores} accessibilityLayer>
+                  <CartesianGrid vertical={false} />
+                  <XAxis dataKey="x" tickLine={false} axisLine={false} />
+                  <YAxis hide />
+                  <ChartTooltip cursor={false} content={<ChartTooltipContent indicator="dashed" />} />
+                  <ChartLegend content={<ChartLegendContent />} />
+                  <Bar dataKey="y" radius={[10, 10, 10, 10]} fill="var(--chart-2)" />
+                </BarChart>
+              </ChartContainer>
+            ) : (
+              <EmptyChartMessage message="No hay intentos suficientes para el ranking." />
+            )}
+          </ChartSection>
 
-          <Card>
-            <CardHeader>
-              <CardTitle>Evolución de puntaje</CardTitle>
-              <CardDescription>
-                Comparación de resultados entre intentos.
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              {scoreTrend.length > 0 ? (
-                <ChartContainer config={scoreTrendConfig}>
-                  <BarChart data={scoreTrend} accessibilityLayer>
-                    <CartesianGrid vertical={false} />
-                    <XAxis dataKey="x" tickLine={false} axisLine={false} />
-                    <YAxis hide />
-                    <ChartTooltip
-                      cursor={false}
-                      content={<ChartTooltipContent indicator="dashed" />}
-                    />
-                    <ChartLegend content={<ChartLegendContent />} />
-                    <Bar dataKey="y" radius={[10, 10, 10, 10]} fill="var(--chart-3)" />
-                  </BarChart>
-                </ChartContainer>
-              ) : (
-                <div className="flex h-[280px] items-center justify-center">
-                  <p className="text-muted-foreground">
-                    No hay intentos suficientes para comparar.
-                  </p>
-                </div>
-              )}
-            </CardContent>
-            <CardFooter className="text-sm text-muted-foreground">
-              Visualiza la mejora entre intentos del simulacro.
-            </CardFooter>
-          </Card>
+          <ChartSection
+            title="Evolucion de puntaje"
+            description="Comparacion de resultados entre intentos."
+            footer="Visualiza la mejora entre intentos del simulacro."
+          >
+            {scoreTrend.length > 0 ? (
+              <ChartContainer config={scoreTrendConfig}>
+                <BarChart data={scoreTrend} accessibilityLayer>
+                  <CartesianGrid vertical={false} />
+                  <XAxis dataKey="x" tickLine={false} axisLine={false} />
+                  <YAxis hide />
+                  <ChartTooltip cursor={false} content={<ChartTooltipContent indicator="dashed" />} />
+                  <ChartLegend content={<ChartLegendContent />} />
+                  <Bar dataKey="y" radius={[10, 10, 10, 10]} fill="var(--chart-3)" />
+                </BarChart>
+              </ChartContainer>
+            ) : (
+              <EmptyChartMessage message="No hay intentos suficientes para comparar." />
+            )}
+          </ChartSection>
 
-          <Card>
-            <CardHeader>
-              <CardTitle>Tiempo por intento</CardTitle>
-              <CardDescription>
-                Minutos utilizados en cada intento.
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              {timeByAttempt.length > 0 ? (
-                <ChartContainer config={timeConfig}>
-                  <BarChart data={timeByAttempt} accessibilityLayer>
-                    <CartesianGrid vertical={false} />
-                    <XAxis dataKey="x" tickLine={false} axisLine={false} />
-                    <YAxis hide />
-                    <ChartTooltip
-                      cursor={false}
-                      content={<ChartTooltipContent indicator="dashed" />}
-                    />
-                    <ChartLegend content={<ChartLegendContent />} />
-                    <Bar dataKey="y" radius={[10, 10, 10, 10]} fill="var(--chart-4)" />
-                  </BarChart>
-                </ChartContainer>
-              ) : (
-                <div className="flex h-[280px] items-center justify-center">
-                  <p className="text-muted-foreground">
-                    No hay intentos suficientes para tiempos.
-                  </p>
-                </div>
-              )}
-            </CardContent>
-            <CardFooter className="text-sm text-muted-foreground">
-              Duración estimada por intento del simulacro.
-            </CardFooter>
-          </Card>
+          <ChartSection
+            title="Tiempo por intento"
+            description="Minutos utilizados en cada intento."
+            footer="Duracion estimada por intento del simulacro."
+          >
+            {timeByAttempt.length > 0 ? (
+              <ChartContainer config={timeConfig}>
+                <BarChart data={timeByAttempt} accessibilityLayer>
+                  <CartesianGrid vertical={false} />
+                  <XAxis dataKey="x" tickLine={false} axisLine={false} />
+                  <YAxis hide />
+                  <ChartTooltip cursor={false} content={<ChartTooltipContent indicator="dashed" />} />
+                  <ChartLegend content={<ChartLegendContent />} />
+                  <Bar dataKey="y" radius={[10, 10, 10, 10]} fill="var(--chart-4)" />
+                </BarChart>
+              </ChartContainer>
+            ) : (
+              <EmptyChartMessage message="No hay intentos suficientes para tiempos." />
+            )}
+          </ChartSection>
         </>
       )}
     </div>

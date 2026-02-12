@@ -218,7 +218,7 @@ export function DataTableFilterList<TData>({
     <Sortable
       value={filters}
       onValueChange={setFilters}
-      getItemValue={(item) => item.filterId}
+      getItemValue={(item: ExtendedColumnFilter<TData>) => item.filterId}
     >
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
@@ -403,7 +403,7 @@ function DataTableFilterItem<TData>({
           ) : index === 1 ? (
             <Select
               value={joinOperator}
-              onValueChange={(value: JoinOperator) => setJoinOperator(value)}
+              onValueChange={(value) => setJoinOperator(value ?? "and")}
             >
               <SelectTrigger
                 aria-label="Select join operator"
@@ -415,7 +415,6 @@ function DataTableFilterItem<TData>({
               </SelectTrigger>
               <SelectContent
                 id={joinOperatorListboxId}
-                position="popper"
                 className="min-w-(--radix-select-trigger-width) lowercase"
               >
                 {dataTableConfig.joinOperators.map((joinOperator) => (
@@ -460,9 +459,9 @@ function DataTableFilterItem<TData>({
                     <CommandItem
                       key={column.id}
                       value={column.id}
-                      onSelect={(value) => {
+                      onSelect={() => {
                         onFilterUpdate(filter.filterId, {
-                          id: value as Extract<keyof TData, string>,
+                          id: column.id as Extract<keyof TData, string>,
                           variant: column.columnDef.meta?.variant ?? "text",
                           operator: getDefaultFilterOperator(
                             column.columnDef.meta?.variant ?? "text",
@@ -493,15 +492,16 @@ function DataTableFilterItem<TData>({
           open={showOperatorSelector}
           onOpenChange={setShowOperatorSelector}
           value={filter.operator}
-          onValueChange={(value: FilterOperator) =>
+          onValueChange={(value) => {
+            const nextOperator = (value ?? filter.operator) as FilterOperator;
             onFilterUpdate(filter.filterId, {
-              operator: value,
+              operator: nextOperator,
               value:
-                value === "isEmpty" || value === "isNotEmpty"
+                nextOperator === "isEmpty" || nextOperator === "isNotEmpty"
                   ? ""
                   : filter.value,
-            })
-          }
+            });
+          }}
         >
           <SelectTrigger
             aria-controls={operatorListboxId}
@@ -641,7 +641,7 @@ function onFilterInputRender<TData>({
           value={filter.value}
           onValueChange={(value) =>
             onFilterUpdate(filter.filterId, {
-              value,
+              value: value ?? "",
             })
           }
         >

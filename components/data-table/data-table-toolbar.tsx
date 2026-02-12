@@ -82,7 +82,7 @@ function DataTableToolbarFilter<TData>({
       switch (columnMeta.variant) {
         case "text":
           return (
-            <InputGroup className="h-9 w-full md:w-[280px]">
+            <InputGroup className="h-9 w-full bg-background md:w-[280px]">
 
               {
                 columnMeta.icon && (

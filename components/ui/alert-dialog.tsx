@@ -1,5 +1,6 @@
 "use client";
 
+import * as React from "react";
 import { AlertDialog as AlertDialogPrimitive } from "@base-ui/react/alert-dialog";
 
 import { cn } from "@/lib/utils";
@@ -10,9 +11,28 @@ const AlertDialog = AlertDialogPrimitive.Root;
 
 const AlertDialogPortal = AlertDialogPrimitive.Portal;
 
-function AlertDialogTrigger(props: AlertDialogPrimitive.Trigger.Props) {
+function AlertDialogTrigger({
+  asChild = false,
+  children,
+  ...props
+}: AlertDialogPrimitive.Trigger.Props & {
+  asChild?: boolean;
+  children?: React.ReactNode;
+}) {
+  if (asChild && React.isValidElement(children)) {
+    return (
+      <AlertDialogPrimitive.Trigger
+        data-slot="alert-dialog-trigger"
+        render={children}
+        {...props}
+      />
+    );
+  }
+
   return (
-    <AlertDialogPrimitive.Trigger data-slot="alert-dialog-trigger" {...props} />
+    <AlertDialogPrimitive.Trigger data-slot="alert-dialog-trigger" {...props}>
+      {children}
+    </AlertDialogPrimitive.Trigger>
   );
 }
 
@@ -51,15 +71,18 @@ function AlertDialogViewport({
 function AlertDialogPopup({
   className,
   bottomStickOnMobile = true,
+  centered = false,
   ...props
 }: AlertDialogPrimitive.Popup.Props & {
   bottomStickOnMobile?: boolean;
+  centered?: boolean;
 }) {
   return (
     <AlertDialogPortal>
       <AlertDialogBackdrop />
       <AlertDialogViewport
         className={cn(
+          centered && "grid-rows-[1fr_auto_1fr]",
           bottomStickOnMobile &&
             "max-sm:grid-rows-[1fr_auto] max-sm:p-0 max-sm:pt-12",
         )}
@@ -145,17 +168,40 @@ function AlertDialogDescription({
   );
 }
 
-function AlertDialogClose(props: AlertDialogPrimitive.Close.Props) {
+function AlertDialogClose({
+  asChild = false,
+  children,
+  ...props
+}: AlertDialogPrimitive.Close.Props & {
+  asChild?: boolean;
+  children?: React.ReactNode;
+}) {
+  if (asChild && React.isValidElement(children)) {
+    return (
+      <AlertDialogPrimitive.Close
+        data-slot="alert-dialog-close"
+        render={children}
+        {...props}
+      />
+    );
+  }
+
   return (
-    <AlertDialogPrimitive.Close data-slot="alert-dialog-close" {...props} />
+    <AlertDialogPrimitive.Close data-slot="alert-dialog-close" {...props}>
+      {children}
+    </AlertDialogPrimitive.Close>
   );
 }
 
-function AlertDialogAction(props: AlertDialogPrimitive.Close.Props) {
+function AlertDialogAction(
+  props: AlertDialogPrimitive.Close.Props & { asChild?: boolean },
+) {
   return <AlertDialogClose data-slot="alert-dialog-action" {...props} />;
 }
 
-function AlertDialogCancel(props: AlertDialogPrimitive.Close.Props) {
+function AlertDialogCancel(
+  props: AlertDialogPrimitive.Close.Props & { asChild?: boolean },
+) {
   return <AlertDialogClose data-slot="alert-dialog-cancel" {...props} />;
 }
 
