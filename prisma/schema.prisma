@@ -344,32 +344,32 @@ model preciosCursos {
 }
 
 model preguntas {
-  id                      String               @id
-  codigo                  String               @unique
+  id                      String                @id
+  codigo                  String                @unique
   enunciado               String
   explicacion             String?
   opciones                Json
   solucion                Json
-  estado                  PreguntaEstado       @default(BORRADOR)
+  estado                  PreguntaEstado        @default(BORRADOR)
   gestion                 Int
-  creadoEn                DateTime             @default(now())
+  creadoEn                DateTime              @default(now())
   actualizadoEn           DateTime
-  dificultad              PreguntaDificultad   @default(MEDIO)
+  dificultad              PreguntaDificultad    @default(MEDIO)
   dificultadActualizadaEn DateTime?
-  tasaAcierto             Int                  @default(0)
-  totalBien               Int                  @default(0)
-  totalMal                Int                  @default(0)
-  totalRespondidas        Int                  @default(0)
-  dislikes                Int                  @default(0)
-  likes                   Int                  @default(0)
+  tasaAcierto             Int                   @default(0)
+  totalBien               Int                   @default(0)
+  totalMal                Int                   @default(0)
+  totalRespondidas        Int                   @default(0)
+  dislikes                Int                   @default(0)
+  likes                   Int                   @default(0)
   referencia              String?
+  reaccionesPreguntas     reaccionesPreguntas[]
   repasoRegistros         repasoRegistros[]
   respuestasIntentos      respuestasIntentos[]
-  areas                   areas[]              @relation("areasTopreguntas")
-  banqueo                 banqueo[]            @relation("banqueoTopreguntas")
-  capitulos               capitulos[]          @relation("capitulosTopreguntas")
-  temas                   temas[]              @relation("preguntasTotemas")
-  reaccionesPreguntas     reaccionesPreguntas[]
+  areas                   areas[]               @relation("areasTopreguntas")
+  banqueo                 banqueo[]             @relation("banqueoTopreguntas")
+  capitulos               capitulos[]           @relation("capitulosTopreguntas")
+  temas                   temas[]               @relation("preguntasTotemas")
 
   @@index([estado])
   @@index([gestion])
@@ -438,23 +438,23 @@ model usuariosAdministradores {
 }
 
 model usuariosEstudiantes {
-  id              String            @id
-  correo          String            @unique
-  contrasena      String
-  usuario         String            @unique
-  estado          Boolean           @default(true)
-  creadoEn        DateTime          @default(now())
-  actualizadoEn   DateTime
-  avatar          String?
-  estudianteId    String?           @unique
-  registrado      Boolean           @default(false)
+  id                  String                @id
+  correo              String                @unique
+  contrasena          String
+  usuario             String                @unique
+  estado              Boolean               @default(true)
+  creadoEn            DateTime              @default(now())
+  actualizadoEn       DateTime
+  avatar              String?
+  estudianteId        String?               @unique
+  registrado          Boolean               @default(false)
   compras             compras[]
   intentos            intentos[]
-  repasoRegistros     repasoRegistros[]
   reaccionesPreguntas reaccionesPreguntas[]
+  repasoRegistros     repasoRegistros[]
   reviewsCursos       reviewsCursos[]
   suscripciones       suscripciones[]
-  estudiantes         estudiantes?      @relation(fields: [estudianteId], references: [id])
+  estudiantes         estudiantes?          @relation(fields: [estudianteId], references: [id])
 
   @@index([correo])
   @@index([estado])
