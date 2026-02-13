@@ -4,7 +4,7 @@
 import * as React from "react";
 import Image from "next/image";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { Timer, Pause, Play, ChevronLeft, ChevronRight } from "lucide-react";
+import { Timer, Pause, Play, ChevronLeft, ChevronRight, MoreHorizontal } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 import { Button } from "@/components/ui/button";
@@ -118,8 +118,8 @@ export default function EvaluacionTake({ evaluacion }: { evaluacion: EvaluacionF
   const [direction, setDirection] = React.useState(0);
   const [isFinalizeDialogOpen, setIsFinalizeDialogOpen] = React.useState(false);
   const [isTimeWarningOpen, setIsTimeWarningOpen] = React.useState(false);
-  const [hasShownTimeWarning, setHasShownTimeWarning] = React.useState(false);
-  const [hideTimeWarning, setHideTimeWarning] = React.useState(false);
+  const [hasShownTimeWarning, setHasShownTimeWarning] = React.useState(() => readCookie(TIME_WARNING_COOKIE_NAME) === "1");
+  const [hideTimeWarning, setHideTimeWarning] = React.useState(() => readCookie(TIME_WARNING_COOKIE_NAME) === "1");
   const [attemptLimitMessage, setAttemptLimitMessage] = React.useState<string | null>(null);
   const isFinishingRef = React.useRef(false);
   const responsesRef = React.useRef(responses);
@@ -180,13 +180,7 @@ export default function EvaluacionTake({ evaluacion }: { evaluacion: EvaluacionF
     return () => clearInterval(timer);
   }, [finalizado, isPaused, timeLeft]);
 
-  React.useEffect(() => {
-    const cookieValue = readCookie(TIME_WARNING_COOKIE_NAME);
-    if (cookieValue === "1") {
-      setHideTimeWarning(true);
-      setHasShownTimeWarning(true);
-    }
-  }, []);
+
 
   React.useEffect(() => {
     if (timeLeft <= 0 && !finalizado && !isSaving) {
@@ -438,11 +432,24 @@ export default function EvaluacionTake({ evaluacion }: { evaluacion: EvaluacionF
 
   if (!currentQuestion) return null;
 
-  // Pagination Logic
-  const maxVisible = 5;
-  const startPage = Math.max(0, Math.min(currentIndex - Math.floor(maxVisible / 2), questionCount - maxVisible));
-  const endPage = Math.min(questionCount, startPage + maxVisible);
-  const visiblePages = Array.from({ length: endPage - startPage }, (_, i) => startPage + i);
+  // Pagination Logic – grouped with lateral ellipsis buttons
+  const PAGE_GROUP_SIZE = 5;
+  const totalGroups = Math.ceil(questionCount / PAGE_GROUP_SIZE);
+  const activeGroup = Math.floor(currentIndex / PAGE_GROUP_SIZE);
+  const [pageGroup, setPageGroup] = React.useState(activeGroup);
+
+  // Keep the visible group in sync when the user navigates to a question outside the current group
+  React.useEffect(() => {
+    const neededGroup = Math.floor(currentIndex / PAGE_GROUP_SIZE);
+    if (neededGroup !== pageGroup) setPageGroup(neededGroup);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentIndex]);
+
+  const groupStart = pageGroup * PAGE_GROUP_SIZE;
+  const groupEnd = Math.min(questionCount, groupStart + PAGE_GROUP_SIZE);
+  const visiblePages = Array.from({ length: groupEnd - groupStart }, (_, i) => groupStart + i);
+  const hasPrevGroup = pageGroup > 0;
+  const hasNextGroup = pageGroup < totalGroups - 1;
 
   const variants = {
     enter: (direction: number) => ({
@@ -597,8 +604,21 @@ export default function EvaluacionTake({ evaluacion }: { evaluacion: EvaluacionF
               )}
             </div>
 
-            {/* Pagination Container (Numbers Only) */}
+            {/* Pagination Container (Numbers + Ellipsis) */}
             <nav className="flex items-center justify-center gap-1.5 pt-2">
+              {/* Previous group ellipsis */}
+              {hasPrevGroup && (
+                <Button
+                  size="icon-sm"
+                  variant="ghost"
+                  onClick={() => setPageGroup((g) => Math.max(0, g - 1))}
+                  title="Grupo anterior"
+                >
+                  <MoreHorizontal className="size-4" />
+                </Button>
+              )}
+
+              {/* Page numbers */}
               {visiblePages.map((page) => (
                 <Button
                   key={page}
@@ -612,8 +632,17 @@ export default function EvaluacionTake({ evaluacion }: { evaluacion: EvaluacionF
                   {page + 1}
                 </Button>
               ))}
-              {endPage < questionCount && (
-                <span className="text-muted-foreground text-xs px-1">...</span>
+
+              {/* Next group ellipsis */}
+              {hasNextGroup && (
+                <Button
+                  size="icon-sm"
+                  variant="ghost"
+                  onClick={() => setPageGroup((g) => Math.min(totalGroups - 1, g + 1))}
+                  title="Grupo siguiente"
+                >
+                  <MoreHorizontal className="size-4" />
+                </Button>
               )}
             </nav>
 

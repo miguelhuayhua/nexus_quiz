@@ -4,8 +4,6 @@ import * as React from "react";
 import {
   Bar,
   BarChart,
-  Area,
-  AreaChart,
   CartesianGrid,
   Cell,
   Line,
@@ -14,6 +12,7 @@ import {
   PieChart,
   XAxis,
   YAxis,
+  Label,
 } from "recharts";
 
 import {
@@ -31,8 +30,10 @@ const respuestasConfig = {
   noRespondidas: { label: "No respondidas", color: "#94a3b8" },
 } satisfies ChartConfig;
 
-const preguntaConfig = {
-  acierto: { label: "Acierto %", color: "#0ea5e9" },
+
+const dificultadConfig = {
+  bien: { label: "Correctas", color: "#16a34a" },
+  mal: { label: "Incorrectas", color: "#dc2626" },
 } satisfies ChartConfig;
 
 const rankingConfig = {
@@ -48,6 +49,7 @@ const comparativoConfig = {
 type PreguntaStat = {
   preguntaId: string;
   codigo: string;
+  enunciado: string;
   bien: number;
   mal: number;
   totalIntentos: number;
@@ -118,12 +120,21 @@ export function ResultadoInsights({
     ];
   }, [preguntaStats, respuestasGlobales]);
 
-  const aciertoPorPreguntaData = React.useMemo(
+  const dificultadData = React.useMemo(
     () =>
-      preguntaStats.slice(0, 12).map((item) => ({
-        pregunta: item.codigo,
-        acierto: item.porcentajeAcierto,
-      })),
+      [...preguntaStats]
+        .sort((a, b) => {
+          if (b.mal !== a.mal) return b.mal - a.mal;
+          return b.porcentajeError - a.porcentajeError;
+        })
+        .slice(0, 10)
+        .map((item, idx) => ({
+          label: `P${idx + 1}`,
+          enunciado: item.enunciado,
+          bien: item.bien,
+          mal: item.mal,
+          porcentajeError: item.porcentajeError,
+        })),
     [preguntaStats],
   );
 
@@ -164,7 +175,7 @@ export function ResultadoInsights({
 
   return (
     <div className="grid gap-4 lg:grid-cols-3">
-      <section className="space-y-2 rounded-lg border p-3 lg:col-span-3">
+      <section className="min-w-0 space-y-2 rounded-lg border p-3 lg:col-span-3">
         <h4 className="font-medium text-sm">Tu resultado vs promedio de los demás</h4>
         <p className="text-muted-foreground text-xs">
           Escala de tiempo: {useMinutesScale ? "minutos (min)" : "segundos (s)"}.
@@ -200,42 +211,97 @@ export function ResultadoInsights({
         </ChartContainer>
       </section>
 
-      <section className="space-y-2 rounded-lg border p-3">
+      <section className="min-w-0 space-y-2 rounded-lg border p-3">
         <h4 className="font-medium text-sm">Respuestas globales</h4>
-        <ChartContainer config={respuestasConfig} className="h-[220px] w-full">
+        <ChartContainer config={respuestasConfig} className="mx-auto h-[300px] w-full">
           <PieChart>
             <ChartTooltip content={<ChartTooltipContent nameKey="name" />} />
-            <ChartLegend content={<ChartLegendContent nameKey="name" />} />
-            <Pie data={respuestasPieData} dataKey="value" nameKey="name" innerRadius={55}>
+            <Pie data={respuestasPieData} dataKey="value" nameKey="name" innerRadius={60}>
+              <Label
+                content={({ viewBox }) => {
+                  if (viewBox && "cx" in viewBox && "cy" in viewBox) {
+                    return (
+                      <text
+                        x={viewBox.cx}
+                        y={viewBox.cy}
+                        textAnchor="middle"
+                        dominantBaseline="central"
+                      >
+                        <tspan
+                          x={viewBox.cx}
+                          y={viewBox.cy}
+                          className="fill-foreground text-3xl font-bold"
+                        >
+                          {respuestasPieData.reduce((acc, curr) => acc + curr.value, 0).toLocaleString()}
+                        </tspan>
+                        <tspan
+                          x={viewBox.cx}
+                          y={(viewBox.cy || 0) + 20}
+                          className="fill-muted-foreground text-xs"
+                        >
+                          Preguntas
+                        </tspan>
+                      </text>
+                    )
+                  }
+                }}
+              />
               {respuestasPieData.map((item) => (
                 <Cell fill={item.fill} key={item.name} />
               ))}
             </Pie>
+            <ChartLegend content={<ChartLegendContent nameKey="name" />} className="mt-4 flex-wrap gap-2 [&>*]:basis-1/4 [&>*]:justify-center" />
           </PieChart>
         </ChartContainer>
       </section>
 
-      <section className="space-y-2 rounded-lg border p-3 lg:col-span-2">
-        <h4 className="font-medium text-sm">Acierto por pregunta (%)</h4>
-        <ChartContainer config={preguntaConfig} className="h-[220px] w-full">
-          <AreaChart data={aciertoPorPreguntaData} accessibilityLayer>
-            <CartesianGrid vertical={false} />
-            <XAxis dataKey="pregunta" tickLine={false} axisLine={false} />
-            <YAxis domain={[0, 100]} tickLine={false} axisLine={false} />
-            <ChartTooltip content={<ChartTooltipContent />} />
-            <Area
-              dataKey="acierto"
-              type="monotone"
-              fill="var(--color-acierto)"
-              fillOpacity={0.2}
-              stroke="var(--color-acierto)"
-              strokeWidth={2}
+      <section className="min-w-0 space-y-2 rounded-lg border p-3 lg:col-span-2">
+        <h4 className="font-medium text-sm">Top preguntas más difíciles</h4>
+        <p className="text-muted-foreground text-xs">
+          Las 10 preguntas con más fallos entre todos los estudiantes.
+        </p>
+        <ChartContainer config={dificultadConfig} className="h-[350px] w-full">
+          <BarChart data={dificultadData} layout="vertical" accessibilityLayer margin={{ left: 0 }}>
+            <CartesianGrid horizontal={false} />
+            <XAxis type="number" tickLine={false} axisLine={false} />
+            <YAxis
+              dataKey="label"
+              type="category"
+              tickLine={false}
+              axisLine={false}
+              width={30}
+              tick={{ fontSize: 11 }}
             />
-          </AreaChart>
+            <ChartTooltip
+              content={({ active, payload }) => {
+                if (!active || !payload?.length) return null;
+                const data = payload[0]?.payload as {
+                  label: string;
+                  enunciado: string;
+                  bien: number;
+                  mal: number;
+                  porcentajeError: number;
+                };
+                return (
+                  <div className="max-w-xs rounded-lg border bg-background p-3 shadow-md">
+                    <p className="mb-2 text-xs font-medium leading-snug">{data.enunciado}</p>
+                    <div className="flex items-center justify-between gap-3 text-xs">
+                      <span className="text-emerald-600">Correctas: {data.bien}</span>
+                      <span className="text-destructive">Incorrectas: {data.mal}</span>
+                    </div>
+                    <p className="mt-1 text-xs font-semibold text-destructive">Error: {data.porcentajeError}%</p>
+                  </div>
+                );
+              }}
+            />
+            <ChartLegend content={<ChartLegendContent />} />
+            <Bar dataKey="bien" stackId="a" fill="var(--color-bien)" radius={[0, 0, 0, 0]} barSize={12} />
+            <Bar dataKey="mal" stackId="a" fill="var(--color-mal)" radius={[0, 4, 4, 0]} barSize={12} />
+          </BarChart>
         </ChartContainer>
       </section>
 
-      <section className="space-y-2 rounded-lg border p-3 lg:col-span-3">
+      <section className="min-w-0 space-y-2 rounded-lg border p-3 lg:col-span-3">
         <h4 className="font-medium text-sm">Top estudiantes: puntos e intentos</h4>
         <ChartContainer config={rankingConfig} className="h-[240px] w-full">
           <LineChart data={rankingData} accessibilityLayer>
