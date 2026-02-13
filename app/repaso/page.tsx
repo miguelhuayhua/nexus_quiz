@@ -38,6 +38,7 @@ export default async function RepasoPage() {
         select: {
           preguntaId: true,
           resultado: true,
+          actualizadoEn: true,
         },
       },
     },
@@ -64,6 +65,7 @@ export default async function RepasoPage() {
       banqueoId: true,
       preguntaId: true,
       esCorrecta: true,
+      creadoEn: true,
     },
   });
 
@@ -75,32 +77,46 @@ export default async function RepasoPage() {
     repasoStatsByBanqueo.set(item.banqueoId, current);
   }
 
-  const revisadasByBanqueo = new Map<string, Set<string>>();
+  const ultimaCorreccionByBanqueoPregunta = new Map<string, Date>();
   for (const item of repasoRegistros) {
-    const current = revisadasByBanqueo.get(item.banqueoId) ?? new Set<string>();
-    current.add(item.preguntaId);
-    revisadasByBanqueo.set(item.banqueoId, current);
+    if (!item.esCorrecta) continue;
+    const key = `${item.banqueoId}:${item.preguntaId}`;
+    const prev = ultimaCorreccionByBanqueoPregunta.get(key);
+    if (!prev || item.creadoEn > prev) {
+      ultimaCorreccionByBanqueoPregunta.set(key, item.creadoEn);
+    }
+  }
+
+  const ultimoFalloByBanqueoPregunta = new Map<string, Date>();
+  for (const item of intentos) {
+    for (const respuesta of item.respuestasIntentos) {
+      if (respuesta.resultado === ResultadoRespuesta.MAL) {
+        const key = `${item.banqueoId}:${respuesta.preguntaId}`;
+        const prev = ultimoFalloByBanqueoPregunta.get(key);
+        if (!prev || respuesta.actualizadoEn > prev) {
+          ultimoFalloByBanqueoPregunta.set(key, respuesta.actualizadoEn);
+        }
+      }
+    }
   }
 
   const pendientesByBanqueo = new Map<string, Set<string>>();
-  for (const item of intentos) {
-    const current = pendientesByBanqueo.get(item.banqueoId) ?? new Set<string>();
-    for (const respuesta of item.respuestasIntentos) {
-      if (respuesta.resultado === ResultadoRespuesta.MAL) {
-        current.add(respuesta.preguntaId);
-      }
-    }
-    pendientesByBanqueo.set(item.banqueoId, current);
+  for (const [key, ultimoFallo] of ultimoFalloByBanqueoPregunta.entries()) {
+    const [banqueoId, preguntaId] = key.split(":");
+    const ultimaCorreccion = ultimaCorreccionByBanqueoPregunta.get(key);
+    const siguePendiente = !ultimaCorreccion || ultimoFallo > ultimaCorreccion;
+    if (!siguePendiente) continue;
+    const current = pendientesByBanqueo.get(banqueoId) ?? new Set<string>();
+    current.add(preguntaId);
+    pendientesByBanqueo.set(banqueoId, current);
   }
 
   const rows = Array.from(pendientesByBanqueo.entries())
     .map(([banqueoId, preguntas]) => {
-      const revisadas = revisadasByBanqueo.get(banqueoId) ?? new Set<string>();
-      const pendientesActuales = Array.from(preguntas).filter((preguntaId) => !revisadas.has(preguntaId));
       return {
         banqueoId,
         titulo: banqueoMap.get(banqueoId) ?? "Banqueo",
-        pendientes: pendientesActuales.length,
+        pendientes: preguntas.size,
       };
     })
     .filter((item) => item.pendientes > 0);

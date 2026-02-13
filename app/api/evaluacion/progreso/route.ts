@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 
 import {
   BanqueoTipo,
+  EstadoIntento,
   PreguntaEstado,
   Prisma,
   ResultadoRespuesta,
@@ -100,15 +101,15 @@ export async function POST(request: Request) {
 
     let intento = intentoIdRaw
       ? await prisma.intentos.findFirst({
-          where: {
-            id: intentoIdRaw,
-            banqueoId: banco.id,
-            usuarioEstudianteId,
-          },
-          select: {
-            id: true,
-          },
-        })
+        where: {
+          id: intentoIdRaw,
+          banqueoId: banco.id,
+          usuarioEstudianteId,
+        },
+        select: {
+          id: true,
+        },
+      })
       : null;
 
     if (!intento) {
@@ -244,6 +245,7 @@ export async function POST(request: Request) {
           correctas,
           incorrectas,
           tiempoDuracion: tiempoConsumido,
+          estado: finalizar ? EstadoIntento.FINALIZADO : undefined,
           actualizadoEn: now,
         },
       });

@@ -2,7 +2,7 @@ import { randomUUID } from "node:crypto";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 
-import { BanqueoTipo, BanqueoTipoCreado, PreguntaEstado } from "@/generated/prisma/client";
+import { BanqueoTipo, BanqueoTipoCreado, EstadoIntento, PreguntaEstado } from "@/generated/prisma/client";
 import { getServerAuthSession } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import {
@@ -198,20 +198,20 @@ export default async function MisBanqueosPruebaPage({ params, searchParams }: Pr
 
   let intentoActivo = intentoIdQuery
     ? await prisma.intentos.findFirst({
-        where: {
-          id: intentoIdQuery,
-          banqueoId: banco.id,
-          usuarioEstudianteId,
-        },
-        include: {
-          respuestasIntentos: {
-            select: {
-              preguntaId: true,
-              respuesta: true,
-            },
+      where: {
+        id: intentoIdQuery,
+        banqueoId: banco.id,
+        usuarioEstudianteId,
+      },
+      include: {
+        respuestasIntentos: {
+          select: {
+            preguntaId: true,
+            respuesta: true,
           },
         },
-      })
+      },
+    })
     : null;
 
   if (!intentoActivo) {
@@ -234,6 +234,7 @@ export default async function MisBanqueosPruebaPage({ params, searchParams }: Pr
         correctas: 0,
         incorrectas: 0,
         tiempoDuracion: 0,
+        estado: EstadoIntento.EN_PROGRESO,
         creadoEn: now,
         actualizadoEn: now,
       },

@@ -61,15 +61,16 @@ export async function POST(request: Request) {
 
     const body = (await request.json().catch(() => null)) as
       | {
-          count?: unknown;
-          filters?: {
-            gestion?: unknown;
-            temas?: unknown;
-            capitulos?: unknown;
-            areas?: unknown;
-            dificultades?: unknown;
-          };
-        }
+        count?: unknown;
+        filters?: {
+          gestion?: unknown;
+          gestiones?: unknown;
+          temas?: unknown;
+          capitulos?: unknown;
+          areas?: unknown;
+          dificultades?: unknown;
+        };
+      }
       | null;
 
     const count = Number(body?.count);
@@ -80,62 +81,81 @@ export async function POST(request: Request) {
       );
     }
 
+    const gestionesRaw = Array.isArray(body?.filters?.gestiones)
+      ? body?.filters?.gestiones
+      : [];
+    const gestionesParsed = gestionesRaw
+      .map((item) =>
+        typeof item === "number"
+          ? item
+          : typeof item === "string" && item.trim().length > 0
+            ? Number.parseInt(item.trim(), 10)
+            : Number.NaN,
+      )
+      .filter((item): item is number => Number.isInteger(item));
     const gestionRaw = body?.filters?.gestion;
-    const gestion =
+    const gestionLegacy =
       typeof gestionRaw === "number"
         ? gestionRaw
         : typeof gestionRaw === "string" && gestionRaw.trim().length > 0
           ? Number.parseInt(gestionRaw.trim(), 10)
           : Number.NaN;
+    const gestiones = Array.from(
+      new Set(
+        Number.isInteger(gestionLegacy)
+          ? [...gestionesParsed, gestionLegacy]
+          : gestionesParsed,
+      ),
+    );
     const temas = Array.isArray(body?.filters?.temas)
       ? Array.from(
-          new Set(
-            body?.filters?.temas
-              .filter((item): item is string => typeof item === "string")
-              .map((item) => item.trim())
-              .filter((item) => item.length > 0),
-          ),
-        )
+        new Set(
+          body?.filters?.temas
+            .filter((item): item is string => typeof item === "string")
+            .map((item) => item.trim())
+            .filter((item) => item.length > 0),
+        ),
+      )
       : [];
     const capitulos = Array.isArray(body?.filters?.capitulos)
       ? Array.from(
-          new Set(
-            body?.filters?.capitulos
-              .filter((item): item is string => typeof item === "string")
-              .map((item) => item.trim())
-              .filter((item) => item.length > 0),
-          ),
-        )
+        new Set(
+          body?.filters?.capitulos
+            .filter((item): item is string => typeof item === "string")
+            .map((item) => item.trim())
+            .filter((item) => item.length > 0),
+        ),
+      )
       : [];
     const areas = Array.isArray(body?.filters?.areas)
       ? Array.from(
-          new Set(
-            body?.filters?.areas
-              .filter((item): item is string => typeof item === "string")
-              .map((item) => item.trim())
-              .filter((item) => item.length > 0),
-          ),
-        )
+        new Set(
+          body?.filters?.areas
+            .filter((item): item is string => typeof item === "string")
+            .map((item) => item.trim())
+            .filter((item) => item.length > 0),
+        ),
+      )
       : [];
     const dificultades = Array.isArray(body?.filters?.dificultades)
       ? Array.from(
-          new Set(
-            body?.filters?.dificultades
-              .filter((item): item is string => typeof item === "string")
-              .map((item) => item.trim().toUpperCase())
-              .filter(
-                (item): item is PreguntaDificultad =>
-                  item === PreguntaDificultad.DIFICIL ||
-                  item === PreguntaDificultad.MEDIO ||
-                  item === PreguntaDificultad.SENCILLO,
-              ),
-          ),
-        )
+        new Set(
+          body?.filters?.dificultades
+            .filter((item): item is string => typeof item === "string")
+            .map((item) => item.trim().toUpperCase())
+            .filter(
+              (item): item is PreguntaDificultad =>
+                item === PreguntaDificultad.DIFICIL ||
+                item === PreguntaDificultad.MEDIO ||
+                item === PreguntaDificultad.SENCILLO,
+            ),
+        ),
+      )
       : [];
 
     const where: Prisma.preguntasWhereInput = {
       estado: PreguntaEstado.DISPONIBLE,
-      ...(Number.isInteger(gestion) ? { gestion } : {}),
+      ...(gestiones.length ? { gestion: { in: gestiones } } : {}),
       ...(temas.length ? { temas: { some: { id: { in: temas } } } } : {}),
       ...(capitulos.length
         ? { capitulos: { some: { id: { in: capitulos } } } }

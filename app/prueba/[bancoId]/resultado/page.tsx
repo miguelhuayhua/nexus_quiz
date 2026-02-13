@@ -132,39 +132,39 @@ export default async function EvaluacionResultadoPage({ params, searchParams }: 
 
   const intentoFinal = intentoId
     ? await prisma.intentos.findFirst({
-        where: {
-          id: intentoId,
-          banqueoId: banco.id,
-          usuarioEstudianteId,
-        },
-        include: {
-          respuestasIntentos: {
-            select: {
-              preguntaId: true,
-              respuesta: true,
-              esCorrecta: true,
-              resultado: true,
-            },
+      where: {
+        id: intentoId,
+        banqueoId: banco.id,
+        usuarioEstudianteId,
+      },
+      include: {
+        respuestasIntentos: {
+          select: {
+            preguntaId: true,
+            respuesta: true,
+            esCorrecta: true,
+            resultado: true,
           },
         },
-      })
+      },
+    })
     : await prisma.intentos.findFirst({
-        where: {
-          banqueoId: banco.id,
-          usuarioEstudianteId,
-        },
-        include: {
-          respuestasIntentos: {
-            select: {
-              preguntaId: true,
-              respuesta: true,
-              esCorrecta: true,
-              resultado: true,
-            },
+      where: {
+        banqueoId: banco.id,
+        usuarioEstudianteId,
+      },
+      include: {
+        respuestasIntentos: {
+          select: {
+            preguntaId: true,
+            respuesta: true,
+            esCorrecta: true,
+            resultado: true,
           },
         },
-        orderBy: [{ actualizadoEn: "desc" }, { creadoEn: "desc" }],
-      });
+      },
+      orderBy: [{ actualizadoEn: "desc" }, { creadoEn: "desc" }],
+    });
 
   if (!intentoFinal) {
     return notFound();
@@ -350,17 +350,13 @@ export default async function EvaluacionResultadoPage({ params, searchParams }: 
                 />
               </div>
 
-              <div className="grid gap-3 md:grid-cols-3">
+              <div className="grid gap-3 md:grid-cols-2">
                 <Stat
                   title="Posicion actual"
                   value={`${comparativo.ranking.posicion} / ${comparativo.ranking.total}`}
                 />
                 <Stat title="Percentil" value={`${comparativo.ranking.percentil}%`} />
-                <Stat title="Intentos de otros estudiantes" value={String(comparativo.otros.disponibles)} />
               </div>
-              <p className="text-center text-muted-foreground text-sm">
-                Corresponde a intentos de otros estudiantes usados para comparar tus resultados.
-              </p>
 
               <div className="overflow-x-auto rounded-xl border">
                 <table className="w-full text-sm">
@@ -422,7 +418,6 @@ export default async function EvaluacionResultadoPage({ params, searchParams }: 
                     <tr className="border-b bg-muted/30 text-left">
                       <th className="px-3 py-2">#</th>
                       <th className="px-3 py-2">Estudiante</th>
-                      <th className="px-3 py-2 text-center">Intentos</th>
                       <th className="px-3 py-2 text-center">Aciertos</th>
                       <th className="px-3 py-2 text-center">Puntos</th>
                       <th className="px-3 py-2 text-center">Acierto %</th>
@@ -442,7 +437,6 @@ export default async function EvaluacionResultadoPage({ params, searchParams }: 
                             <span className="font-medium">{item.nombre}</span>
                           </div>
                         </td>
-                        <td className="px-3 py-2 text-center">{item.intentos}</td>
                         <td className="px-3 py-2 text-center font-semibold text-emerald-600">{item.correctas}</td>
                         <td className="px-3 py-2 text-center">{item.puntos}</td>
                         <td className="px-3 py-2 text-center">{item.porcentaje}%</td>

@@ -34,6 +34,12 @@ type BanqueoItem = {
   duracion: number;
   maxPreguntas: number;
   actualizadoEn: Date;
+  preguntasCount: number;
+  temas: string[];
+  capitulos: string[];
+  areas: string[];
+  minGestion: number | null;
+  maxGestion: number | null;
 };
 
 export default function MisBanqueosClient({
@@ -151,22 +157,46 @@ export default function MisBanqueosClient({
                   <Badge variant="outline">PERSONAL</Badge>
                 </div>
                 <CardDescription>
-                  {item.maxPreguntas} preguntas | {Math.max(1, Math.ceil(item.duracion / 60))} min
+                  Tiempo: {Math.max(1, Math.ceil(item.duracion / 60))} min
                 </CardDescription>
               </CardHeader>
               <CardContent className="pt-0">
+                <div className="mb-3 flex flex-wrap gap-1.5">
+                  <Badge variant="outline">{item.preguntasCount} preguntas</Badge>
+                  <Badge variant="outline">
+                    Año:{" "}
+                    {item.minGestion !== null && item.maxGestion !== null
+                      ? item.minGestion === item.maxGestion
+                        ? item.minGestion
+                        : `${item.minGestion}-${item.maxGestion}`
+                      : new Date(item.actualizadoEn).getFullYear()}
+                  </Badge>
+                </div>
+                <div className="mb-3 space-y-1 text-xs">
+                  <p className="text-muted-foreground">
+                    Temas: {item.temas.slice(0, 3).join(", ") || "Sin temas"}
+                  </p>
+                  <p className="text-muted-foreground">
+                    Áreas: {item.areas.slice(0, 3).join(", ") || "Sin áreas"}
+                  </p>
+                  <p className="text-muted-foreground">
+                    Capítulos: {item.capitulos.slice(0, 3).join(", ") || "Sin capítulos"}
+                  </p>
+                </div>
                 <div className="flex w-full items-center gap-2">
-                  <Button className="w-full flex-1" render={<Link href={`/mis-banqueos/${item.id}`} />} size="sm" variant="outline">
-                    Abrir
+                  <Button className="flex-1" render={<Link href={`/mis-banqueos/${item.id}`} />} size="sm" variant="outline">
+                    Detalles
+                  </Button>
+                  <Button className="flex-1" render={<Link href={`/prueba/${item.id}`} />} size="sm">
+                    Intentar ahora
                   </Button>
                   <Button
-                    className="w-full flex-1"
                     onClick={() => setBanqueoToDeleteId(item.id)}
-                    size="sm"
-                    variant="destructive"
+                    size="icon-sm"
+                    variant="ghost"
+                    className="text-destructive hover:bg-destructive/10"
                   >
                     <Trash2Icon className="size-4" />
-                    Eliminar
                   </Button>
                 </div>
               </CardContent>

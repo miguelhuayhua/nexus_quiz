@@ -37,11 +37,54 @@ export default async function MisBanqueosPage() {
       duracion: true,
       maxPreguntas: true,
       actualizadoEn: true,
+      preguntas: {
+        select: {
+          gestion: true,
+          temas: {
+            select: { titulo: true },
+          },
+          capitulos: {
+            select: { titulo: true },
+          },
+          areas: {
+            select: { titulo: true },
+          },
+        },
+      },
     },
     orderBy: {
       actualizadoEn: "desc",
     },
   });
 
-  return <MisBanqueosClient hasPro={hasPro} items={banqueos} />;
+  const items = banqueos.map((item) => {
+    const temas = Array.from(
+      new Set(item.preguntas.flatMap((p) => p.temas.map((t) => t.titulo))),
+    );
+    const capitulos = Array.from(
+      new Set(item.preguntas.flatMap((p) => p.capitulos.map((c) => c.titulo))),
+    );
+    const areas = Array.from(
+      new Set(item.preguntas.flatMap((p) => p.areas.map((a) => a.titulo))),
+    );
+    const gestiones = Array.from(new Set(item.preguntas.map((p) => p.gestion)));
+    const minGestion = gestiones.length ? Math.min(...gestiones) : null;
+    const maxGestion = gestiones.length ? Math.max(...gestiones) : null;
+
+    return {
+      id: item.id,
+      titulo: item.titulo,
+      duracion: item.duracion,
+      maxPreguntas: item.maxPreguntas,
+      actualizadoEn: item.actualizadoEn,
+      preguntasCount: item.preguntas.length,
+      temas,
+      capitulos,
+      areas,
+      minGestion,
+      maxGestion,
+    };
+  });
+
+  return <MisBanqueosClient hasPro={hasPro} items={items} />;
 }

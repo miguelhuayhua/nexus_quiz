@@ -2,7 +2,7 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 
-import { BanqueoTipo, PreguntaEstado } from "@/generated/prisma/client";
+import { BanqueoTipo, EstadoIntento, PreguntaEstado } from "@/generated/prisma/client";
 import { getServerAuthSession } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import {
@@ -193,20 +193,20 @@ export default async function EvaluacionPage({ params, searchParams }: Props) {
   });
   let intentoActivo = intentoIdQuery
     ? await prisma.intentos.findFirst({
-        where: {
-          id: intentoIdQuery,
-          banqueoId: banco.id,
-          usuarioEstudianteId,
-        },
-        include: {
-          respuestasIntentos: {
-            select: {
-              preguntaId: true,
-              respuesta: true,
-            },
+      where: {
+        id: intentoIdQuery,
+        banqueoId: banco.id,
+        usuarioEstudianteId,
+      },
+      include: {
+        respuestasIntentos: {
+          select: {
+            preguntaId: true,
+            respuesta: true,
           },
         },
-      })
+      },
+    })
     : null;
 
   if (!intentoActivo) {
@@ -229,6 +229,7 @@ export default async function EvaluacionPage({ params, searchParams }: Props) {
         correctas: 0,
         incorrectas: 0,
         tiempoDuracion: 0,
+        estado: EstadoIntento.EN_PROGRESO,
         creadoEn: now,
         actualizadoEn: now,
       },

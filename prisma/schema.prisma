@@ -223,9 +223,12 @@ model temas {
   descripcion   String?
   creadoEn      DateTime    @default(now())
   actualizadoEn DateTime
+  capituloId    String?
+  capitulos     capitulos?  @relation(fields: [capituloId], references: [id])
   preguntas     preguntas[] @relation("preguntasTotemas")
 
   @@index([titulo])
+  @@index([capituloId])
 }
 
 model examenes {
@@ -357,16 +360,37 @@ model preguntas {
   totalBien               Int                  @default(0)
   totalMal                Int                  @default(0)
   totalRespondidas        Int                  @default(0)
+  dislikes                Int                  @default(0)
+  likes                   Int                  @default(0)
+  referencia              String?
   repasoRegistros         repasoRegistros[]
   respuestasIntentos      respuestasIntentos[]
   areas                   areas[]              @relation("areasTopreguntas")
   banqueo                 banqueo[]            @relation("banqueoTopreguntas")
   capitulos               capitulos[]          @relation("capitulosTopreguntas")
   temas                   temas[]              @relation("preguntasTotemas")
+  reaccionesPreguntas     reaccionesPreguntas[]
 
   @@index([estado])
   @@index([gestion])
   @@index([dificultad])
+  @@index([dislikes])
+  @@index([likes])
+}
+
+model reaccionesPreguntas {
+  id                  String              @id @default(uuid())
+  preguntaId          String
+  usuarioEstudianteId String
+  tipo                TipoReaccion
+  creadoEn            DateTime            @default(now())
+  actualizadoEn       DateTime            @updatedAt
+  pregunta            preguntas           @relation(fields: [preguntaId], references: [id], onDelete: Cascade)
+  usuariosEstudiantes usuariosEstudiantes @relation(fields: [usuarioEstudianteId], references: [id], onDelete: Cascade)
+
+  @@unique([preguntaId, usuarioEstudianteId])
+  @@index([preguntaId])
+  @@index([usuarioEstudianteId])
 }
 
 model requisitosCursos {
@@ -424,12 +448,13 @@ model usuariosEstudiantes {
   avatar          String?
   estudianteId    String?           @unique
   registrado      Boolean           @default(false)
-  compras         compras[]
-  intentos        intentos[]
-  repasoRegistros repasoRegistros[]
-  reviewsCursos   reviewsCursos[]
-  suscripciones   suscripciones[]
-  estudiantes     estudiantes?      @relation(fields: [estudianteId], references: [id])
+  compras             compras[]
+  intentos            intentos[]
+  repasoRegistros     repasoRegistros[]
+  reaccionesPreguntas reaccionesPreguntas[]
+  reviewsCursos       reviewsCursos[]
+  suscripciones       suscripciones[]
+  estudiantes         estudiantes?      @relation(fields: [estudianteId], references: [id])
 
   @@index([correo])
   @@index([estado])
@@ -441,6 +466,7 @@ model areas {
   descripcion   String?
   creadoEn      DateTime    @default(now())
   actualizadoEn DateTime
+  capitulos     capitulos[]
   preguntas     preguntas[] @relation("areasTopreguntas")
 
   @@index([titulo])
@@ -466,9 +492,13 @@ model capitulos {
   descripcion   String?
   creadoEn      DateTime    @default(now())
   actualizadoEn DateTime
+  areaId        String?
+  areas         areas?      @relation(fields: [areaId], references: [id])
+  temas         temas[]
   preguntas     preguntas[] @relation("capitulosTopreguntas")
 
   @@index([titulo])
+  @@index([areaId])
 }
 
 model intentos {
@@ -480,13 +510,14 @@ model intentos {
   creadoEn            DateTime             @default(now())
   actualizadoEn       DateTime
   usuarioEstudianteId String?
+  estado              EstadoIntento        @default(EN_PROGRESO)
   banqueo             banqueo              @relation(fields: [banqueoId], references: [id], onDelete: Cascade)
-  usuariosEstudiantes usuariosEstudiantes? @relation(fields: [usuarioEstudianteId], references: [id], onDelete: Cascade)
+  usuariosEstudiantes usuariosEstudiantes? @relation(fields: [usuarioEstudianteId], references: [id])
   respuestasIntentos  respuestasIntentos[]
 
   @@index([banqueoId])
   @@index([usuarioEstudianteId])
-  @@index([banqueoId, usuarioEstudianteId])
+  @@index([estado])
 }
 
 model respuestasIntentos {
@@ -696,4 +727,15 @@ enum PreguntaDificultad {
   DIFICIL
   MEDIO
   SENCILLO
+}
+
+enum EstadoIntento {
+  EN_PROGRESO
+  FINALIZADO
+  ABANDONADO
+}
+
+enum TipoReaccion {
+  LIKE
+  DISLIKE
 }

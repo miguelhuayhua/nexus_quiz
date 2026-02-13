@@ -1,8 +1,10 @@
 ﻿"use client";
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
+import * as React from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { ThumbsUp, ThumbsDown } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -64,9 +66,9 @@ export type SolucionarioPregunta = {
 };
 
 function getDificultadLabel(dificultad?: "DIFICIL" | "MEDIO" | "SENCILLO") {
-  if (dificultad === "DIFICIL") return "Difícil";
-  if (dificultad === "SENCILLO") return "Fácil";
-  return "Medio";
+  if (dificultad === "DIFICIL") return "ALTA";
+  if (dificultad === "SENCILLO") return "BAJA";
+  return "MEDIA";
 }
 
 function getDificultadBadgeClass(dificultad?: "DIFICIL" | "MEDIO" | "SENCILLO") {
@@ -85,15 +87,16 @@ type Props = {
   respuestas: Record<string, string>;
   resultBasePath?: string;
   nivelLabelOverride?: string;
+  reacciones?: Record<string, "LIKE" | "DISLIKE">;
 };
 
 const BAR_ALPHA_SUCCESS = "bg-emerald-400/20 dark:bg-emerald-400/20";
 const BAR_ALPHA_DANGER = "bg-rose-400/20 dark:bg-rose-400/20";
 const BAR_ALPHA_NEUTRAL = "bg-slate-300/20 dark:bg-slate-500/20";
 
-function getSegmentLabel(percentage: number, count: number) {
+function getSegmentLabel(percentage: number) {
   if (percentage <= 0) return "";
-  return `${percentage}% (${count})`;
+  return `${percentage}%`;
 }
 
 const normalizeOptions = (opciones?: JsonValue | null): Opcion[] => {
@@ -158,7 +161,65 @@ export default function SolucionarioClient({
   respuestas,
   resultBasePath,
   nivelLabelOverride,
+  reacciones: initialReacciones,
 }: Props) {
+  const [reacciones, setReacciones] = React.useState<Record<string, "LIKE" | "DISLIKE">>(
+    initialReacciones ?? {},
+  );
+  const [isReacting, setIsReacting] = React.useState<Record<string, boolean>>({});
+
+  const handleReaccion = async (preguntaId: string, tipo: "LIKE" | "DISLIKE") => {
+    if (isReacting[preguntaId]) return;
+    setIsReacting((prev) => ({ ...prev, [preguntaId]: true }));
+
+    // Optimistic update
+    const prev = reacciones[preguntaId];
+    if (prev === tipo) {
+      // Toggle off
+      setReacciones((old) => {
+        const next = { ...old };
+        delete next[preguntaId];
+        return next;
+      });
+    } else {
+      // Set new or switch
+      setReacciones((old) => ({ ...old, [preguntaId]: tipo }));
+    }
+
+    try {
+      const res = await fetch("/api/preguntas/reaccion", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ preguntaId, tipo }),
+      });
+      if (!res.ok) {
+        // Revert on error
+        if (prev) {
+          setReacciones((old) => ({ ...old, [preguntaId]: prev }));
+        } else {
+          setReacciones((old) => {
+            const next = { ...old };
+            delete next[preguntaId];
+            return next;
+          });
+        }
+      }
+    } catch {
+      // Revert on error
+      if (prev) {
+        setReacciones((old) => ({ ...old, [preguntaId]: prev }));
+      } else {
+        setReacciones((old) => {
+          const next = { ...old };
+          delete next[preguntaId];
+          return next;
+        });
+      }
+    } finally {
+      setIsReacting((prev) => ({ ...prev, [preguntaId]: false }));
+    }
+  };
+
   const nivelLabel = nivelLabelOverride ?? (evaluacion.tipo === "PRO" ? "PRO" : "BASIC");
   const totalPreguntas = preguntas.length;
   const userStates = preguntas.map((pregunta) => {
@@ -181,8 +242,8 @@ export default function SolucionarioClient({
   const promedioAciertoGrupo =
     preguntas.length > 0
       ? Math.round(
-          preguntas.reduce((acc, pregunta) => acc + pregunta.stats.tasaAcierto, 0) / preguntas.length,
-        )
+        preguntas.reduce((acc, pregunta) => acc + pregunta.stats.tasaAcierto, 0) / preguntas.length,
+      )
       : 0;
   const basePath = resultBasePath ?? `/prueba/${evaluacion.id}`;
 
@@ -228,11 +289,10 @@ export default function SolucionarioClient({
             <CardContent className="p-4">
               <p className="text-muted-foreground text-xs">Promedio acierto (grupo)</p>
               <p
-                className={`font-semibold text-2xl ${
-                  promedioAciertoGrupo >= 50
-                    ? "text-emerald-600 dark:text-emerald-400"
-                    : "text-rose-600 dark:text-rose-400"
-                }`}
+                className={`font-semibold text-2xl ${promedioAciertoGrupo >= 50
+                  ? "text-emerald-600 dark:text-emerald-400"
+                  : "text-rose-600 dark:text-rose-400"
+                  }`}
               >
                 {promedioAciertoGrupo}%
               </p>
@@ -255,7 +315,7 @@ export default function SolucionarioClient({
                 className={`flex min-w-0 items-center justify-center overflow-hidden px-2 font-semibold text-emerald-900 text-xs whitespace-nowrap dark:text-emerald-100 ${BAR_ALPHA_SUCCESS}`}
                 style={{ width: `${Math.min(Math.max(porcentajeBien, 0), 100)}%` }}
               >
-                {getSegmentLabel(porcentajeBien, totalBien)}
+                {getSegmentLabel(porcentajeBien)}
               </div>
             )}
             {totalMal > 0 && (
@@ -263,7 +323,7 @@ export default function SolucionarioClient({
                 className={`flex min-w-0 items-center justify-center overflow-hidden px-2 font-semibold text-rose-900 text-xs whitespace-nowrap dark:text-rose-100 ${BAR_ALPHA_DANGER}`}
                 style={{ width: `${Math.min(Math.max(porcentajeMal, 0), 100)}%` }}
               >
-                {getSegmentLabel(porcentajeMal, totalMal)}
+                {getSegmentLabel(porcentajeMal)}
               </div>
             )}
             {totalOmitidas > 0 && (
@@ -271,7 +331,7 @@ export default function SolucionarioClient({
                 className={`flex min-w-0 items-center justify-center overflow-hidden px-2 font-semibold text-slate-700 text-xs whitespace-nowrap dark:text-slate-100 ${BAR_ALPHA_NEUTRAL}`}
                 style={{ width: `${Math.min(Math.max(porcentajeOmitidas, 0), 100)}%` }}
               >
-                {getSegmentLabel(porcentajeOmitidas, totalOmitidas)}
+                {getSegmentLabel(porcentajeOmitidas)}
               </div>
             )}
           </div>
@@ -367,7 +427,6 @@ export default function SolucionarioClient({
                         const key = normalizeChoiceValue(opcion.value);
                         const stat = pregunta.stats.optionStats.find((item) => item.key === key);
                         const porcentaje = stat?.porcentaje ?? 0;
-                        const count = stat?.count ?? 0;
                         const correcta = isCorrectAnswer(opcion);
                         const elegida = selectedSet.has(key);
 
@@ -394,11 +453,10 @@ export default function SolucionarioClient({
                               />
                               <div className="pointer-events-none absolute inset-0 flex items-center justify-between px-2">
                                 <span
-                                  className={`truncate pr-2 font-semibold text-sm ${
-                                    correcta
-                                      ? "text-emerald-700 dark:text-emerald-300"
-                                      : "text-slate-900 dark:text-slate-100"
-                                  }`}
+                                  className={`truncate pr-2 font-semibold text-sm ${correcta
+                                    ? "text-emerald-700 dark:text-emerald-300"
+                                    : "text-slate-900 dark:text-slate-100"
+                                    }`}
                                 >
                                   {opcion.label}
                                 </span>
@@ -424,7 +482,7 @@ export default function SolucionarioClient({
                                     </Badge>
                                   )}
                                   <span className="font-semibold text-xs whitespace-nowrap text-slate-900 dark:text-slate-100">
-                                    {porcentaje}% ({count})
+                                    {porcentaje}%
                                   </span>
                                 </div>
                               </div>
@@ -474,6 +532,30 @@ export default function SolucionarioClient({
                   </div>
                 )}
               </CardContent>
+
+              {/* Like / Dislike */}
+              <CardContent className="flex items-center gap-2 border-t px-4 py-2">
+                <Button
+                  size="sm"
+                  variant={reacciones[pregunta.id] === "LIKE" ? "default" : "ghost"}
+                  className="gap-1.5"
+                  disabled={!!isReacting[pregunta.id]}
+                  onClick={() => handleReaccion(pregunta.id, "LIKE")}
+                >
+                  <ThumbsUp className="size-4" />
+                  <span className="text-xs">Útil</span>
+                </Button>
+                <Button
+                  size="sm"
+                  variant={reacciones[pregunta.id] === "DISLIKE" ? "destructive" : "ghost"}
+                  className="gap-1.5"
+                  disabled={!!isReacting[pregunta.id]}
+                  onClick={() => handleReaccion(pregunta.id, "DISLIKE")}
+                >
+                  <ThumbsDown className="size-4" />
+                  <span className="text-xs">Mejorar</span>
+                </Button>
+              </CardContent>
             </Card>
           );
         })}
@@ -521,7 +603,7 @@ function QuestionSummaryBar({
             className={`flex min-w-0 items-center justify-center overflow-hidden px-2 font-semibold text-emerald-900 text-xs whitespace-nowrap dark:text-emerald-100 ${BAR_ALPHA_SUCCESS}`}
             style={{ width: `${Math.min(Math.max(bienPct, 0), 100)}%` }}
           >
-            {getSegmentLabel(bienPct, bien)}
+            {getSegmentLabel(bienPct)}
           </div>
         )}
         {mal > 0 && (
@@ -529,7 +611,7 @@ function QuestionSummaryBar({
             className={`flex min-w-0 items-center justify-center overflow-hidden px-2 font-semibold text-rose-900 text-xs whitespace-nowrap dark:text-rose-100 ${BAR_ALPHA_DANGER}`}
             style={{ width: `${Math.min(Math.max(malPct, 0), 100)}%` }}
           >
-            {getSegmentLabel(malPct, mal)}
+            {getSegmentLabel(malPct)}
           </div>
         )}
         {omitidas > 0 && (
@@ -537,7 +619,7 @@ function QuestionSummaryBar({
             className={`flex min-w-0 items-center justify-center overflow-hidden px-2 font-semibold text-slate-700 text-xs whitespace-nowrap dark:text-slate-100 ${BAR_ALPHA_NEUTRAL}`}
             style={{ width: `${Math.min(Math.max(omitidasPct, 0), 100)}%` }}
           >
-            {getSegmentLabel(omitidasPct, omitidas)}
+            {getSegmentLabel(omitidasPct)}
           </div>
         )}
       </div>

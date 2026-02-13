@@ -34,6 +34,7 @@ export default async function HistorialPage() {
       correctas: true,
       incorrectas: true,
       tiempoDuracion: true,
+      estado: true,
       creadoEn: true,
       actualizadoEn: true,
       banqueo: {
@@ -79,7 +80,7 @@ export default async function HistorialPage() {
     return {
       id: item.id,
       numero: index + 1,
-      estado: respondidas >= totalPreguntas && totalPreguntas > 0 ? "COMPLETADO" : "INCOMPLETO",
+      estado: item.estado as HistorialIntentoRow["estado"],
       iniciadoEn: item.creadoEn.toISOString(),
       enviadoEn: item.actualizadoEn.toISOString(),
       bancoId: item.banqueoId,

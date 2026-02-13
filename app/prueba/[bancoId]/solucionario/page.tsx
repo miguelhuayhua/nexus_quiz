@@ -80,35 +80,35 @@ export default async function SolucionarioPage({ params, searchParams }: Props) 
 
   const intentoFinal = intentoId
     ? await prisma.intentos.findFirst({
-        where: {
-          id: intentoId,
-          banqueoId: banco.id,
-          usuarioEstudianteId,
-        },
-        include: {
-          respuestasIntentos: {
-            select: {
-              preguntaId: true,
-              respuesta: true,
-            },
+      where: {
+        id: intentoId,
+        banqueoId: banco.id,
+        usuarioEstudianteId,
+      },
+      include: {
+        respuestasIntentos: {
+          select: {
+            preguntaId: true,
+            respuesta: true,
           },
         },
-      })
+      },
+    })
     : await prisma.intentos.findFirst({
-        where: {
-          banqueoId: banco.id,
-          usuarioEstudianteId,
-        },
-        include: {
-          respuestasIntentos: {
-            select: {
-              preguntaId: true,
-              respuesta: true,
-            },
+      where: {
+        banqueoId: banco.id,
+        usuarioEstudianteId,
+      },
+      include: {
+        respuestasIntentos: {
+          select: {
+            preguntaId: true,
+            respuesta: true,
           },
         },
-        orderBy: [{ actualizadoEn: "desc" }, { creadoEn: "desc" }],
-      });
+      },
+      orderBy: [{ actualizadoEn: "desc" }, { creadoEn: "desc" }],
+    });
 
   if (!intentoFinal) {
     return notFound();
@@ -301,9 +301,26 @@ export default async function SolucionarioPage({ params, searchParams }: Props) 
     };
   });
 
+  // ─── User reactions (like/dislike) ──────────────────────────────────
+  const preguntaIds = preguntas.map((p) => p.id);
+  const userReactions = await prisma.reaccionesPreguntas.findMany({
+    where: {
+      preguntaId: { in: preguntaIds },
+      usuarioEstudianteId,
+    },
+    select: {
+      preguntaId: true,
+      tipo: true,
+    },
+  });
+  const reaccionesMap: Record<string, "LIKE" | "DISLIKE"> = {};
+  for (const r of userReactions) {
+    reaccionesMap[r.preguntaId] = r.tipo as "LIKE" | "DISLIKE";
+  }
+
   return (
     <main className="min-h-screen bg-background py-10 text-foreground">
-      <SolucionarioClient evaluacion={evaluacionPayload} preguntas={preguntas} respuestas={respuestas} />
+      <SolucionarioClient evaluacion={evaluacionPayload} preguntas={preguntas} respuestas={respuestas} reacciones={reaccionesMap} />
     </main>
   );
 }

@@ -118,9 +118,14 @@ function BanqueoList({
               </p>
             </div>
             {canAccess ? (
-              <Button className="w-full" render={<Link href={`/banqueos/${item.id}`} />} size="sm">
-                Ver
-              </Button>
+              <div className="flex gap-2">
+                <Button className="flex-1" render={<Link href={`/banqueos/${item.id}`} />} size="sm" variant="outline">
+                  Detalles
+                </Button>
+                <Button className="flex-1" render={<Link href={`/prueba/${item.id}`} />} size="sm">
+                  Intentar ahora
+                </Button>
+              </div>
             ) : (
               <Button className="w-full" disabled size="sm" variant="outline">
                 <LockIcon className="size-4" />

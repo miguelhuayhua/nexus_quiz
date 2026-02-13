@@ -38,6 +38,7 @@ type PreguntaRender = {
   opciones?: any;
   assets?: Asset[] | null;
   solucionKind?: string | null;
+  dificultad?: "SENCILLO" | "MEDIO" | "DIFICIL";
 };
 
 export type EvaluacionForClient = {
@@ -60,6 +61,9 @@ export type EvaluacionForClient = {
 };
 
 const MULTI_SEPARATOR = "|";
+const TIME_WARNING_THRESHOLD_SECONDS = 5 * 60;
+const TIME_WARNING_COOKIE_NAME = "quiz_hide_time_warning";
+const TIME_WARNING_COOKIE_MAX_AGE = 60 * 60 * 24 * 365;
 
 const formatSeconds = (value: number) => {
   const m = Math.floor(value / 60).toString().padStart(2, "0");
@@ -77,6 +81,19 @@ function parseMultiValue(raw: string | undefined): string[] {
 
 function serializeMultiValue(values: string[]) {
   return values.join(MULTI_SEPARATOR);
+}
+
+function readCookie(name: string): string | null {
+  if (typeof document === "undefined") return null;
+  const parts = document.cookie.split(";").map((item) => item.trim());
+  const match = parts.find((item) => item.startsWith(`${name}=`));
+  if (!match) return null;
+  return decodeURIComponent(match.slice(name.length + 1));
+}
+
+function writeCookie(name: string, value: string, maxAgeSeconds: number) {
+  if (typeof document === "undefined") return;
+  document.cookie = `${name}=${encodeURIComponent(value)}; path=/; max-age=${maxAgeSeconds}; SameSite=Lax`;
 }
 
 export default function EvaluacionTake({ evaluacion }: { evaluacion: EvaluacionForClient }) {
@@ -102,6 +119,7 @@ export default function EvaluacionTake({ evaluacion }: { evaluacion: EvaluacionF
   const [isFinalizeDialogOpen, setIsFinalizeDialogOpen] = React.useState(false);
   const [isTimeWarningOpen, setIsTimeWarningOpen] = React.useState(false);
   const [hasShownTimeWarning, setHasShownTimeWarning] = React.useState(false);
+  const [hideTimeWarning, setHideTimeWarning] = React.useState(false);
   const [attemptLimitMessage, setAttemptLimitMessage] = React.useState<string | null>(null);
   const isFinishingRef = React.useRef(false);
   const responsesRef = React.useRef(responses);
@@ -163,18 +181,26 @@ export default function EvaluacionTake({ evaluacion }: { evaluacion: EvaluacionF
   }, [finalizado, isPaused, timeLeft]);
 
   React.useEffect(() => {
+    const cookieValue = readCookie(TIME_WARNING_COOKIE_NAME);
+    if (cookieValue === "1") {
+      setHideTimeWarning(true);
+      setHasShownTimeWarning(true);
+    }
+  }, []);
+
+  React.useEffect(() => {
     if (timeLeft <= 0 && !finalizado && !isSaving) {
       void handleFinish();
     }
   }, [timeLeft, finalizado, isSaving]);
 
   React.useEffect(() => {
-    if (finalizado || hasShownTimeWarning) return;
-    if (timeLeft > 0 && timeLeft <= 60) {
+    if (finalizado || hasShownTimeWarning || hideTimeWarning) return;
+    if (timeLeft > 0 && timeLeft <= TIME_WARNING_THRESHOLD_SECONDS) {
       setHasShownTimeWarning(true);
       setIsTimeWarningOpen(true);
     }
-  }, [timeLeft, finalizado, hasShownTimeWarning]);
+  }, [timeLeft, finalizado, hasShownTimeWarning, hideTimeWarning]);
 
   React.useEffect(() => {
     responsesRef.current = responses;
@@ -384,6 +410,32 @@ export default function EvaluacionTake({ evaluacion }: { evaluacion: EvaluacionF
     return opciones.map((o) => (typeof o === "object" ? o : { label: String(o), value: String(o) }));
   };
 
+  // Seeded shuffle for deterministic randomization per question
+  const seededShuffle = React.useCallback(<T,>(arr: T[], seed: string): T[] => {
+    const result = [...arr];
+    let h = 0;
+    for (let i = 0; i < seed.length; i++) {
+      h = ((h << 5) - h + seed.charCodeAt(i)) | 0;
+    }
+    for (let i = result.length - 1; i > 0; i--) {
+      h = ((h << 5) - h + i) | 0;
+      const j = Math.abs(h) % (i + 1);
+      [result[i], result[j]] = [result[j], result[i]];
+    }
+    return result;
+  }, []);
+
+  // Memoize shuffled options per question ID
+  const shuffledOptionsMap = React.useMemo(() => {
+    const map = new Map<string, any[]>();
+    for (const q of evaluacion.preguntas) {
+      const normalized = normalizeOptions(q.opciones);
+      map.set(q.id, seededShuffle(normalized, q.id));
+    }
+    return map;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [evaluacion.preguntas]);
+
   if (!currentQuestion) return null;
 
   // Pagination Logic
@@ -427,9 +479,8 @@ export default function EvaluacionTake({ evaluacion }: { evaluacion: EvaluacionF
 
       <div className="flex flex-col items-center gap-3 bg-background/90 backdrop-blur-sm">
         {/* Title Header Top */}
-        <header className="text-center space-y-2 w-full">
+        <header className="text-center space-y-2 w-full pt-4">
           <h1 className="text-xl font-bold">{evaluacion.titulo}</h1>
-          <p className="text-sm text-muted-foreground">Gestión {evaluacion.gestion}</p>
         </header>
 
       </div>
@@ -447,30 +498,19 @@ export default function EvaluacionTake({ evaluacion }: { evaluacion: EvaluacionF
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
             className="space-y-3"
           >
-            {(currentQuestion.temaNombre || currentQuestion.temaDescripcion) && (
-              <div className="space-y-0.5">
-                {currentQuestion.temaNombre && (
-                  <p className="text-xs text-center font-semibold text-primary">
-                    {currentQuestion.temaNombre}
-                  </p>
-                )}
-                {currentQuestion.temaDescripcion && (
-                  <p className="text-xs text-center text-muted-foreground">
-                    {currentQuestion.temaDescripcion}
-                  </p>
-                )}
-              </div>
-            )}
-            {currentQuestion.codigo && (
-              <div>
-                <Badge variant="outline">{currentQuestion.codigo}</Badge>
-              </div>
-            )}
-            <h2 className="text-sm  space-x-2">
 
-              <span className="font-bold text-primary ">Pregunta {currentIndex + 1}.-</span>
-              <span>{currentQuestion.enunciado}</span>
-            </h2>
+            <div className="flex items-center justify-between">
+              <h2 className="text-sm font-bold text-primary">
+                Pregunta {currentIndex + 1}.-
+              </h2>
+              {currentQuestion.dificultad && (
+                <Badge variant={currentQuestion.dificultad === "SENCILLO" ? "secondary" : currentQuestion.dificultad === "MEDIO" ? "default" : "destructive"}>
+                  {currentQuestion.dificultad === "SENCILLO" ? "BAJA" : currentQuestion.dificultad === "MEDIO" ? "MEDIA" : "ALTA"}
+                </Badge>
+              )}
+            </div>
+
+            <p className="text-sm font-medium leading-relaxed">{currentQuestion.enunciado}</p>
 
             {currentQuestion.assets?.map((asset, i) => (
               <div key={i} className="flex justify-center">
@@ -484,9 +524,10 @@ export default function EvaluacionTake({ evaluacion }: { evaluacion: EvaluacionF
               {currentQuestion.tipo === "CERRADA" ? (
                 currentQuestion.solucionKind === "CHOICE_MULTI" ? (
                   <div className="grid gap-2">
-                    {normalizeOptions(currentQuestion.opciones).map((o: any) => {
+                    {(shuffledOptionsMap.get(currentQuestion.id) ?? []).map((o: any, idx: number) => {
                       const current = parseMultiValue(responses[currentQuestion.id]);
                       const selected = current.includes(String(o.value));
+                      const letter = String.fromCharCode(65 + idx);
                       return (
                         <div
                           key={o.value}
@@ -499,6 +540,7 @@ export default function EvaluacionTake({ evaluacion }: { evaluacion: EvaluacionF
                           }}
                         >
                           <Checkbox checked={selected} />
+                          <span className="font-bold text-primary w-4">{letter}.</span>
                           <div className="flex-1 text-sm">
                             {o.kind === "IMAGEN" ? <Image src={o.value} alt="Opción" width={200} height={200} className="rounded border aspect-square" /> : <span>{o.label}</span>}
                           </div>
@@ -512,17 +554,25 @@ export default function EvaluacionTake({ evaluacion }: { evaluacion: EvaluacionF
                     onValueChange={(v) => handleChange(currentQuestion.id, v, true)}
                     className="grid gap-2"
                   >
-                    {normalizeOptions(currentQuestion.opciones).map((o: any) => (
-                      <Label
-                        key={o.value}
-                        className={`flex items-center gap-3 p-4 rounded-xl border cursor-pointer transition-all ${responses[currentQuestion.id] === String(o.value) ? "border-primary bg-primary/5 shadow-sm" : "border-border/60 hover:bg-muted/30"}`}
-                      >
-                        <RadioGroupItem value={String(o.value)} />
-                        <div className="flex-1 text-sm font-normal">
-                          {o.kind === "IMAGEN" ? <Image src={o.value} alt="Opción" width={400} height={400} className="rounded aspect-auto h-auto w-fit border" /> : <span>{o.label}</span>}
-                        </div>
-                      </Label>
-                    ))}
+                    {(shuffledOptionsMap.get(currentQuestion.id) ?? []).map((o: any, idx: number) => {
+                      const letter = String.fromCharCode(65 + idx);
+                      const isSelected = responses[currentQuestion.id] === String(o.value);
+                      return (
+                        <Label
+                          key={o.value}
+                          className={`flex items-center gap-3 p-4 rounded-xl border cursor-pointer transition-all ${isSelected ? "border-primary bg-primary/5 shadow-sm" : "border-border/60 hover:bg-muted/30"}`}
+                        >
+                          <RadioGroupItem value={String(o.value)} className="sr-only" />
+                          <div className={`size-4 rounded-full border flex items-center justify-center text-[10px] ${isSelected ? "bg-primary border-primary text-primary-foreground" : "border-muted-foreground"}`}>
+                            {isSelected && <div className="size-2 rounded-full bg-current" />}
+                          </div>
+                          <span className="font-bold text-primary w-4">{letter}.</span>
+                          <div className="flex-1 text-sm font-normal">
+                            {o.kind === "IMAGEN" ? <Image src={o.value} alt="Opción" width={400} height={400} className="rounded aspect-auto h-auto w-fit border" /> : <span>{o.label}</span>}
+                          </div>
+                        </Label>
+                      )
+                    })}
                   </RadioGroup>
                 )
               ) : (
@@ -607,14 +657,26 @@ export default function EvaluacionTake({ evaluacion }: { evaluacion: EvaluacionF
           <div className="flex items-center gap-2">
             <ModeToggle />
             <div className="flex items-center gap-2 px-2 bg-muted/30 rounded-full h-9">
-              <Timer className={`h-4 w-4 ${timeLeft <= 60 ? "text-destructive" : "text-primary"}`} />
-              <span className={`text-sm  ${timeLeft <= 60 ? "text-destructive" : ""}`}>
+              <Timer
+                className={`h-4 w-4 ${timeLeft <= TIME_WARNING_THRESHOLD_SECONDS ? "text-destructive" : "text-primary"}`}
+              />
+              <span className={`text-sm  ${timeLeft <= TIME_WARNING_THRESHOLD_SECONDS ? "text-destructive" : ""}`}>
                 {formatSeconds(timeLeft)}
               </span>
             </div>
           </div>
 
           <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                void handleSaveProgreso(false, false);
+                router.push("/inicio");
+              }}
+            >
+              Pausar y Salir
+            </Button>
             <Button
               variant="outline"
               size="icon-sm"
@@ -698,12 +760,35 @@ export default function EvaluacionTake({ evaluacion }: { evaluacion: EvaluacionF
           className="max-w-md text-center"
         >
           <AlertDialogHeader className="items-center">
-            <AlertDialogTitle className="text-destructive">Te queda 1 minuto</AlertDialogTitle>
+            <AlertDialogTitle className="text-destructive">Te quedan 5 minutos</AlertDialogTitle>
             <AlertDialogDescription>
-              El tiempo está por terminar. Revisa tus respuestas y finaliza si es necesario.
+              El tiempo esta por terminar. Revisa tus respuestas y finaliza si es necesario.
             </AlertDialogDescription>
           </AlertDialogHeader>
-          <AlertDialogFooter className="justify-center">
+          <AlertDialogFooter className="justify-center gap-2">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => {
+                writeCookie(TIME_WARNING_COOKIE_NAME, "1", TIME_WARNING_COOKIE_MAX_AGE);
+                setHideTimeWarning(true);
+                setHasShownTimeWarning(true);
+                setIsTimeWarningOpen(false);
+              }}
+            >
+              No volver a recordar
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => {
+                setIsTimeWarningOpen(false);
+                void handleSaveProgreso(false, false);
+                router.push("/inicio");
+              }}
+            >
+              Pausar y Salir
+            </Button>
             <Button type="button" onClick={() => setIsTimeWarningOpen(false)}>
               Entendido
             </Button>

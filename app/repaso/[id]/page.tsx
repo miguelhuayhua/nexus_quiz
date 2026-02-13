@@ -59,8 +59,7 @@ export default async function RepasoDetailPage({
     notFound();
   }
 
-  const fallosHistoricos = await prisma.respuestasIntentos.groupBy({
-    by: ["preguntaId"],
+  const fallosHistoricos = await prisma.respuestasIntentos.findMany({
     where: {
       resultado: ResultadoRespuesta.MAL,
       intentos: {
@@ -68,8 +67,9 @@ export default async function RepasoDetailPage({
         banqueoId: banqueo.id,
       },
     },
-    _count: {
+    select: {
       preguntaId: true,
+      actualizadoEn: true,
     },
   });
 
@@ -81,10 +81,33 @@ export default async function RepasoDetailPage({
     select: {
       preguntaId: true,
       esCorrecta: true,
+      creadoEn: true,
     },
   });
-  const preguntasRevisadas = new Set(repasoRevisado.map((item) => item.preguntaId));
-  const fallosPendientes = fallosHistoricos.filter((item) => !preguntasRevisadas.has(item.preguntaId));
+
+  const ultimoFalloPorPregunta = new Map<string, Date>();
+  for (const item of fallosHistoricos) {
+    const prev = ultimoFalloPorPregunta.get(item.preguntaId);
+    if (!prev || item.actualizadoEn > prev) {
+      ultimoFalloPorPregunta.set(item.preguntaId, item.actualizadoEn);
+    }
+  }
+
+  const ultimaCorreccionPorPregunta = new Map<string, Date>();
+  for (const item of repasoRevisado) {
+    if (!item.esCorrecta) continue;
+    const prev = ultimaCorreccionPorPregunta.get(item.preguntaId);
+    if (!prev || item.creadoEn > prev) {
+      ultimaCorreccionPorPregunta.set(item.preguntaId, item.creadoEn);
+    }
+  }
+
+  const fallosPendientes = Array.from(ultimoFalloPorPregunta.entries())
+    .filter(([preguntaId, ultimoFallo]) => {
+      const ultimaCorreccion = ultimaCorreccionPorPregunta.get(preguntaId);
+      return !ultimaCorreccion || ultimoFallo > ultimaCorreccion;
+    })
+    .map(([preguntaId]) => ({ preguntaId }));
 
   if (fallosPendientes.length === 0) {
     return (
@@ -127,8 +150,8 @@ export default async function RepasoDetailPage({
   });
 
   const falloCountByPregunta = new Map<string, number>();
-  for (const item of fallosPendientes) {
-    falloCountByPregunta.set(item.preguntaId, item._count.preguntaId);
+  for (const item of fallosHistoricos) {
+    falloCountByPregunta.set(item.preguntaId, (falloCountByPregunta.get(item.preguntaId) ?? 0) + 1);
   }
 
   const preguntas = preguntasRaw.map((item) => ({

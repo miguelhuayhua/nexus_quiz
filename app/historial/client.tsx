@@ -4,6 +4,7 @@ import * as React from "react";
 import { type ColumnDef } from "@tanstack/react-table";
 import Link from "next/link";
 import { Bar, BarChart, CartesianGrid, Cell, Pie, PieChart, XAxis, YAxis } from "recharts";
+import { MoreHorizontal, Play, Eye, FileText } from "lucide-react";
 
 import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header";
 import { DataTable } from "@/components/data-table/data-table";
@@ -18,6 +19,12 @@ import {
   ChartTooltipContent,
   type ChartConfig,
 } from "@/components/ui/chart";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useDataTable } from "@/hooks/use-data-table";
 import { formatDateTime } from "@/lib/utils";
@@ -25,7 +32,7 @@ import { formatDateTime } from "@/lib/utils";
 export type HistorialIntentoRow = {
   id: string;
   numero: number;
-  estado: "COMPLETADO" | "INCOMPLETO";
+  estado: "EN_PROGRESO" | "FINALIZADO" | "ABANDONADO";
   iniciadoEn: string;
   enviadoEn: string;
   bancoId: string;
@@ -44,6 +51,23 @@ export type HistorialIntentoRow = {
 function resolveHistorialBasePath(row: HistorialIntentoRow) {
   return row.bancoTipoCreado === "ESTUDIANTE" ? `/mis-banqueos/${row.bancoId}` : `/prueba/${row.bancoId}`;
 }
+
+function resolveResumePath(row: HistorialIntentoRow) {
+  const base = row.bancoTipoCreado === "ESTUDIANTE" ? `/mis-banqueos/${row.bancoId}/prueba` : `/prueba/${row.bancoId}`;
+  return `${base}?intentoId=${row.id}`;
+}
+
+const ESTADO_LABELS: Record<HistorialIntentoRow["estado"], string> = {
+  EN_PROGRESO: "En progreso",
+  FINALIZADO: "Finalizado",
+  ABANDONADO: "Abandonado",
+};
+
+const ESTADO_BADGE_VARIANT: Record<HistorialIntentoRow["estado"], "default" | "success" | "secondary" | "destructive"> = {
+  EN_PROGRESO: "default",
+  FINALIZADO: "success",
+  ABANDONADO: "destructive",
+};
 
 const precisionChartConfig = {
   precision: {
@@ -132,11 +156,11 @@ export default function HistorialClient({
       },
       {
         id: "tipo",
-        accessorFn: (row) => row.bancoTipo,
+        accessorFn: (row) => row.bancoTipoCreado,
         header: ({ column }) => <DataTableColumnHeader column={column} label="Tipo" />,
         cell: ({ row }) =>
           row.original.bancoTipoCreado === "ESTUDIANTE" ? (
-            <Badge variant="secondary">PERSONAL</Badge>
+            <Badge variant="default">Personal</Badge>
           ) : (
             <div className="flex flex-wrap items-center gap-1.5">
               <Badge
@@ -149,7 +173,7 @@ export default function HistorialClient({
               >
                 {row.original.bancoTipo === "PRO" ? "PRO" : "BASIC"}
               </Badge>
-              <Badge variant="outline">GENERAL</Badge>
+              <Badge variant="outline">General</Badge>
             </div>
           ),
       },
@@ -158,8 +182,8 @@ export default function HistorialClient({
         accessorFn: (row) => row.estado,
         header: ({ column }) => <DataTableColumnHeader column={column} label="Estado" />,
         cell: ({ row }) => (
-          <Badge variant={row.original.estado === "COMPLETADO" ? "success" : "secondary"}>
-            {row.original.estado}
+          <Badge variant={ESTADO_BADGE_VARIANT[row.original.estado]}>
+            {ESTADO_LABELS[row.original.estado]}
           </Badge>
         ),
       },
@@ -209,31 +233,46 @@ export default function HistorialClient({
         id: "accion",
         accessorFn: (row) => row.id,
         header: () => null,
-        cell: ({ row }) => (
-          <div className="flex flex-wrap gap-2">
-            {(() => {
-              const basePath = resolveHistorialBasePath(row.original);
-              return (
-                <>
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    render={<Link href={`${basePath}/resultado?intentoId=${row.original.id}`} />}
-                  >
-                    Ver resultado
+        cell: ({ row }) => {
+          const basePath = resolveHistorialBasePath(row.original);
+          const isEnProgreso = row.original.estado === "EN_PROGRESO";
+
+          return (
+            <div className="flex items-center gap-2">
+              {isEnProgreso && (
+                <Button
+                  size="icon-sm"
+                  variant="default"
+                  render={<Link href={resolveResumePath(row.original)} />}
+                  title="Reanudar prueba"
+                >
+                  <Play className="size-4" />
+                </Button>
+              )}
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button size="icon-sm" variant="ghost">
+                    <MoreHorizontal className="size-4" />
                   </Button>
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    render={<Link href={`${basePath}/solucionario?intentoId=${row.original.id}`} />}
-                  >
-                    Ver solucionario
-                  </Button>
-                </>
-              );
-            })()}
-          </div>
-        ),
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem asChild>
+                    <Link href={`${basePath}/resultado?intentoId=${row.original.id}`}>
+                      <Eye className="mr-2 size-4" />
+                      Ver resultado
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link href={`${basePath}/solucionario?intentoId=${row.original.id}`}>
+                      <FileText className="mr-2 size-4" />
+                      Ver solucionario
+                    </Link>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
+          );
+        },
       },
     ],
     [],

@@ -56,9 +56,9 @@ export default function RepasoTakeClient({
     repasoStatsPrevios,
 }: RepasoTakeClientProps) {
     const getDificultadLabel = (value?: "DIFICIL" | "MEDIO" | "SENCILLO") => {
-        if (value === "DIFICIL") return "Difícil";
-        if (value === "SENCILLO") return "Sencillo";
-        return "Medio";
+        if (value === "DIFICIL") return "ALTA";
+        if (value === "SENCILLO") return "BAJA";
+        return "MEDIA";
     };
 
     const getDificultadClass = (value?: "DIFICIL" | "MEDIO" | "SENCILLO") => {
@@ -319,11 +319,16 @@ export default function RepasoTakeClient({
                         <span>Fallos históricos revisados</span>
                         <span className="font-semibold">{fallosHistoricos}</span>
                     </div>
-                    <div className="flex items-center justify-between rounded-lg border px-3 py-2">
-                        <span>Mejora histórica</span>
-                        <span className={`font-semibold ${deltaRate >= 0 ? "text-emerald-600" : "text-destructive"}`}>
-                            {deltaRate >= 0 ? "+" : ""}{deltaRate}%
-                        </span>
+                    <div className="rounded-lg border px-3 py-2 space-y-1">
+                        <div className="flex items-center justify-between">
+                            <span>Mejora histórica</span>
+                            <span className={`font-semibold ${deltaRate >= 0 ? "text-emerald-600" : "text-destructive"}`}>
+                                {deltaRate >= 0 ? "+" : ""}{deltaRate}%
+                            </span>
+                        </div>
+                        <p className="text-xs text-muted-foreground leading-tight">
+                            Cambio en tu precisión acumulada de repaso. Compara tu tasa de aciertos antes ({Math.round(prevRate)}%) vs después ({Math.round(newRate)}%) de esta sesión.
+                        </p>
                     </div>
                 </div>
                 <div className="flex flex-col gap-2 w-full">

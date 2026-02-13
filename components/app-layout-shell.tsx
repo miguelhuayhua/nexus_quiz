@@ -6,6 +6,7 @@ import {
   BriefcaseBusinessIcon,
   BookOpenCheckIcon,
   CircleIcon,
+  ClipboardListIcon,
   HistoryIcon,
   HouseIcon,
   SparklesIcon,
@@ -108,11 +109,21 @@ function AppSidebar({
           <SidebarMenu className="mx-auto pl-1">
             <SidebarMenuItem>
               <SidebarMenuButton
+                className={getMenuButtonClassName(isActivePath("/inicio"))}
+                isActive={isActivePath("/inicio")}
+                render={<Link href="/inicio" />}
+              >
+                <HouseIcon />
+                <span>Inicio</span>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+            <SidebarMenuItem>
+              <SidebarMenuButton
                 className={getMenuButtonClassName(isActivePath("/banqueos"))}
                 isActive={isActivePath("/banqueos")}
                 render={<Link href="/banqueos" />}
               >
-                <HouseIcon />
+                <ClipboardListIcon />
                 <span>Banqueos</span>
               </SidebarMenuButton>
             </SidebarMenuItem>
@@ -131,7 +142,7 @@ function AppSidebar({
                 className={cn(
                   "data-[active=true]:font-normal",
                   misBanqueosIsActive &&
-                    "bg-amber-100 text-amber-900 dark:bg-amber-500/20 dark:text-amber-200 [&>svg]:text-amber-500",
+                  "bg-amber-100 text-amber-900 dark:bg-amber-500/20 dark:text-amber-200 [&>svg]:text-amber-500",
                 )}
                 isActive={misBanqueosIsActive}
                 render={<Link href="/mis-banqueos" />}
@@ -139,7 +150,7 @@ function AppSidebar({
                 <BriefcaseBusinessIcon />
                 <span className="flex items-center gap-2">
                   Mis banqueos
-                  <Badge className="gap-1 border-amber-300 bg-amber-100 text-amber-900 dark:border-amber-500/40 dark:bg-amber-500/20 dark:text-amber-300" variant="outline">
+                  <Badge className="gap-1 border-yellow-400 bg-yellow-50 text-yellow-800 dark:border-yellow-500/50 dark:bg-yellow-500/20 dark:text-yellow-300" variant="outline">
                     <SparklesIcon className="size-3" />
                     Pro
                   </Badge>
@@ -173,7 +184,14 @@ function AppSidebar({
                   <p className="truncate font-medium text-sm">{userName}</p>
                   <p className="truncate text-muted-foreground text-xs">{userEmail}</p>
                 </div>
-                <Badge variant={userPlan === "PRO" ? "default" : "outline"}>
+                <Badge
+                  className={
+                    userPlan === "PRO"
+                      ? "border-yellow-400 bg-yellow-50 text-yellow-800 dark:border-yellow-500/50 dark:bg-yellow-500/20 dark:text-yellow-300"
+                      : undefined
+                  }
+                  variant="outline"
+                >
                   <PlanIcon className="size-3" />
                   {planLabel}
                 </Badge>
