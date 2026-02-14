@@ -111,6 +111,7 @@ model compras {
   edicionId             String
   monto                 Float
   moneda                String               @default("USD")
+  comprobado            Boolean              @default(true)
   providerId            String
   fechaCompra           DateTime             @default(now())
   metodo                MetodoPago           @default(TRANSFERENCIA)
@@ -119,7 +120,6 @@ model compras {
   estadoPago            EstadoPago           @default(PENDIENTE)
   updatedAt             DateTime
   conDescuento          Boolean              @default(false)
-  comprobado            Boolean              @default(true)
   edicionesCursos       edicionesCursos      @relation(fields: [edicionId], references: [id], onDelete: Cascade)
   usuariosEstudiantes   usuariosEstudiantes? @relation(fields: [usuariosEstudiantesId], references: [id])
   inscripciones         inscripciones?
@@ -221,9 +221,9 @@ model temas {
   id            String      @id @default(uuid())
   titulo        String
   descripcion   String?
+  capituloId    String?
   creadoEn      DateTime    @default(now())
   actualizadoEn DateTime
-  capituloId    String?
   capitulos     capitulos?  @relation(fields: [capituloId], references: [id])
   preguntas     preguntas[] @relation("preguntasTotemas")
 
@@ -326,6 +326,8 @@ model pagosDocentes {
 model preciosCursos {
   id                  String          @id @default(uuid())
   edicionId           String
+  fechaInicio         DateTime?       @default(now())
+  fechaFin            DateTime?       @default(now())
   esDescuento         Boolean         @default(false)
   esPrecioDefault     Boolean         @default(false)
   moneda              String          @default("USD")
@@ -335,8 +337,6 @@ model preciosCursos {
   precioOriginal      Float?
   creadoEn            DateTime        @default(now())
   actualizadoEn       DateTime
-  fechaFin            DateTime?       @default(now())
-  fechaInicio         DateTime?       @default(now())
   edicionesCursos     edicionesCursos @relation(fields: [edicionId], references: [id], onDelete: Cascade)
 
   @@index([edicionId, esPrecioDefault])
@@ -348,21 +348,21 @@ model preguntas {
   codigo                  String                @unique
   enunciado               String
   explicacion             String?
+  referencia              String?
   opciones                Json
   solucion                Json
   estado                  PreguntaEstado        @default(BORRADOR)
   gestion                 Int
-  creadoEn                DateTime              @default(now())
-  actualizadoEn           DateTime
+  likes                   Int                   @default(0)
+  dislikes                Int                   @default(0)
   dificultad              PreguntaDificultad    @default(MEDIO)
   dificultadActualizadaEn DateTime?
   tasaAcierto             Int                   @default(0)
   totalBien               Int                   @default(0)
   totalMal                Int                   @default(0)
   totalRespondidas        Int                   @default(0)
-  dislikes                Int                   @default(0)
-  likes                   Int                   @default(0)
-  referencia              String?
+  creadoEn                DateTime              @default(now())
+  actualizadoEn           DateTime
   reaccionesPreguntas     reaccionesPreguntas[]
   repasoRegistros         repasoRegistros[]
   respuestasIntentos      respuestasIntentos[]
@@ -490,9 +490,9 @@ model capitulos {
   id            String      @id @default(uuid())
   titulo        String
   descripcion   String?
+  areaId        String?
   creadoEn      DateTime    @default(now())
   actualizadoEn DateTime
-  areaId        String?
   areas         areas?      @relation(fields: [areaId], references: [id])
   temas         temas[]
   preguntas     preguntas[] @relation("capitulosTopreguntas")
@@ -504,12 +504,12 @@ model capitulos {
 model intentos {
   id                  String               @id @default(uuid())
   banqueoId           String
+  usuarioEstudianteId String?
   tiempoDuracion      Int
   correctas           Int                  @default(0)
   incorrectas         Int                  @default(0)
   creadoEn            DateTime             @default(now())
   actualizadoEn       DateTime
-  usuarioEstudianteId String?
   estado              EstadoIntento        @default(EN_PROGRESO)
   banqueo             banqueo              @relation(fields: [banqueoId], references: [id], onDelete: Cascade)
   usuariosEstudiantes usuariosEstudiantes? @relation(fields: [usuarioEstudianteId], references: [id])
