@@ -5,7 +5,7 @@ import {
   BanqueoTipo,
   BanqueoTipoCreado,
   PreguntaEstado,
-} from "@/generated/prisma/client";
+} from "@/prisma/generated";
 import { getServerAuthSession } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import {
@@ -35,12 +35,12 @@ export async function POST(request: Request) {
 
     const body = (await request.json().catch(() => null)) as
       | {
-          titulo?: unknown;
-          tipo?: unknown;
-          duracion?: unknown;
-          maxPreguntas?: unknown;
-          preguntaIds?: unknown;
-        }
+        titulo?: unknown;
+        tipo?: unknown;
+        duracion?: unknown;
+        maxPreguntas?: unknown;
+        preguntaIds?: unknown;
+      }
       | null;
 
     const titulo = typeof body?.titulo === "string" ? body.titulo.trim() : "";

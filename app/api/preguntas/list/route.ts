@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-import { PreguntaEstado, Prisma } from "@/generated/prisma/client";
+import { PreguntaEstado, Prisma } from "@/prisma/generated";
 import { getServerAuthSession } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
@@ -51,11 +51,11 @@ export async function GET(request: Request) {
       ...(Number.isInteger(gestion) ? { gestion } : {}),
       ...(q
         ? {
-            OR: [
-              { codigo: { contains: q, mode: "insensitive" } },
-              { enunciado: { contains: q, mode: "insensitive" } },
-            ],
-          }
+          OR: [
+            { codigo: { contains: q, mode: "insensitive" } },
+            { enunciado: { contains: q, mode: "insensitive" } },
+          ],
+        }
         : {}),
       ...(temas.length ? { temas: { some: { id: { in: temas } } } } : {}),
       ...(capitulos.length

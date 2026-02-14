@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { ResultadoRespuesta } from "@/generated/prisma/client";
+import { ResultadoRespuesta } from "@/prisma/generated";
 import { getServerAuthSession } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { resolveUsuarioEstudianteIdFromSession } from "@/lib/subscription-access";

@@ -2,7 +2,7 @@ import { randomUUID } from "node:crypto";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 
-import { BanqueoTipo, BanqueoTipoCreado, EstadoIntento, PreguntaEstado } from "@/generated/prisma/client";
+import { BanqueoTipo, BanqueoTipoCreado, EstadoIntento, PreguntaEstado } from "@/prisma/generated";
 import { getServerAuthSession } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import {

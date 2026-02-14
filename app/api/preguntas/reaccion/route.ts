@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-import { TipoReaccion } from "@/generated/prisma/client";
+import { TipoReaccion } from "@/prisma/generated";
 import { getServerAuthSession } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { resolveUsuarioEstudianteIdFromSession } from "@/lib/subscription-access";

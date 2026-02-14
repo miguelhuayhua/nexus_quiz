@@ -2,7 +2,7 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 
-import { BanqueoTipo, EstadoIntento, PreguntaEstado } from "@/generated/prisma/client";
+import { BanqueoTipo, EstadoIntento, PreguntaEstado } from "@/prisma/generated";
 import { getServerAuthSession } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import {

@@ -1,7 +1,7 @@
 ﻿import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
 
-import { PreguntaDificultad, ResultadoRespuesta } from "@/generated/prisma/client";
+import { PreguntaDificultad, ResultadoRespuesta } from "@/prisma/generated";
 import { getServerAuthSession } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { resolveUsuarioEstudianteIdFromSession } from "@/lib/subscription-access";

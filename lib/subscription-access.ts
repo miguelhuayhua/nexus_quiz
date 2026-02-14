@@ -1,4 +1,4 @@
-import { EstadoSuscripcion } from "@/generated/prisma/client";
+import { EstadoSuscripcion } from "@/prisma/generated";
 import { prisma } from "@/lib/prisma";
 
 type SessionIdentity = {

@@ -1,5 +1,5 @@
 import { PrismaPg } from "@prisma/adapter-pg";
-import { PrismaClient } from "../generated/prisma/client";
+import { PrismaClient } from "@/prisma/generated";
 
 const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined;
@@ -21,11 +21,11 @@ function createMissingEnvProxy(): PrismaClient {
 
 export const prisma: PrismaClient = connectionString
   ? globalForPrisma.prisma ??
-    new PrismaClient({
-      adapter:
-        (globalForPrisma.prismaAdapter ??=
-          new PrismaPg({ connectionString })),
-    })
+  new PrismaClient({
+    adapter:
+      (globalForPrisma.prismaAdapter ??=
+        new PrismaPg({ connectionString })),
+  })
   : createMissingEnvProxy();
 
 if (process.env.NODE_ENV !== "production" && connectionString) {

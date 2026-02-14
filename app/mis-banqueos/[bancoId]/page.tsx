@@ -6,7 +6,7 @@ import { BarChart3Icon, InfoIcon } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { BanqueoTipoCreado } from "@/generated/prisma/client";
+import { BanqueoTipoCreado } from "@/prisma/generated";
 import { getServerAuthSession } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { resolveUsuarioEstudianteIdFromSession } from "@/lib/subscription-access";

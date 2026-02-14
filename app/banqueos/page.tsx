@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 
-import { BanqueoTipo, BanqueoTipoCreado } from "@/generated/prisma/client";
+import { BanqueoTipo, BanqueoTipoCreado } from "@/prisma/generated";
 import { getServerAuthSession } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import {

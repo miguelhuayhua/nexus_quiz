@@ -7,7 +7,7 @@ import {
   PreguntaEstado,
   Prisma,
   ResultadoRespuesta,
-} from "@/generated/prisma/client";
+} from "@/prisma/generated";
 import { getServerAuthSession } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import {

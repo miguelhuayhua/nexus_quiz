@@ -7,7 +7,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { BanqueoTipo } from "@/generated/prisma/client";
+import { BanqueoTipo } from "@/prisma/generated";
 import { getServerAuthSession } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import {
@@ -44,9 +44,9 @@ function formatBanqueoId(id: string) {
 function resolveAttemptUserLabel(
   user:
     | {
-        usuario: string;
-        correo: string;
-      }
+      usuario: string;
+      correo: string;
+    }
     | null
     | undefined,
 ) {
@@ -135,14 +135,14 @@ export default async function BanqueoDetailPage({
 
   const usuarios = usuarioIds.length
     ? await prisma.usuariosEstudiantes.findMany({
-        where: { id: { in: usuarioIds } },
-        select: {
-          id: true,
-          avatar: true,
-          usuario: true,
-          correo: true,
-        },
-      })
+      where: { id: { in: usuarioIds } },
+      select: {
+        id: true,
+        avatar: true,
+        usuario: true,
+        correo: true,
+      },
+    })
     : [];
 
   const usuariosById = new Map(usuarios.map((item) => [item.id, item]));
@@ -275,17 +275,17 @@ export default async function BanqueoDetailPage({
                               : null;
                             const label = resolveAttemptUserLabel(user);
                             return (
-                          <div className="flex items-center gap-2">
-                            <Avatar className="size-8 border">
-                              <AvatarImage alt={label} src={user?.avatar ?? ""} />
-                              <AvatarFallback>
-                                {label.slice(0, 1).toUpperCase()}
-                              </AvatarFallback>
-                            </Avatar>
-                            <div className="min-w-0">
-                              <p className="truncate font-medium">{label}</p>
-                            </div>
-                          </div>
+                              <div className="flex items-center gap-2">
+                                <Avatar className="size-8 border">
+                                  <AvatarImage alt={label} src={user?.avatar ?? ""} />
+                                  <AvatarFallback>
+                                    {label.slice(0, 1).toUpperCase()}
+                                  </AvatarFallback>
+                                </Avatar>
+                                <div className="min-w-0">
+                                  <p className="truncate font-medium">{label}</p>
+                                </div>
+                              </div>
                             );
                           })()}
                         </td>

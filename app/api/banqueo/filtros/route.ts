@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-import { PreguntaDificultad, PreguntaEstado } from "@/generated/prisma/client";
+import { PreguntaDificultad, PreguntaEstado } from "@/prisma/generated";
 import { getServerAuthSession } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 

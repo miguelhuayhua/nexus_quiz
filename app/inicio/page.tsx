@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
-import { EstadoIntento } from "@/generated/prisma/client";
+import { EstadoIntento } from "@/prisma/generated";
 import {
     PlayIcon,
     SparklesIcon,

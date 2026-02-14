@@ -1,7 +1,7 @@
 ﻿import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 
-import { BanqueoTipo, PreguntaDificultad, PreguntaEstado, ResultadoRespuesta } from "@/generated/prisma/client";
+import { BanqueoTipo, PreguntaDificultad, PreguntaEstado, ResultadoRespuesta } from "@/prisma/generated";
 import { prisma } from "@/lib/prisma";
 import { getServerAuthSession } from "@/lib/auth";
 import { parseRespuesta } from "@/lib/evaluacion-eval";

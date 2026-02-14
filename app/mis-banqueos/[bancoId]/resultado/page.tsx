@@ -2,7 +2,7 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 
-import { BanqueoTipo, BanqueoTipoCreado, PreguntaEstado, ResultadoRespuesta } from "@/generated/prisma/client";
+import { BanqueoTipo, BanqueoTipoCreado, PreguntaEstado, ResultadoRespuesta } from "@/prisma/generated";
 import { prisma } from "@/lib/prisma";
 import { getServerAuthSession } from "@/lib/auth";
 import { compareRespuesta, normalizeSolucion, parseRespuesta } from "@/lib/evaluacion-eval";
@@ -130,39 +130,39 @@ export default async function EvaluacionResultadoPage({ params, searchParams }: 
 
   const intentoFinal = intentoId
     ? await prisma.intentos.findFirst({
-        where: {
-          id: intentoId,
-          banqueoId: banco.id,
-          usuarioEstudianteId,
-        },
-        include: {
-          respuestasIntentos: {
-            select: {
-              preguntaId: true,
-              respuesta: true,
-              esCorrecta: true,
-              resultado: true,
-            },
+      where: {
+        id: intentoId,
+        banqueoId: banco.id,
+        usuarioEstudianteId,
+      },
+      include: {
+        respuestasIntentos: {
+          select: {
+            preguntaId: true,
+            respuesta: true,
+            esCorrecta: true,
+            resultado: true,
           },
         },
-      })
+      },
+    })
     : await prisma.intentos.findFirst({
-        where: {
-          banqueoId: banco.id,
-          usuarioEstudianteId,
-        },
-        include: {
-          respuestasIntentos: {
-            select: {
-              preguntaId: true,
-              respuesta: true,
-              esCorrecta: true,
-              resultado: true,
-            },
+      where: {
+        banqueoId: banco.id,
+        usuarioEstudianteId,
+      },
+      include: {
+        respuestasIntentos: {
+          select: {
+            preguntaId: true,
+            respuesta: true,
+            esCorrecta: true,
+            resultado: true,
           },
         },
-        orderBy: [{ actualizadoEn: "desc" }, { creadoEn: "desc" }],
-      });
+      },
+      orderBy: [{ actualizadoEn: "desc" }, { creadoEn: "desc" }],
+    });
 
   if (!intentoFinal) {
     return notFound();
