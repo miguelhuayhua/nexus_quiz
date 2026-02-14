@@ -6,6 +6,7 @@
     "dev": "next dev --port 3002",
     "build": "next build",
     "start": "next start ",
+    "postinstall": "prisma generate",
     "lint": "eslint",
     "db:dificultad:trigger": "prisma db execute --file prisma/sql/preguntas_dificultad_trigger.sql",
     "db:dificultad:backfill": "prisma db execute --file prisma/sql/preguntas_dificultad_backfill.sql"
