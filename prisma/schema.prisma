@@ -1,6 +1,6 @@
 generator client {
-  provider = "prisma-client"
-  output   = "../generated/prisma"
+  provider = "prisma-client-js"
+  output   = "./generated"
 }
 
 datasource db {
@@ -8,7 +8,7 @@ datasource db {
 }
 
 model auditoria {
-  id                      String                  @id
+  id                      String                  @id @default(uuid())
   tabla                   Tabla
   registroId              String?
   accion                  AccionAuditoria
@@ -25,7 +25,7 @@ model auditoria {
 }
 
 model beneficiosCursos {
-  id          String   @id
+  id          String   @id @default(uuid())
   cursoId     String
   descripcion String
   orden       Int
@@ -36,7 +36,7 @@ model beneficiosCursos {
 }
 
 model calificaciones {
-  id           String      @id
+  id           String      @id @default(uuid())
   aprobado     Boolean     @default(false)
   comentarios  String?
   estudianteId String
@@ -51,7 +51,7 @@ model calificaciones {
 }
 
 model categorias {
-  id               String             @id
+  id               String             @id @default(uuid())
   nombre           String             @unique
   descripcion      String?
   creadoEn         DateTime           @default(now())
@@ -62,7 +62,7 @@ model categorias {
 }
 
 model categoriasCursos {
-  id          String     @id
+  id          String     @id @default(uuid())
   categoriaId String
   cursoId     String
   categorias  categorias @relation(fields: [categoriaId], references: [id], onDelete: Cascade)
@@ -74,7 +74,7 @@ model categoriasCursos {
 }
 
 model certificados {
-  id              String          @id
+  id              String          @id @default(uuid())
   codigoUnico     String          @unique
   edicionId       String
   estudianteId    String
@@ -88,7 +88,7 @@ model certificados {
 }
 
 model clases {
-  id              String          @id
+  id              String          @id @default(uuid())
   edicionId       String
   descripcion     String
   duracion        Int?
@@ -107,7 +107,7 @@ model clases {
 }
 
 model compras {
-  id                    String               @id
+  id                    String               @id @default(uuid())
   edicionId             String
   monto                 Float
   moneda                String               @default("USD")
@@ -128,7 +128,7 @@ model compras {
 }
 
 model cursos {
-  id               String             @id
+  id               String             @id @default(uuid())
   descripcion      String
   titulo           String
   urlMiniatura     String?
@@ -150,7 +150,7 @@ model cursos {
 }
 
 model docente {
-  id                      String                  @id
+  id                      String                  @id @default(uuid())
   nombre_completo         String
   celular                 String?
   especialidad            String
@@ -167,7 +167,7 @@ model docente {
 }
 
 model edicionesCursos {
-  id            String          @id
+  id            String          @id @default(uuid())
   codigo        String
   cursoId       String
   descripcion   String?
@@ -199,7 +199,7 @@ model edicionesCursos {
 }
 
 model estudiantes {
-  id                  String               @id
+  id                  String               @id @default(uuid())
   apellido            String?
   celular             String?
   pais                String               @default("")
@@ -218,7 +218,7 @@ model estudiantes {
 }
 
 model temas {
-  id            String      @id
+  id            String      @id @default(uuid())
   titulo        String
   descripcion   String?
   creadoEn      DateTime    @default(now())
@@ -232,7 +232,7 @@ model temas {
 }
 
 model examenes {
-  id              String           @id
+  id              String           @id @default(uuid())
   edicionId       String
   descripcion     String?
   fechaDisponible DateTime
@@ -249,7 +249,7 @@ model examenes {
 }
 
 model grabaciones {
-  id                      String                  @id
+  id                      String                  @id @default(uuid())
   claseId                 String
   usuarioId               String
   fechaInicio             DateTime                @default(now())
@@ -266,7 +266,7 @@ model grabaciones {
 }
 
 model inscripciones {
-  id              String          @id
+  id              String          @id @default(uuid())
   edicionId       String
   estado          Boolean         @default(true)
   estudianteId    String
@@ -282,7 +282,7 @@ model inscripciones {
 }
 
 model materiales {
-  id       String       @id
+  id       String       @id @default(uuid())
   claseId  String
   tipo     TipoMaterial @default(PDF)
   titulo   String
@@ -295,7 +295,7 @@ model materiales {
 }
 
 model objetivosCursos {
-  id          String   @id
+  id          String   @id @default(uuid())
   cursoId     String
   descripcion String
   orden       Int
@@ -306,7 +306,7 @@ model objetivosCursos {
 }
 
 model pagosDocentes {
-  id              String          @id
+  id              String          @id @default(uuid())
   docenteId       String
   edicionId       String          @unique
   monto           Float
@@ -324,7 +324,7 @@ model pagosDocentes {
 }
 
 model preciosCursos {
-  id                  String          @id
+  id                  String          @id @default(uuid())
   edicionId           String
   esDescuento         Boolean         @default(false)
   esPrecioDefault     Boolean         @default(false)
@@ -344,7 +344,7 @@ model preciosCursos {
 }
 
 model preguntas {
-  id                      String                @id
+  id                      String                @id @default(uuid())
   codigo                  String                @unique
   enunciado               String
   explicacion             String?
@@ -394,7 +394,7 @@ model reaccionesPreguntas {
 }
 
 model requisitosCursos {
-  id          String   @id
+  id          String   @id @default(uuid())
   cursoId     String
   descripcion String
   orden       Int
@@ -405,7 +405,7 @@ model requisitosCursos {
 }
 
 model reviewsCursos {
-  id                    String               @id
+  id                    String               @id @default(uuid())
   cursoId               String
   rating                Int
   comentario            String?
@@ -421,7 +421,7 @@ model reviewsCursos {
 }
 
 model usuariosAdministradores {
-  id            String        @id
+  id            String        @id @default(uuid())
   correo        String        @unique
   contrasena    String
   encargado     String?
@@ -438,7 +438,7 @@ model usuariosAdministradores {
 }
 
 model usuariosEstudiantes {
-  id                  String                @id
+  id                  String                @id @default(uuid())
   correo              String                @unique
   contrasena          String
   usuario             String                @unique
@@ -461,7 +461,7 @@ model usuariosEstudiantes {
 }
 
 model areas {
-  id            String      @id
+  id            String      @id @default(uuid())
   titulo        String
   descripcion   String?
   creadoEn      DateTime    @default(now())
@@ -473,7 +473,7 @@ model areas {
 }
 
 model banqueo {
-  id              String            @id
+  id              String            @id @default(uuid())
   titulo          String
   tipo            BanqueoTipo
   tipoCreado      BanqueoTipoCreado
@@ -487,7 +487,7 @@ model banqueo {
 }
 
 model capitulos {
-  id            String      @id
+  id            String      @id @default(uuid())
   titulo        String
   descripcion   String?
   creadoEn      DateTime    @default(now())
@@ -502,7 +502,7 @@ model capitulos {
 }
 
 model intentos {
-  id                  String               @id
+  id                  String               @id @default(uuid())
   banqueoId           String
   tiempoDuracion      Int
   correctas           Int                  @default(0)
@@ -521,7 +521,7 @@ model intentos {
 }
 
 model respuestasIntentos {
-  id                 String             @id
+  id                 String             @id @default(uuid())
   intentoId          String
   preguntaId         String
   respuesta          Json?
@@ -545,7 +545,7 @@ model respuestasIntentos {
 }
 
 model repasoRegistros {
-  id                  String              @id
+  id                  String              @id @default(uuid())
   usuarioEstudianteId String
   banqueoId           String
   preguntaId          String
@@ -562,7 +562,7 @@ model repasoRegistros {
 }
 
 model suscripciones {
-  id                  String              @id
+  id                  String              @id @default(uuid())
   usuarioEstudianteId String
   montoUsd            Float
   fechaInicio         DateTime            @default(now())
