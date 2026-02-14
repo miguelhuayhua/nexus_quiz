@@ -207,13 +207,29 @@ export default async function EvaluacionPage({ params, searchParams }: Props) {
         },
       },
     })
-    : null;
+    : await prisma.intentos.findFirst({
+      where: {
+        banqueoId: banco.id,
+        usuarioEstudianteId,
+        estado: EstadoIntento.EN_PROGRESO,
+      },
+      include: {
+        respuestasIntentos: {
+          select: {
+            preguntaId: true,
+            respuesta: true,
+          },
+        },
+      },
+    });
+
+  let isResumed = !!intentoActivo;
 
   if (!intentoActivo) {
     if (intentosCount >= 3) {
       return (
         <main className="mx-auto flex min-h-[60vh] w-full max-w-2xl flex-col items-center justify-center gap-4 p-6 text-center">
-          <h1 className="font-semibold text-2xl">Límite de intentos alcanzado</h1>
+          <h1 className="text-2xl font-semibold">Límite de intentos alcanzado</h1>
           <p className="text-muted-foreground">
             Ya completaste los 3 intentos permitidos para este banqueo.
           </p>
@@ -242,6 +258,8 @@ export default async function EvaluacionPage({ params, searchParams }: Props) {
         },
       },
     });
+
+    isResumed = false;
 
     if (banco.preguntas.length > 0) {
       await prisma.respuestasIntentos.createMany({
@@ -284,10 +302,10 @@ export default async function EvaluacionPage({ params, searchParams }: Props) {
     tipo: banco.tipo,
     estado: "DISPONIBLE",
     gestion: gestiones.length > 0 ? Math.max(...gestiones) : new Date().getFullYear(),
-    tiempoSegundos: banco.duracion,
-    initialTimeLeft: Math.max(0, banco.duracion - Math.max(0, intentoActivo.tiempoDuracion)),
+    tiempoSegundos: banco.duracion * 60,
+    initialTimeLeft: Math.max(0, (banco.duracion * 60) - Math.max(0, intentoActivo.tiempoDuracion)),
     initialCurrentIndex: 0,
-    initialIsPaused: false,
+    initialIsPaused: isResumed,
     savedResponses,
     intentoId: intentoActivo.id,
     areas,

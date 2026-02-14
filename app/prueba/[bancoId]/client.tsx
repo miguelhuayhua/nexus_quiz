@@ -286,12 +286,14 @@ export default function EvaluacionTake({ evaluacion }: { evaluacion: EvaluacionF
     marcarFinalizado: boolean,
     showIndicator = false,
     overrideResponses?: Record<string, string>,
+    overrideIsPaused?: boolean,
   ) => {
     if (showIndicator) {
       setIsAutoSaving(true);
     }
     const nextResponses = overrideResponses ?? responsesRef.current;
-    persistLocalProgress({ responses: nextResponses });
+    const nextIsPaused = overrideIsPaused ?? isPausedRef.current;
+    persistLocalProgress({ responses: nextResponses, isPaused: nextIsPaused });
     try {
       const res = await fetch("/api/evaluacion/progreso", {
         method: "POST",
@@ -302,7 +304,7 @@ export default function EvaluacionTake({ evaluacion }: { evaluacion: EvaluacionF
           respuestas: nextResponses,
           finalizar: marcarFinalizado,
           tiempoConsumido: evaluacion.tiempoSegundos - timeLeftRef.current,
-          isPaused: isPausedRef.current,
+          isPaused: nextIsPaused,
           currentIndex: currentIndexRef.current,
           timeLeft: timeLeftRef.current,
         }),
@@ -699,8 +701,9 @@ export default function EvaluacionTake({ evaluacion }: { evaluacion: EvaluacionF
             <Button
               variant="outline"
               size="sm"
-              onClick={() => {
-                void handleSaveProgreso(false, false);
+              onClick={async () => {
+                setIsSaving(true);
+                await handleSaveProgreso(false, false, undefined, true);
                 router.push("/inicio");
               }}
             >

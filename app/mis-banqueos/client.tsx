@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { Loader2Icon, MessageCircleIcon, SparklesIcon, Trash2Icon } from "lucide-react";
+import { Loader2Icon, MessageCircleIcon, PlayIcon, SparklesIcon, Trash2Icon } from "lucide-react";
 import { toast } from "sonner";
 
 import {
@@ -40,6 +40,7 @@ type BanqueoItem = {
   areas: string[];
   minGestion: number | null;
   maxGestion: number | null;
+  activeIntentoId?: string | null;
 };
 
 export default function MisBanqueosClient({
@@ -157,7 +158,7 @@ export default function MisBanqueosClient({
                   <Badge variant="outline">PERSONAL</Badge>
                 </div>
                 <CardDescription>
-                  Tiempo: {Math.max(1, Math.ceil(item.duracion / 60))} min
+                  Tiempo: {item.duracion} min
                 </CardDescription>
               </CardHeader>
               <CardContent className="pt-0">
@@ -187,9 +188,21 @@ export default function MisBanqueosClient({
                   <Button className="flex-1" render={<Link href={`/mis-banqueos/${item.id}`} />} size="sm" variant="outline">
                     Detalles
                   </Button>
-                  <Button className="flex-1" render={<Link href={`/prueba/${item.id}`} />} size="sm">
-                    Intentar ahora
-                  </Button>
+                  {item.activeIntentoId ? (
+                    <Button
+                      className="flex-1"
+                      render={<Link href={`/prueba/${item.id}?intentoId=${item.activeIntentoId}`} />}
+                      size="sm"
+                      variant="secondary"
+                    >
+                      <PlayIcon className="mr-2 size-4" />
+                      Reanudar
+                    </Button>
+                  ) : (
+                    <Button className="flex-1" render={<Link href={`/prueba/${item.id}`} />} size="sm">
+                      Intentar ahora
+                    </Button>
+                  )}
                   <Button
                     onClick={() => setBanqueoToDeleteId(item.id)}
                     size="icon-sm"

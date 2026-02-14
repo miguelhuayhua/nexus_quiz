@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { LockIcon, SparklesIcon } from "lucide-react";
+import { LockIcon, PlayIcon, SparklesIcon } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -29,6 +29,7 @@ type BanqueoItem = {
   maxGestion: number | null;
   intentosRestantes?: number;
   intentosMaximos?: number;
+  activeIntentoId?: string | null;
 };
 
 function BanqueoList({
@@ -122,9 +123,21 @@ function BanqueoList({
                 <Button className="flex-1" render={<Link href={`/banqueos/${item.id}`} />} size="sm" variant="outline">
                   Detalles
                 </Button>
-                <Button className="flex-1" render={<Link href={`/prueba/${item.id}`} />} size="sm">
-                  Intentar ahora
-                </Button>
+                {item.activeIntentoId ? (
+                  <Button
+                    className="flex-1"
+                    render={<Link href={`/prueba/${item.id}?intentoId=${item.activeIntentoId}`} />}
+                    size="sm"
+                    variant="secondary"
+                  >
+                    <PlayIcon className="mr-2 size-4" />
+                    Reanudar
+                  </Button>
+                ) : (
+                  <Button className="flex-1" render={<Link href={`/prueba/${item.id}`} />} size="sm">
+                    Intentar ahora
+                  </Button>
+                )}
               </div>
             ) : (
               <Button className="w-full" disabled size="sm" variant="outline">

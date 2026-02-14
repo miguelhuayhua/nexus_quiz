@@ -98,7 +98,7 @@ export default async function InicioPage() {
         if (recentIntento?.banqueo) {
             const tiempoRestante = Math.max(
                 0,
-                recentIntento.banqueo.duracion - recentIntento.tiempoDuracion,
+                (recentIntento.banqueo.duracion * 60) - recentIntento.tiempoDuracion,
             );
             if (tiempoRestante > 0) {
                 lastUnfinishedTest = {

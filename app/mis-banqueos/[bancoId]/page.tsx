@@ -165,7 +165,7 @@ export default async function MisBanqueoDetailPage({
                 </div>
                 <div className="p-3">
                   <p className="font-semibold text-sm">Duracion</p>
-                  <p className="text-sm text-muted-foreground">{Math.max(1, Math.ceil(banqueo.duracion / 60))} min</p>
+                  <p className="text-sm text-muted-foreground">{banqueo.duracion} min</p>
                 </div>
                 <div className="p-3">
                   <p className="font-semibold text-sm">Preguntas</p>

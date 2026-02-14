@@ -224,7 +224,7 @@ export default function CrearBanqueoClient({ hasPro }: { hasPro: boolean }) {
         body: JSON.stringify({
           titulo: titulo.trim(),
           tipo: "FREE",
-          duracion: duracionNum * 60,
+          duracion: duracionNum,
           maxPreguntas: maxNum,
           preguntaIds: generatedQuestions.map((item) => item.id),
         }),

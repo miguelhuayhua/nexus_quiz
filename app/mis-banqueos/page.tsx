@@ -57,6 +57,25 @@ export default async function MisBanqueosPage() {
     },
   });
 
+  const activeIntentos = await prisma.intentos.findMany({
+    where: {
+      usuarioEstudianteId,
+      estado: "EN_PROGRESO",
+      banqueo: {
+        tipoCreado: BanqueoTipoCreado.ESTUDIANTE,
+      },
+    },
+    select: {
+      banqueoId: true,
+      id: true,
+    },
+  });
+
+  const activeAttemptsMap = new Map<string, string>();
+  for (const intento of activeIntentos) {
+    activeAttemptsMap.set(intento.banqueoId, intento.id);
+  }
+
   const items = banqueos.map((item) => {
     const temas = Array.from(
       new Set(item.preguntas.flatMap((p) => p.temas.map((t) => t.titulo))),
@@ -70,6 +89,7 @@ export default async function MisBanqueosPage() {
     const gestiones = Array.from(new Set(item.preguntas.map((p) => p.gestion)));
     const minGestion = gestiones.length ? Math.min(...gestiones) : null;
     const maxGestion = gestiones.length ? Math.max(...gestiones) : null;
+    const activeIntentoId = activeAttemptsMap.get(item.id) ?? null;
 
     return {
       id: item.id,
@@ -83,6 +103,7 @@ export default async function MisBanqueosPage() {
       areas,
       minGestion,
       maxGestion,
+      activeIntentoId,
     };
   });
 
