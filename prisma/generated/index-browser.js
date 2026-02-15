@@ -494,6 +494,56 @@ exports.Prisma.SuscripcionesScalarFieldEnum = {
   actualizadoEn: 'actualizadoEn'
 };
 
+exports.Prisma.EntregasScalarFieldEnum = {
+  id: 'id',
+  tareaId: 'tareaId',
+  estudianteId: 'estudianteId',
+  archivos: 'archivos',
+  comentarioAlumno: 'comentarioAlumno',
+  fechaEntrega: 'fechaEntrega',
+  nota: 'nota',
+  retroalimentacion: 'retroalimentacion',
+  estado: 'estado',
+  calificadoEn: 'calificadoEn',
+  calificadoPorId: 'calificadoPorId'
+};
+
+exports.Prisma.ForoComentariosScalarFieldEnum = {
+  id: 'id',
+  foroId: 'foroId',
+  estudianteId: 'estudianteId',
+  contenido: 'contenido',
+  creadoEn: 'creadoEn'
+};
+
+exports.Prisma.ForoRespuestasScalarFieldEnum = {
+  id: 'id',
+  comentarioId: 'comentarioId',
+  estudianteId: 'estudianteId',
+  contenido: 'contenido',
+  creadoEn: 'creadoEn'
+};
+
+exports.Prisma.ForosScalarFieldEnum = {
+  id: 'id',
+  cursoId: 'cursoId',
+  creadoEn: 'creadoEn'
+};
+
+exports.Prisma.TareasScalarFieldEnum = {
+  id: 'id',
+  edicionId: 'edicionId',
+  titulo: 'titulo',
+  descripcion: 'descripcion',
+  fechaApertura: 'fechaApertura',
+  fechaLimite: 'fechaLimite',
+  notaMaxima: 'notaMaxima',
+  estado: 'estado',
+  creadoEn: 'creadoEn',
+  actualizadoEn: 'actualizadoEn',
+  recurso: 'recurso'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -552,7 +602,9 @@ exports.Tabla = exports.$Enums.Tabla = {
   TEMA: 'TEMA',
   PREGUNTA: 'PREGUNTA',
   SUSCRIPCION: 'SUSCRIPCION',
-  PAGOS_DOCENTE: 'PAGOS_DOCENTE'
+  PAGOS_DOCENTE: 'PAGOS_DOCENTE',
+  TAREAS: 'TAREAS',
+  ENTREGAS: 'ENTREGAS'
 };
 
 exports.AccionAuditoria = exports.$Enums.AccionAuditoria = {
@@ -673,6 +725,18 @@ exports.EstadoSuscripcion = exports.$Enums.EstadoSuscripcion = {
   INACTIVA: 'INACTIVA'
 };
 
+exports.EntregaEstado = exports.$Enums.EntregaEstado = {
+  ENVIADO: 'ENVIADO',
+  CALIFICADO: 'CALIFICADO',
+  RECHAZADO: 'RECHAZADO'
+};
+
+exports.TareaEstado = exports.$Enums.TareaEstado = {
+  BORRADOR: 'BORRADOR',
+  PUBLICADA: 'PUBLICADA',
+  CERRADA: 'CERRADA'
+};
+
 exports.Prisma.ModelName = {
   auditoria: 'auditoria',
   beneficiosCursos: 'beneficiosCursos',
@@ -706,7 +770,12 @@ exports.Prisma.ModelName = {
   intentos: 'intentos',
   respuestasIntentos: 'respuestasIntentos',
   repasoRegistros: 'repasoRegistros',
-  suscripciones: 'suscripciones'
+  suscripciones: 'suscripciones',
+  entregas: 'entregas',
+  foroComentarios: 'foroComentarios',
+  foroRespuestas: 'foroRespuestas',
+  foros: 'foros',
+  tareas: 'tareas'
 };
 
 /**

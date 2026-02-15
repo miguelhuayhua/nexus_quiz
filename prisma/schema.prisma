@@ -142,6 +142,7 @@ model cursos {
   beneficiosCursos beneficiosCursos[]
   categoriasCursos categoriasCursos[]
   edicionesCursos  edicionesCursos[]
+  foros            foros?
   objetivosCursos  objetivosCursos[]
   requisitosCursos requisitosCursos[]
   reviewsCursos    reviewsCursos[]
@@ -190,6 +191,7 @@ model edicionesCursos {
   inscripciones inscripciones[]
   pagosDocentes pagosDocentes?
   preciosCursos preciosCursos[]
+  tareas        tareas[]
 
   @@unique([cursoId, codigo, docenteId])
   @@index([codigo])
@@ -211,6 +213,9 @@ model estudiantes {
   nroUpdates          Int                  @default(0)
   calificaciones      calificaciones[]
   certificados        certificados[]
+  entregas            entregas[]
+  foroComentarios     foroComentarios[]
+  foroRespuestas      foroRespuestas[]
   inscripciones       inscripciones[]
   usuariosEstudiantes usuariosEstudiantes?
 
@@ -577,6 +582,80 @@ model suscripciones {
   @@index([usuarioEstudianteId])
 }
 
+model entregas {
+  id                String        @id
+  tareaId           String
+  estudianteId      String
+  archivos          Json?
+  comentarioAlumno  String?
+  fechaEntrega      DateTime      @default(now())
+  nota              Float?
+  retroalimentacion String?
+  estado            EntregaEstado @default(ENVIADO)
+  calificadoEn      DateTime?
+  calificadoPorId   String?
+  estudiantes       estudiantes   @relation(fields: [estudianteId], references: [id], onDelete: Cascade)
+  tareas            tareas        @relation(fields: [tareaId], references: [id], onDelete: Cascade)
+
+  @@unique([tareaId, estudianteId])
+  @@index([estado])
+  @@index([estudianteId])
+}
+
+model foroComentarios {
+  id             String           @id
+  foroId         String
+  estudianteId   String
+  contenido      String
+  creadoEn       DateTime         @default(now())
+  estudiantes    estudiantes      @relation(fields: [estudianteId], references: [id], onDelete: Cascade)
+  foros          foros            @relation(fields: [foroId], references: [id], onDelete: Cascade)
+  foroRespuestas foroRespuestas[]
+
+  @@index([estudianteId])
+  @@index([foroId])
+}
+
+model foroRespuestas {
+  id              String          @id
+  comentarioId    String
+  estudianteId    String
+  contenido       String
+  creadoEn        DateTime        @default(now())
+  foroComentarios foroComentarios @relation(fields: [comentarioId], references: [id], onDelete: Cascade)
+  estudiantes     estudiantes     @relation(fields: [estudianteId], references: [id], onDelete: Cascade)
+
+  @@index([comentarioId])
+  @@index([estudianteId])
+}
+
+model foros {
+  id              String            @id
+  cursoId         String            @unique
+  creadoEn        DateTime          @default(now())
+  foroComentarios foroComentarios[]
+  cursos          cursos            @relation(fields: [cursoId], references: [id], onDelete: Cascade)
+}
+
+model tareas {
+  id              String          @id
+  edicionId       String
+  titulo          String
+  descripcion     String?
+  fechaApertura   DateTime        @default(now())
+  fechaLimite     DateTime
+  notaMaxima      Float           @default(20.0)
+  estado          TareaEstado     @default(BORRADOR)
+  creadoEn        DateTime        @default(now())
+  actualizadoEn   DateTime
+  recurso         String?
+  entregas        entregas[]
+  edicionesCursos edicionesCursos @relation(fields: [edicionId], references: [id], onDelete: Cascade)
+
+  @@index([edicionId])
+  @@index([fechaLimite])
+}
+
 enum AccionAuditoria {
   CREAR
   ACTUALIZAR
@@ -658,6 +737,8 @@ enum Tabla {
   PREGUNTA
   SUSCRIPCION
   PAGOS_DOCENTE
+  TAREAS
+  ENTREGAS
 }
 
 enum TipoCertificado {
@@ -738,4 +819,16 @@ enum EstadoIntento {
 enum TipoReaccion {
   LIKE
   DISLIKE
+}
+
+enum EntregaEstado {
+  ENVIADO
+  CALIFICADO
+  RECHAZADO
+}
+
+enum TareaEstado {
+  BORRADOR
+  PUBLICADA
+  CERRADA
 }

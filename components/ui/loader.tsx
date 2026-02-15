@@ -40,10 +40,20 @@ export function Loader({
 
         {variant === "cube" && (
           <motion.div
-            className="absolute inset-0 bg-linear-to-r from-primary to-secondary  shadow-[0_0_4px_rgba(255,255,255,0.6)] dark:shadow-[0_0_4px_rgba(255,255,255,0.6)]"
-            animate={{ rotateX: [0, 180, 0], rotateY: [0, 180, 0] }}
-            transition={{ repeat: Infinity, duration: 1.1, ease: "linear" }}
-          />
+            className="absolute inset-0 flex items-center justify-center pt-1"
+            animate={{ rotateY: [0, 360] }}
+            transition={{
+              repeat: Infinity,
+              duration: 2,
+              ease: [0.6, 0.05, -0.01, 0.9], // Custom bezier for slow start, fast spin
+            }}
+          >
+            <img
+              src="/x.png"
+              alt="Loading..."
+              className="h-full w-full object-contain drop-shadow-[0_0_8px_rgba(255,255,255,0.5)] dark:drop-shadow-[0_0_8px_rgba(255,255,255,0.5)]"
+            />
+          </motion.div>
         )}
 
         {variant === "dual-ring" && (

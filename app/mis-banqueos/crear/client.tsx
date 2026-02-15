@@ -256,7 +256,7 @@ export default function CrearBanqueoClient({ hasPro }: { hasPro: boolean }) {
       {isSubmitting && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-background/70 backdrop-blur-sm">
           <div className="flex flex-col items-center gap-3">
-            <Loader size={40} variant="cube" />
+            <Loader size={120} variant="cube" />
             <p className="text-sm font-medium">Creando banqueo...</p>
           </div>
         </div>

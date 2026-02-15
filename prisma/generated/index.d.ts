@@ -178,6 +178,31 @@ export type repasoRegistros = $Result.DefaultSelection<Prisma.$repasoRegistrosPa
  * 
  */
 export type suscripciones = $Result.DefaultSelection<Prisma.$suscripcionesPayload>
+/**
+ * Model entregas
+ * 
+ */
+export type entregas = $Result.DefaultSelection<Prisma.$entregasPayload>
+/**
+ * Model foroComentarios
+ * 
+ */
+export type foroComentarios = $Result.DefaultSelection<Prisma.$foroComentariosPayload>
+/**
+ * Model foroRespuestas
+ * 
+ */
+export type foroRespuestas = $Result.DefaultSelection<Prisma.$foroRespuestasPayload>
+/**
+ * Model foros
+ * 
+ */
+export type foros = $Result.DefaultSelection<Prisma.$forosPayload>
+/**
+ * Model tareas
+ * 
+ */
+export type tareas = $Result.DefaultSelection<Prisma.$tareasPayload>
 
 /**
  * Enums
@@ -281,7 +306,9 @@ export const Tabla: {
   TEMA: 'TEMA',
   PREGUNTA: 'PREGUNTA',
   SUSCRIPCION: 'SUSCRIPCION',
-  PAGOS_DOCENTE: 'PAGOS_DOCENTE'
+  PAGOS_DOCENTE: 'PAGOS_DOCENTE',
+  TAREAS: 'TAREAS',
+  ENTREGAS: 'ENTREGAS'
 };
 
 export type Tabla = (typeof Tabla)[keyof typeof Tabla]
@@ -399,6 +426,24 @@ export const TipoReaccion: {
 
 export type TipoReaccion = (typeof TipoReaccion)[keyof typeof TipoReaccion]
 
+
+export const EntregaEstado: {
+  ENVIADO: 'ENVIADO',
+  CALIFICADO: 'CALIFICADO',
+  RECHAZADO: 'RECHAZADO'
+};
+
+export type EntregaEstado = (typeof EntregaEstado)[keyof typeof EntregaEstado]
+
+
+export const TareaEstado: {
+  BORRADOR: 'BORRADOR',
+  PUBLICADA: 'PUBLICADA',
+  CERRADA: 'CERRADA'
+};
+
+export type TareaEstado = (typeof TareaEstado)[keyof typeof TareaEstado]
+
 }
 
 export type AccionAuditoria = $Enums.AccionAuditoria
@@ -472,6 +517,14 @@ export const EstadoIntento: typeof $Enums.EstadoIntento
 export type TipoReaccion = $Enums.TipoReaccion
 
 export const TipoReaccion: typeof $Enums.TipoReaccion
+
+export type EntregaEstado = $Enums.EntregaEstado
+
+export const EntregaEstado: typeof $Enums.EntregaEstado
+
+export type TareaEstado = $Enums.TareaEstado
+
+export const TareaEstado: typeof $Enums.TareaEstado
 
 /**
  * ##  Prisma Client ʲˢ
@@ -919,6 +972,56 @@ export class PrismaClient<
     * ```
     */
   get suscripciones(): Prisma.suscripcionesDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.entregas`: Exposes CRUD operations for the **entregas** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Entregases
+    * const entregases = await prisma.entregas.findMany()
+    * ```
+    */
+  get entregas(): Prisma.entregasDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.foroComentarios`: Exposes CRUD operations for the **foroComentarios** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more ForoComentarios
+    * const foroComentarios = await prisma.foroComentarios.findMany()
+    * ```
+    */
+  get foroComentarios(): Prisma.foroComentariosDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.foroRespuestas`: Exposes CRUD operations for the **foroRespuestas** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more ForoRespuestas
+    * const foroRespuestas = await prisma.foroRespuestas.findMany()
+    * ```
+    */
+  get foroRespuestas(): Prisma.foroRespuestasDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.foros`: Exposes CRUD operations for the **foros** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Foros
+    * const foros = await prisma.foros.findMany()
+    * ```
+    */
+  get foros(): Prisma.forosDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.tareas`: Exposes CRUD operations for the **tareas** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Tareas
+    * const tareas = await prisma.tareas.findMany()
+    * ```
+    */
+  get tareas(): Prisma.tareasDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -1385,7 +1488,12 @@ export namespace Prisma {
     intentos: 'intentos',
     respuestasIntentos: 'respuestasIntentos',
     repasoRegistros: 'repasoRegistros',
-    suscripciones: 'suscripciones'
+    suscripciones: 'suscripciones',
+    entregas: 'entregas',
+    foroComentarios: 'foroComentarios',
+    foroRespuestas: 'foroRespuestas',
+    foros: 'foros',
+    tareas: 'tareas'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -1401,7 +1509,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "auditoria" | "beneficiosCursos" | "calificaciones" | "categorias" | "categoriasCursos" | "certificados" | "clases" | "compras" | "cursos" | "docente" | "edicionesCursos" | "estudiantes" | "temas" | "examenes" | "grabaciones" | "inscripciones" | "materiales" | "objetivosCursos" | "pagosDocentes" | "preciosCursos" | "preguntas" | "reaccionesPreguntas" | "requisitosCursos" | "reviewsCursos" | "usuariosAdministradores" | "usuariosEstudiantes" | "areas" | "banqueo" | "capitulos" | "intentos" | "respuestasIntentos" | "repasoRegistros" | "suscripciones"
+      modelProps: "auditoria" | "beneficiosCursos" | "calificaciones" | "categorias" | "categoriasCursos" | "certificados" | "clases" | "compras" | "cursos" | "docente" | "edicionesCursos" | "estudiantes" | "temas" | "examenes" | "grabaciones" | "inscripciones" | "materiales" | "objetivosCursos" | "pagosDocentes" | "preciosCursos" | "preguntas" | "reaccionesPreguntas" | "requisitosCursos" | "reviewsCursos" | "usuariosAdministradores" | "usuariosEstudiantes" | "areas" | "banqueo" | "capitulos" | "intentos" | "respuestasIntentos" | "repasoRegistros" | "suscripciones" | "entregas" | "foroComentarios" | "foroRespuestas" | "foros" | "tareas"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -3847,6 +3955,376 @@ export namespace Prisma {
           }
         }
       }
+      entregas: {
+        payload: Prisma.$entregasPayload<ExtArgs>
+        fields: Prisma.entregasFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.entregasFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$entregasPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.entregasFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$entregasPayload>
+          }
+          findFirst: {
+            args: Prisma.entregasFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$entregasPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.entregasFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$entregasPayload>
+          }
+          findMany: {
+            args: Prisma.entregasFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$entregasPayload>[]
+          }
+          create: {
+            args: Prisma.entregasCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$entregasPayload>
+          }
+          createMany: {
+            args: Prisma.entregasCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.entregasCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$entregasPayload>[]
+          }
+          delete: {
+            args: Prisma.entregasDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$entregasPayload>
+          }
+          update: {
+            args: Prisma.entregasUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$entregasPayload>
+          }
+          deleteMany: {
+            args: Prisma.entregasDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.entregasUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.entregasUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$entregasPayload>[]
+          }
+          upsert: {
+            args: Prisma.entregasUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$entregasPayload>
+          }
+          aggregate: {
+            args: Prisma.EntregasAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateEntregas>
+          }
+          groupBy: {
+            args: Prisma.entregasGroupByArgs<ExtArgs>
+            result: $Utils.Optional<EntregasGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.entregasCountArgs<ExtArgs>
+            result: $Utils.Optional<EntregasCountAggregateOutputType> | number
+          }
+        }
+      }
+      foroComentarios: {
+        payload: Prisma.$foroComentariosPayload<ExtArgs>
+        fields: Prisma.foroComentariosFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.foroComentariosFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$foroComentariosPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.foroComentariosFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$foroComentariosPayload>
+          }
+          findFirst: {
+            args: Prisma.foroComentariosFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$foroComentariosPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.foroComentariosFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$foroComentariosPayload>
+          }
+          findMany: {
+            args: Prisma.foroComentariosFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$foroComentariosPayload>[]
+          }
+          create: {
+            args: Prisma.foroComentariosCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$foroComentariosPayload>
+          }
+          createMany: {
+            args: Prisma.foroComentariosCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.foroComentariosCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$foroComentariosPayload>[]
+          }
+          delete: {
+            args: Prisma.foroComentariosDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$foroComentariosPayload>
+          }
+          update: {
+            args: Prisma.foroComentariosUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$foroComentariosPayload>
+          }
+          deleteMany: {
+            args: Prisma.foroComentariosDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.foroComentariosUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.foroComentariosUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$foroComentariosPayload>[]
+          }
+          upsert: {
+            args: Prisma.foroComentariosUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$foroComentariosPayload>
+          }
+          aggregate: {
+            args: Prisma.ForoComentariosAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateForoComentarios>
+          }
+          groupBy: {
+            args: Prisma.foroComentariosGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ForoComentariosGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.foroComentariosCountArgs<ExtArgs>
+            result: $Utils.Optional<ForoComentariosCountAggregateOutputType> | number
+          }
+        }
+      }
+      foroRespuestas: {
+        payload: Prisma.$foroRespuestasPayload<ExtArgs>
+        fields: Prisma.foroRespuestasFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.foroRespuestasFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$foroRespuestasPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.foroRespuestasFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$foroRespuestasPayload>
+          }
+          findFirst: {
+            args: Prisma.foroRespuestasFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$foroRespuestasPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.foroRespuestasFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$foroRespuestasPayload>
+          }
+          findMany: {
+            args: Prisma.foroRespuestasFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$foroRespuestasPayload>[]
+          }
+          create: {
+            args: Prisma.foroRespuestasCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$foroRespuestasPayload>
+          }
+          createMany: {
+            args: Prisma.foroRespuestasCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.foroRespuestasCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$foroRespuestasPayload>[]
+          }
+          delete: {
+            args: Prisma.foroRespuestasDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$foroRespuestasPayload>
+          }
+          update: {
+            args: Prisma.foroRespuestasUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$foroRespuestasPayload>
+          }
+          deleteMany: {
+            args: Prisma.foroRespuestasDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.foroRespuestasUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.foroRespuestasUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$foroRespuestasPayload>[]
+          }
+          upsert: {
+            args: Prisma.foroRespuestasUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$foroRespuestasPayload>
+          }
+          aggregate: {
+            args: Prisma.ForoRespuestasAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateForoRespuestas>
+          }
+          groupBy: {
+            args: Prisma.foroRespuestasGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ForoRespuestasGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.foroRespuestasCountArgs<ExtArgs>
+            result: $Utils.Optional<ForoRespuestasCountAggregateOutputType> | number
+          }
+        }
+      }
+      foros: {
+        payload: Prisma.$forosPayload<ExtArgs>
+        fields: Prisma.forosFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.forosFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$forosPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.forosFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$forosPayload>
+          }
+          findFirst: {
+            args: Prisma.forosFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$forosPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.forosFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$forosPayload>
+          }
+          findMany: {
+            args: Prisma.forosFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$forosPayload>[]
+          }
+          create: {
+            args: Prisma.forosCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$forosPayload>
+          }
+          createMany: {
+            args: Prisma.forosCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.forosCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$forosPayload>[]
+          }
+          delete: {
+            args: Prisma.forosDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$forosPayload>
+          }
+          update: {
+            args: Prisma.forosUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$forosPayload>
+          }
+          deleteMany: {
+            args: Prisma.forosDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.forosUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.forosUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$forosPayload>[]
+          }
+          upsert: {
+            args: Prisma.forosUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$forosPayload>
+          }
+          aggregate: {
+            args: Prisma.ForosAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateForos>
+          }
+          groupBy: {
+            args: Prisma.forosGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ForosGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.forosCountArgs<ExtArgs>
+            result: $Utils.Optional<ForosCountAggregateOutputType> | number
+          }
+        }
+      }
+      tareas: {
+        payload: Prisma.$tareasPayload<ExtArgs>
+        fields: Prisma.tareasFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.tareasFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$tareasPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.tareasFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$tareasPayload>
+          }
+          findFirst: {
+            args: Prisma.tareasFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$tareasPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.tareasFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$tareasPayload>
+          }
+          findMany: {
+            args: Prisma.tareasFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$tareasPayload>[]
+          }
+          create: {
+            args: Prisma.tareasCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$tareasPayload>
+          }
+          createMany: {
+            args: Prisma.tareasCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.tareasCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$tareasPayload>[]
+          }
+          delete: {
+            args: Prisma.tareasDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$tareasPayload>
+          }
+          update: {
+            args: Prisma.tareasUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$tareasPayload>
+          }
+          deleteMany: {
+            args: Prisma.tareasDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.tareasUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.tareasUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$tareasPayload>[]
+          }
+          upsert: {
+            args: Prisma.tareasUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$tareasPayload>
+          }
+          aggregate: {
+            args: Prisma.TareasAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateTareas>
+          }
+          groupBy: {
+            args: Prisma.tareasGroupByArgs<ExtArgs>
+            result: $Utils.Optional<TareasGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.tareasCountArgs<ExtArgs>
+            result: $Utils.Optional<TareasCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -3988,6 +4466,11 @@ export namespace Prisma {
     respuestasIntentos?: respuestasIntentosOmit
     repasoRegistros?: repasoRegistrosOmit
     suscripciones?: suscripcionesOmit
+    entregas?: entregasOmit
+    foroComentarios?: foroComentariosOmit
+    foroRespuestas?: foroRespuestasOmit
+    foros?: forosOmit
+    tareas?: tareasOmit
   }
 
   /* Types for Logging */
@@ -4261,6 +4744,7 @@ export namespace Prisma {
     examenes: number
     inscripciones: number
     preciosCursos: number
+    tareas: number
   }
 
   export type EdicionesCursosCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -4270,6 +4754,7 @@ export namespace Prisma {
     examenes?: boolean | EdicionesCursosCountOutputTypeCountExamenesArgs
     inscripciones?: boolean | EdicionesCursosCountOutputTypeCountInscripcionesArgs
     preciosCursos?: boolean | EdicionesCursosCountOutputTypeCountPreciosCursosArgs
+    tareas?: boolean | EdicionesCursosCountOutputTypeCountTareasArgs
   }
 
   // Custom InputTypes
@@ -4325,6 +4810,13 @@ export namespace Prisma {
     where?: preciosCursosWhereInput
   }
 
+  /**
+   * EdicionesCursosCountOutputType without action
+   */
+  export type EdicionesCursosCountOutputTypeCountTareasArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: tareasWhereInput
+  }
+
 
   /**
    * Count Type EstudiantesCountOutputType
@@ -4333,12 +4825,18 @@ export namespace Prisma {
   export type EstudiantesCountOutputType = {
     calificaciones: number
     certificados: number
+    entregas: number
+    foroComentarios: number
+    foroRespuestas: number
     inscripciones: number
   }
 
   export type EstudiantesCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     calificaciones?: boolean | EstudiantesCountOutputTypeCountCalificacionesArgs
     certificados?: boolean | EstudiantesCountOutputTypeCountCertificadosArgs
+    entregas?: boolean | EstudiantesCountOutputTypeCountEntregasArgs
+    foroComentarios?: boolean | EstudiantesCountOutputTypeCountForoComentariosArgs
+    foroRespuestas?: boolean | EstudiantesCountOutputTypeCountForoRespuestasArgs
     inscripciones?: boolean | EstudiantesCountOutputTypeCountInscripcionesArgs
   }
 
@@ -4365,6 +4863,27 @@ export namespace Prisma {
    */
   export type EstudiantesCountOutputTypeCountCertificadosArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: certificadosWhereInput
+  }
+
+  /**
+   * EstudiantesCountOutputType without action
+   */
+  export type EstudiantesCountOutputTypeCountEntregasArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: entregasWhereInput
+  }
+
+  /**
+   * EstudiantesCountOutputType without action
+   */
+  export type EstudiantesCountOutputTypeCountForoComentariosArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: foroComentariosWhereInput
+  }
+
+  /**
+   * EstudiantesCountOutputType without action
+   */
+  export type EstudiantesCountOutputTypeCountForoRespuestasArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: foroRespuestasWhereInput
   }
 
   /**
@@ -4795,6 +5314,99 @@ export namespace Prisma {
    */
   export type IntentosCountOutputTypeCountRespuestasIntentosArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: respuestasIntentosWhereInput
+  }
+
+
+  /**
+   * Count Type ForoComentariosCountOutputType
+   */
+
+  export type ForoComentariosCountOutputType = {
+    foroRespuestas: number
+  }
+
+  export type ForoComentariosCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    foroRespuestas?: boolean | ForoComentariosCountOutputTypeCountForoRespuestasArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * ForoComentariosCountOutputType without action
+   */
+  export type ForoComentariosCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ForoComentariosCountOutputType
+     */
+    select?: ForoComentariosCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * ForoComentariosCountOutputType without action
+   */
+  export type ForoComentariosCountOutputTypeCountForoRespuestasArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: foroRespuestasWhereInput
+  }
+
+
+  /**
+   * Count Type ForosCountOutputType
+   */
+
+  export type ForosCountOutputType = {
+    foroComentarios: number
+  }
+
+  export type ForosCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    foroComentarios?: boolean | ForosCountOutputTypeCountForoComentariosArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * ForosCountOutputType without action
+   */
+  export type ForosCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ForosCountOutputType
+     */
+    select?: ForosCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * ForosCountOutputType without action
+   */
+  export type ForosCountOutputTypeCountForoComentariosArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: foroComentariosWhereInput
+  }
+
+
+  /**
+   * Count Type TareasCountOutputType
+   */
+
+  export type TareasCountOutputType = {
+    entregas: number
+  }
+
+  export type TareasCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    entregas?: boolean | TareasCountOutputTypeCountEntregasArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * TareasCountOutputType without action
+   */
+  export type TareasCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TareasCountOutputType
+     */
+    select?: TareasCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * TareasCountOutputType without action
+   */
+  export type TareasCountOutputTypeCountEntregasArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: entregasWhereInput
   }
 
 
@@ -14080,6 +14692,7 @@ export namespace Prisma {
     beneficiosCursos?: boolean | cursos$beneficiosCursosArgs<ExtArgs>
     categoriasCursos?: boolean | cursos$categoriasCursosArgs<ExtArgs>
     edicionesCursos?: boolean | cursos$edicionesCursosArgs<ExtArgs>
+    foros?: boolean | cursos$forosArgs<ExtArgs>
     objetivosCursos?: boolean | cursos$objetivosCursosArgs<ExtArgs>
     requisitosCursos?: boolean | cursos$requisitosCursosArgs<ExtArgs>
     reviewsCursos?: boolean | cursos$reviewsCursosArgs<ExtArgs>
@@ -14133,6 +14746,7 @@ export namespace Prisma {
     beneficiosCursos?: boolean | cursos$beneficiosCursosArgs<ExtArgs>
     categoriasCursos?: boolean | cursos$categoriasCursosArgs<ExtArgs>
     edicionesCursos?: boolean | cursos$edicionesCursosArgs<ExtArgs>
+    foros?: boolean | cursos$forosArgs<ExtArgs>
     objetivosCursos?: boolean | cursos$objetivosCursosArgs<ExtArgs>
     requisitosCursos?: boolean | cursos$requisitosCursosArgs<ExtArgs>
     reviewsCursos?: boolean | cursos$reviewsCursosArgs<ExtArgs>
@@ -14147,6 +14761,7 @@ export namespace Prisma {
       beneficiosCursos: Prisma.$beneficiosCursosPayload<ExtArgs>[]
       categoriasCursos: Prisma.$categoriasCursosPayload<ExtArgs>[]
       edicionesCursos: Prisma.$edicionesCursosPayload<ExtArgs>[]
+      foros: Prisma.$forosPayload<ExtArgs> | null
       objetivosCursos: Prisma.$objetivosCursosPayload<ExtArgs>[]
       requisitosCursos: Prisma.$requisitosCursosPayload<ExtArgs>[]
       reviewsCursos: Prisma.$reviewsCursosPayload<ExtArgs>[]
@@ -14560,6 +15175,7 @@ export namespace Prisma {
     beneficiosCursos<T extends cursos$beneficiosCursosArgs<ExtArgs> = {}>(args?: Subset<T, cursos$beneficiosCursosArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$beneficiosCursosPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     categoriasCursos<T extends cursos$categoriasCursosArgs<ExtArgs> = {}>(args?: Subset<T, cursos$categoriasCursosArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$categoriasCursosPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     edicionesCursos<T extends cursos$edicionesCursosArgs<ExtArgs> = {}>(args?: Subset<T, cursos$edicionesCursosArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$edicionesCursosPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    foros<T extends cursos$forosArgs<ExtArgs> = {}>(args?: Subset<T, cursos$forosArgs<ExtArgs>>): Prisma__forosClient<$Result.GetResult<Prisma.$forosPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     objetivosCursos<T extends cursos$objetivosCursosArgs<ExtArgs> = {}>(args?: Subset<T, cursos$objetivosCursosArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$objetivosCursosPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     requisitosCursos<T extends cursos$requisitosCursosArgs<ExtArgs> = {}>(args?: Subset<T, cursos$requisitosCursosArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$requisitosCursosPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     reviewsCursos<T extends cursos$reviewsCursosArgs<ExtArgs> = {}>(args?: Subset<T, cursos$reviewsCursosArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$reviewsCursosPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -15060,6 +15676,25 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: EdicionesCursosScalarFieldEnum | EdicionesCursosScalarFieldEnum[]
+  }
+
+  /**
+   * cursos.foros
+   */
+  export type cursos$forosArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the foros
+     */
+    select?: forosSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the foros
+     */
+    omit?: forosOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: forosInclude<ExtArgs> | null
+    where?: forosWhereInput
   }
 
   /**
@@ -16638,6 +17273,7 @@ export namespace Prisma {
     inscripciones?: boolean | edicionesCursos$inscripcionesArgs<ExtArgs>
     pagosDocentes?: boolean | edicionesCursos$pagosDocentesArgs<ExtArgs>
     preciosCursos?: boolean | edicionesCursos$preciosCursosArgs<ExtArgs>
+    tareas?: boolean | edicionesCursos$tareasArgs<ExtArgs>
     _count?: boolean | EdicionesCursosCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["edicionesCursos"]>
 
@@ -16707,6 +17343,7 @@ export namespace Prisma {
     inscripciones?: boolean | edicionesCursos$inscripcionesArgs<ExtArgs>
     pagosDocentes?: boolean | edicionesCursos$pagosDocentesArgs<ExtArgs>
     preciosCursos?: boolean | edicionesCursos$preciosCursosArgs<ExtArgs>
+    tareas?: boolean | edicionesCursos$tareasArgs<ExtArgs>
     _count?: boolean | EdicionesCursosCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type edicionesCursosIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -16730,6 +17367,7 @@ export namespace Prisma {
       inscripciones: Prisma.$inscripcionesPayload<ExtArgs>[]
       pagosDocentes: Prisma.$pagosDocentesPayload<ExtArgs> | null
       preciosCursos: Prisma.$preciosCursosPayload<ExtArgs>[]
+      tareas: Prisma.$tareasPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -17149,6 +17787,7 @@ export namespace Prisma {
     inscripciones<T extends edicionesCursos$inscripcionesArgs<ExtArgs> = {}>(args?: Subset<T, edicionesCursos$inscripcionesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$inscripcionesPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     pagosDocentes<T extends edicionesCursos$pagosDocentesArgs<ExtArgs> = {}>(args?: Subset<T, edicionesCursos$pagosDocentesArgs<ExtArgs>>): Prisma__pagosDocentesClient<$Result.GetResult<Prisma.$pagosDocentesPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     preciosCursos<T extends edicionesCursos$preciosCursosArgs<ExtArgs> = {}>(args?: Subset<T, edicionesCursos$preciosCursosArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$preciosCursosPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    tareas<T extends edicionesCursos$tareasArgs<ExtArgs> = {}>(args?: Subset<T, edicionesCursos$tareasArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$tareasPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -17770,6 +18409,30 @@ export namespace Prisma {
   }
 
   /**
+   * edicionesCursos.tareas
+   */
+  export type edicionesCursos$tareasArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the tareas
+     */
+    select?: tareasSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the tareas
+     */
+    omit?: tareasOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: tareasInclude<ExtArgs> | null
+    where?: tareasWhereInput
+    orderBy?: tareasOrderByWithRelationInput | tareasOrderByWithRelationInput[]
+    cursor?: tareasWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: TareasScalarFieldEnum | TareasScalarFieldEnum[]
+  }
+
+  /**
    * edicionesCursos without action
    */
   export type edicionesCursosDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -18028,6 +18691,9 @@ export namespace Prisma {
     nroUpdates?: boolean
     calificaciones?: boolean | estudiantes$calificacionesArgs<ExtArgs>
     certificados?: boolean | estudiantes$certificadosArgs<ExtArgs>
+    entregas?: boolean | estudiantes$entregasArgs<ExtArgs>
+    foroComentarios?: boolean | estudiantes$foroComentariosArgs<ExtArgs>
+    foroRespuestas?: boolean | estudiantes$foroRespuestasArgs<ExtArgs>
     inscripciones?: boolean | estudiantes$inscripcionesArgs<ExtArgs>
     usuariosEstudiantes?: boolean | estudiantes$usuariosEstudiantesArgs<ExtArgs>
     _count?: boolean | EstudiantesCountOutputTypeDefaultArgs<ExtArgs>
@@ -18076,6 +18742,9 @@ export namespace Prisma {
   export type estudiantesInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     calificaciones?: boolean | estudiantes$calificacionesArgs<ExtArgs>
     certificados?: boolean | estudiantes$certificadosArgs<ExtArgs>
+    entregas?: boolean | estudiantes$entregasArgs<ExtArgs>
+    foroComentarios?: boolean | estudiantes$foroComentariosArgs<ExtArgs>
+    foroRespuestas?: boolean | estudiantes$foroRespuestasArgs<ExtArgs>
     inscripciones?: boolean | estudiantes$inscripcionesArgs<ExtArgs>
     usuariosEstudiantes?: boolean | estudiantes$usuariosEstudiantesArgs<ExtArgs>
     _count?: boolean | EstudiantesCountOutputTypeDefaultArgs<ExtArgs>
@@ -18088,6 +18757,9 @@ export namespace Prisma {
     objects: {
       calificaciones: Prisma.$calificacionesPayload<ExtArgs>[]
       certificados: Prisma.$certificadosPayload<ExtArgs>[]
+      entregas: Prisma.$entregasPayload<ExtArgs>[]
+      foroComentarios: Prisma.$foroComentariosPayload<ExtArgs>[]
+      foroRespuestas: Prisma.$foroRespuestasPayload<ExtArgs>[]
       inscripciones: Prisma.$inscripcionesPayload<ExtArgs>[]
       usuariosEstudiantes: Prisma.$usuariosEstudiantesPayload<ExtArgs> | null
     }
@@ -18498,6 +19170,9 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     calificaciones<T extends estudiantes$calificacionesArgs<ExtArgs> = {}>(args?: Subset<T, estudiantes$calificacionesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$calificacionesPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     certificados<T extends estudiantes$certificadosArgs<ExtArgs> = {}>(args?: Subset<T, estudiantes$certificadosArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$certificadosPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    entregas<T extends estudiantes$entregasArgs<ExtArgs> = {}>(args?: Subset<T, estudiantes$entregasArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$entregasPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    foroComentarios<T extends estudiantes$foroComentariosArgs<ExtArgs> = {}>(args?: Subset<T, estudiantes$foroComentariosArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$foroComentariosPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    foroRespuestas<T extends estudiantes$foroRespuestasArgs<ExtArgs> = {}>(args?: Subset<T, estudiantes$foroRespuestasArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$foroRespuestasPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     inscripciones<T extends estudiantes$inscripcionesArgs<ExtArgs> = {}>(args?: Subset<T, estudiantes$inscripcionesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$inscripcionesPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     usuariosEstudiantes<T extends estudiantes$usuariosEstudiantesArgs<ExtArgs> = {}>(args?: Subset<T, estudiantes$usuariosEstudiantesArgs<ExtArgs>>): Prisma__usuariosEstudiantesClient<$Result.GetResult<Prisma.$usuariosEstudiantesPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
@@ -18972,6 +19647,78 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: CertificadosScalarFieldEnum | CertificadosScalarFieldEnum[]
+  }
+
+  /**
+   * estudiantes.entregas
+   */
+  export type estudiantes$entregasArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the entregas
+     */
+    select?: entregasSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the entregas
+     */
+    omit?: entregasOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: entregasInclude<ExtArgs> | null
+    where?: entregasWhereInput
+    orderBy?: entregasOrderByWithRelationInput | entregasOrderByWithRelationInput[]
+    cursor?: entregasWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: EntregasScalarFieldEnum | EntregasScalarFieldEnum[]
+  }
+
+  /**
+   * estudiantes.foroComentarios
+   */
+  export type estudiantes$foroComentariosArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the foroComentarios
+     */
+    select?: foroComentariosSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the foroComentarios
+     */
+    omit?: foroComentariosOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: foroComentariosInclude<ExtArgs> | null
+    where?: foroComentariosWhereInput
+    orderBy?: foroComentariosOrderByWithRelationInput | foroComentariosOrderByWithRelationInput[]
+    cursor?: foroComentariosWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ForoComentariosScalarFieldEnum | ForoComentariosScalarFieldEnum[]
+  }
+
+  /**
+   * estudiantes.foroRespuestas
+   */
+  export type estudiantes$foroRespuestasArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the foroRespuestas
+     */
+    select?: foroRespuestasSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the foroRespuestas
+     */
+    omit?: foroRespuestasOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: foroRespuestasInclude<ExtArgs> | null
+    where?: foroRespuestasWhereInput
+    orderBy?: foroRespuestasOrderByWithRelationInput | foroRespuestasOrderByWithRelationInput[]
+    cursor?: foroRespuestasWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ForoRespuestasScalarFieldEnum | ForoRespuestasScalarFieldEnum[]
   }
 
   /**
@@ -43422,6 +44169,5604 @@ export namespace Prisma {
 
 
   /**
+   * Model entregas
+   */
+
+  export type AggregateEntregas = {
+    _count: EntregasCountAggregateOutputType | null
+    _avg: EntregasAvgAggregateOutputType | null
+    _sum: EntregasSumAggregateOutputType | null
+    _min: EntregasMinAggregateOutputType | null
+    _max: EntregasMaxAggregateOutputType | null
+  }
+
+  export type EntregasAvgAggregateOutputType = {
+    nota: number | null
+  }
+
+  export type EntregasSumAggregateOutputType = {
+    nota: number | null
+  }
+
+  export type EntregasMinAggregateOutputType = {
+    id: string | null
+    tareaId: string | null
+    estudianteId: string | null
+    comentarioAlumno: string | null
+    fechaEntrega: Date | null
+    nota: number | null
+    retroalimentacion: string | null
+    estado: $Enums.EntregaEstado | null
+    calificadoEn: Date | null
+    calificadoPorId: string | null
+  }
+
+  export type EntregasMaxAggregateOutputType = {
+    id: string | null
+    tareaId: string | null
+    estudianteId: string | null
+    comentarioAlumno: string | null
+    fechaEntrega: Date | null
+    nota: number | null
+    retroalimentacion: string | null
+    estado: $Enums.EntregaEstado | null
+    calificadoEn: Date | null
+    calificadoPorId: string | null
+  }
+
+  export type EntregasCountAggregateOutputType = {
+    id: number
+    tareaId: number
+    estudianteId: number
+    archivos: number
+    comentarioAlumno: number
+    fechaEntrega: number
+    nota: number
+    retroalimentacion: number
+    estado: number
+    calificadoEn: number
+    calificadoPorId: number
+    _all: number
+  }
+
+
+  export type EntregasAvgAggregateInputType = {
+    nota?: true
+  }
+
+  export type EntregasSumAggregateInputType = {
+    nota?: true
+  }
+
+  export type EntregasMinAggregateInputType = {
+    id?: true
+    tareaId?: true
+    estudianteId?: true
+    comentarioAlumno?: true
+    fechaEntrega?: true
+    nota?: true
+    retroalimentacion?: true
+    estado?: true
+    calificadoEn?: true
+    calificadoPorId?: true
+  }
+
+  export type EntregasMaxAggregateInputType = {
+    id?: true
+    tareaId?: true
+    estudianteId?: true
+    comentarioAlumno?: true
+    fechaEntrega?: true
+    nota?: true
+    retroalimentacion?: true
+    estado?: true
+    calificadoEn?: true
+    calificadoPorId?: true
+  }
+
+  export type EntregasCountAggregateInputType = {
+    id?: true
+    tareaId?: true
+    estudianteId?: true
+    archivos?: true
+    comentarioAlumno?: true
+    fechaEntrega?: true
+    nota?: true
+    retroalimentacion?: true
+    estado?: true
+    calificadoEn?: true
+    calificadoPorId?: true
+    _all?: true
+  }
+
+  export type EntregasAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which entregas to aggregate.
+     */
+    where?: entregasWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of entregases to fetch.
+     */
+    orderBy?: entregasOrderByWithRelationInput | entregasOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: entregasWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` entregases from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` entregases.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned entregases
+    **/
+    _count?: true | EntregasCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: EntregasAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: EntregasSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: EntregasMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: EntregasMaxAggregateInputType
+  }
+
+  export type GetEntregasAggregateType<T extends EntregasAggregateArgs> = {
+        [P in keyof T & keyof AggregateEntregas]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateEntregas[P]>
+      : GetScalarType<T[P], AggregateEntregas[P]>
+  }
+
+
+
+
+  export type entregasGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: entregasWhereInput
+    orderBy?: entregasOrderByWithAggregationInput | entregasOrderByWithAggregationInput[]
+    by: EntregasScalarFieldEnum[] | EntregasScalarFieldEnum
+    having?: entregasScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: EntregasCountAggregateInputType | true
+    _avg?: EntregasAvgAggregateInputType
+    _sum?: EntregasSumAggregateInputType
+    _min?: EntregasMinAggregateInputType
+    _max?: EntregasMaxAggregateInputType
+  }
+
+  export type EntregasGroupByOutputType = {
+    id: string
+    tareaId: string
+    estudianteId: string
+    archivos: JsonValue | null
+    comentarioAlumno: string | null
+    fechaEntrega: Date
+    nota: number | null
+    retroalimentacion: string | null
+    estado: $Enums.EntregaEstado
+    calificadoEn: Date | null
+    calificadoPorId: string | null
+    _count: EntregasCountAggregateOutputType | null
+    _avg: EntregasAvgAggregateOutputType | null
+    _sum: EntregasSumAggregateOutputType | null
+    _min: EntregasMinAggregateOutputType | null
+    _max: EntregasMaxAggregateOutputType | null
+  }
+
+  type GetEntregasGroupByPayload<T extends entregasGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<EntregasGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof EntregasGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], EntregasGroupByOutputType[P]>
+            : GetScalarType<T[P], EntregasGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type entregasSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    tareaId?: boolean
+    estudianteId?: boolean
+    archivos?: boolean
+    comentarioAlumno?: boolean
+    fechaEntrega?: boolean
+    nota?: boolean
+    retroalimentacion?: boolean
+    estado?: boolean
+    calificadoEn?: boolean
+    calificadoPorId?: boolean
+    estudiantes?: boolean | estudiantesDefaultArgs<ExtArgs>
+    tareas?: boolean | tareasDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["entregas"]>
+
+  export type entregasSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    tareaId?: boolean
+    estudianteId?: boolean
+    archivos?: boolean
+    comentarioAlumno?: boolean
+    fechaEntrega?: boolean
+    nota?: boolean
+    retroalimentacion?: boolean
+    estado?: boolean
+    calificadoEn?: boolean
+    calificadoPorId?: boolean
+    estudiantes?: boolean | estudiantesDefaultArgs<ExtArgs>
+    tareas?: boolean | tareasDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["entregas"]>
+
+  export type entregasSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    tareaId?: boolean
+    estudianteId?: boolean
+    archivos?: boolean
+    comentarioAlumno?: boolean
+    fechaEntrega?: boolean
+    nota?: boolean
+    retroalimentacion?: boolean
+    estado?: boolean
+    calificadoEn?: boolean
+    calificadoPorId?: boolean
+    estudiantes?: boolean | estudiantesDefaultArgs<ExtArgs>
+    tareas?: boolean | tareasDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["entregas"]>
+
+  export type entregasSelectScalar = {
+    id?: boolean
+    tareaId?: boolean
+    estudianteId?: boolean
+    archivos?: boolean
+    comentarioAlumno?: boolean
+    fechaEntrega?: boolean
+    nota?: boolean
+    retroalimentacion?: boolean
+    estado?: boolean
+    calificadoEn?: boolean
+    calificadoPorId?: boolean
+  }
+
+  export type entregasOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "tareaId" | "estudianteId" | "archivos" | "comentarioAlumno" | "fechaEntrega" | "nota" | "retroalimentacion" | "estado" | "calificadoEn" | "calificadoPorId", ExtArgs["result"]["entregas"]>
+  export type entregasInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    estudiantes?: boolean | estudiantesDefaultArgs<ExtArgs>
+    tareas?: boolean | tareasDefaultArgs<ExtArgs>
+  }
+  export type entregasIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    estudiantes?: boolean | estudiantesDefaultArgs<ExtArgs>
+    tareas?: boolean | tareasDefaultArgs<ExtArgs>
+  }
+  export type entregasIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    estudiantes?: boolean | estudiantesDefaultArgs<ExtArgs>
+    tareas?: boolean | tareasDefaultArgs<ExtArgs>
+  }
+
+  export type $entregasPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "entregas"
+    objects: {
+      estudiantes: Prisma.$estudiantesPayload<ExtArgs>
+      tareas: Prisma.$tareasPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      tareaId: string
+      estudianteId: string
+      archivos: Prisma.JsonValue | null
+      comentarioAlumno: string | null
+      fechaEntrega: Date
+      nota: number | null
+      retroalimentacion: string | null
+      estado: $Enums.EntregaEstado
+      calificadoEn: Date | null
+      calificadoPorId: string | null
+    }, ExtArgs["result"]["entregas"]>
+    composites: {}
+  }
+
+  type entregasGetPayload<S extends boolean | null | undefined | entregasDefaultArgs> = $Result.GetResult<Prisma.$entregasPayload, S>
+
+  type entregasCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<entregasFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: EntregasCountAggregateInputType | true
+    }
+
+  export interface entregasDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['entregas'], meta: { name: 'entregas' } }
+    /**
+     * Find zero or one Entregas that matches the filter.
+     * @param {entregasFindUniqueArgs} args - Arguments to find a Entregas
+     * @example
+     * // Get one Entregas
+     * const entregas = await prisma.entregas.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends entregasFindUniqueArgs>(args: SelectSubset<T, entregasFindUniqueArgs<ExtArgs>>): Prisma__entregasClient<$Result.GetResult<Prisma.$entregasPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Entregas that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {entregasFindUniqueOrThrowArgs} args - Arguments to find a Entregas
+     * @example
+     * // Get one Entregas
+     * const entregas = await prisma.entregas.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends entregasFindUniqueOrThrowArgs>(args: SelectSubset<T, entregasFindUniqueOrThrowArgs<ExtArgs>>): Prisma__entregasClient<$Result.GetResult<Prisma.$entregasPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Entregas that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {entregasFindFirstArgs} args - Arguments to find a Entregas
+     * @example
+     * // Get one Entregas
+     * const entregas = await prisma.entregas.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends entregasFindFirstArgs>(args?: SelectSubset<T, entregasFindFirstArgs<ExtArgs>>): Prisma__entregasClient<$Result.GetResult<Prisma.$entregasPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Entregas that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {entregasFindFirstOrThrowArgs} args - Arguments to find a Entregas
+     * @example
+     * // Get one Entregas
+     * const entregas = await prisma.entregas.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends entregasFindFirstOrThrowArgs>(args?: SelectSubset<T, entregasFindFirstOrThrowArgs<ExtArgs>>): Prisma__entregasClient<$Result.GetResult<Prisma.$entregasPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Entregases that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {entregasFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Entregases
+     * const entregases = await prisma.entregas.findMany()
+     * 
+     * // Get first 10 Entregases
+     * const entregases = await prisma.entregas.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const entregasWithIdOnly = await prisma.entregas.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends entregasFindManyArgs>(args?: SelectSubset<T, entregasFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$entregasPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Entregas.
+     * @param {entregasCreateArgs} args - Arguments to create a Entregas.
+     * @example
+     * // Create one Entregas
+     * const Entregas = await prisma.entregas.create({
+     *   data: {
+     *     // ... data to create a Entregas
+     *   }
+     * })
+     * 
+     */
+    create<T extends entregasCreateArgs>(args: SelectSubset<T, entregasCreateArgs<ExtArgs>>): Prisma__entregasClient<$Result.GetResult<Prisma.$entregasPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Entregases.
+     * @param {entregasCreateManyArgs} args - Arguments to create many Entregases.
+     * @example
+     * // Create many Entregases
+     * const entregas = await prisma.entregas.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends entregasCreateManyArgs>(args?: SelectSubset<T, entregasCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Entregases and returns the data saved in the database.
+     * @param {entregasCreateManyAndReturnArgs} args - Arguments to create many Entregases.
+     * @example
+     * // Create many Entregases
+     * const entregas = await prisma.entregas.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Entregases and only return the `id`
+     * const entregasWithIdOnly = await prisma.entregas.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends entregasCreateManyAndReturnArgs>(args?: SelectSubset<T, entregasCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$entregasPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Entregas.
+     * @param {entregasDeleteArgs} args - Arguments to delete one Entregas.
+     * @example
+     * // Delete one Entregas
+     * const Entregas = await prisma.entregas.delete({
+     *   where: {
+     *     // ... filter to delete one Entregas
+     *   }
+     * })
+     * 
+     */
+    delete<T extends entregasDeleteArgs>(args: SelectSubset<T, entregasDeleteArgs<ExtArgs>>): Prisma__entregasClient<$Result.GetResult<Prisma.$entregasPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Entregas.
+     * @param {entregasUpdateArgs} args - Arguments to update one Entregas.
+     * @example
+     * // Update one Entregas
+     * const entregas = await prisma.entregas.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends entregasUpdateArgs>(args: SelectSubset<T, entregasUpdateArgs<ExtArgs>>): Prisma__entregasClient<$Result.GetResult<Prisma.$entregasPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Entregases.
+     * @param {entregasDeleteManyArgs} args - Arguments to filter Entregases to delete.
+     * @example
+     * // Delete a few Entregases
+     * const { count } = await prisma.entregas.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends entregasDeleteManyArgs>(args?: SelectSubset<T, entregasDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Entregases.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {entregasUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Entregases
+     * const entregas = await prisma.entregas.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends entregasUpdateManyArgs>(args: SelectSubset<T, entregasUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Entregases and returns the data updated in the database.
+     * @param {entregasUpdateManyAndReturnArgs} args - Arguments to update many Entregases.
+     * @example
+     * // Update many Entregases
+     * const entregas = await prisma.entregas.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Entregases and only return the `id`
+     * const entregasWithIdOnly = await prisma.entregas.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends entregasUpdateManyAndReturnArgs>(args: SelectSubset<T, entregasUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$entregasPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Entregas.
+     * @param {entregasUpsertArgs} args - Arguments to update or create a Entregas.
+     * @example
+     * // Update or create a Entregas
+     * const entregas = await prisma.entregas.upsert({
+     *   create: {
+     *     // ... data to create a Entregas
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Entregas we want to update
+     *   }
+     * })
+     */
+    upsert<T extends entregasUpsertArgs>(args: SelectSubset<T, entregasUpsertArgs<ExtArgs>>): Prisma__entregasClient<$Result.GetResult<Prisma.$entregasPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Entregases.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {entregasCountArgs} args - Arguments to filter Entregases to count.
+     * @example
+     * // Count the number of Entregases
+     * const count = await prisma.entregas.count({
+     *   where: {
+     *     // ... the filter for the Entregases we want to count
+     *   }
+     * })
+    **/
+    count<T extends entregasCountArgs>(
+      args?: Subset<T, entregasCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], EntregasCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Entregas.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EntregasAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends EntregasAggregateArgs>(args: Subset<T, EntregasAggregateArgs>): Prisma.PrismaPromise<GetEntregasAggregateType<T>>
+
+    /**
+     * Group by Entregas.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {entregasGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends entregasGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: entregasGroupByArgs['orderBy'] }
+        : { orderBy?: entregasGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, entregasGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetEntregasGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the entregas model
+   */
+  readonly fields: entregasFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for entregas.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__entregasClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    estudiantes<T extends estudiantesDefaultArgs<ExtArgs> = {}>(args?: Subset<T, estudiantesDefaultArgs<ExtArgs>>): Prisma__estudiantesClient<$Result.GetResult<Prisma.$estudiantesPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    tareas<T extends tareasDefaultArgs<ExtArgs> = {}>(args?: Subset<T, tareasDefaultArgs<ExtArgs>>): Prisma__tareasClient<$Result.GetResult<Prisma.$tareasPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the entregas model
+   */
+  interface entregasFieldRefs {
+    readonly id: FieldRef<"entregas", 'String'>
+    readonly tareaId: FieldRef<"entregas", 'String'>
+    readonly estudianteId: FieldRef<"entregas", 'String'>
+    readonly archivos: FieldRef<"entregas", 'Json'>
+    readonly comentarioAlumno: FieldRef<"entregas", 'String'>
+    readonly fechaEntrega: FieldRef<"entregas", 'DateTime'>
+    readonly nota: FieldRef<"entregas", 'Float'>
+    readonly retroalimentacion: FieldRef<"entregas", 'String'>
+    readonly estado: FieldRef<"entregas", 'EntregaEstado'>
+    readonly calificadoEn: FieldRef<"entregas", 'DateTime'>
+    readonly calificadoPorId: FieldRef<"entregas", 'String'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * entregas findUnique
+   */
+  export type entregasFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the entregas
+     */
+    select?: entregasSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the entregas
+     */
+    omit?: entregasOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: entregasInclude<ExtArgs> | null
+    /**
+     * Filter, which entregas to fetch.
+     */
+    where: entregasWhereUniqueInput
+  }
+
+  /**
+   * entregas findUniqueOrThrow
+   */
+  export type entregasFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the entregas
+     */
+    select?: entregasSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the entregas
+     */
+    omit?: entregasOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: entregasInclude<ExtArgs> | null
+    /**
+     * Filter, which entregas to fetch.
+     */
+    where: entregasWhereUniqueInput
+  }
+
+  /**
+   * entregas findFirst
+   */
+  export type entregasFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the entregas
+     */
+    select?: entregasSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the entregas
+     */
+    omit?: entregasOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: entregasInclude<ExtArgs> | null
+    /**
+     * Filter, which entregas to fetch.
+     */
+    where?: entregasWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of entregases to fetch.
+     */
+    orderBy?: entregasOrderByWithRelationInput | entregasOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for entregases.
+     */
+    cursor?: entregasWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` entregases from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` entregases.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of entregases.
+     */
+    distinct?: EntregasScalarFieldEnum | EntregasScalarFieldEnum[]
+  }
+
+  /**
+   * entregas findFirstOrThrow
+   */
+  export type entregasFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the entregas
+     */
+    select?: entregasSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the entregas
+     */
+    omit?: entregasOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: entregasInclude<ExtArgs> | null
+    /**
+     * Filter, which entregas to fetch.
+     */
+    where?: entregasWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of entregases to fetch.
+     */
+    orderBy?: entregasOrderByWithRelationInput | entregasOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for entregases.
+     */
+    cursor?: entregasWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` entregases from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` entregases.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of entregases.
+     */
+    distinct?: EntregasScalarFieldEnum | EntregasScalarFieldEnum[]
+  }
+
+  /**
+   * entregas findMany
+   */
+  export type entregasFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the entregas
+     */
+    select?: entregasSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the entregas
+     */
+    omit?: entregasOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: entregasInclude<ExtArgs> | null
+    /**
+     * Filter, which entregases to fetch.
+     */
+    where?: entregasWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of entregases to fetch.
+     */
+    orderBy?: entregasOrderByWithRelationInput | entregasOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing entregases.
+     */
+    cursor?: entregasWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` entregases from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` entregases.
+     */
+    skip?: number
+    distinct?: EntregasScalarFieldEnum | EntregasScalarFieldEnum[]
+  }
+
+  /**
+   * entregas create
+   */
+  export type entregasCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the entregas
+     */
+    select?: entregasSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the entregas
+     */
+    omit?: entregasOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: entregasInclude<ExtArgs> | null
+    /**
+     * The data needed to create a entregas.
+     */
+    data: XOR<entregasCreateInput, entregasUncheckedCreateInput>
+  }
+
+  /**
+   * entregas createMany
+   */
+  export type entregasCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many entregases.
+     */
+    data: entregasCreateManyInput | entregasCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * entregas createManyAndReturn
+   */
+  export type entregasCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the entregas
+     */
+    select?: entregasSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the entregas
+     */
+    omit?: entregasOmit<ExtArgs> | null
+    /**
+     * The data used to create many entregases.
+     */
+    data: entregasCreateManyInput | entregasCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: entregasIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * entregas update
+   */
+  export type entregasUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the entregas
+     */
+    select?: entregasSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the entregas
+     */
+    omit?: entregasOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: entregasInclude<ExtArgs> | null
+    /**
+     * The data needed to update a entregas.
+     */
+    data: XOR<entregasUpdateInput, entregasUncheckedUpdateInput>
+    /**
+     * Choose, which entregas to update.
+     */
+    where: entregasWhereUniqueInput
+  }
+
+  /**
+   * entregas updateMany
+   */
+  export type entregasUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update entregases.
+     */
+    data: XOR<entregasUpdateManyMutationInput, entregasUncheckedUpdateManyInput>
+    /**
+     * Filter which entregases to update
+     */
+    where?: entregasWhereInput
+    /**
+     * Limit how many entregases to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * entregas updateManyAndReturn
+   */
+  export type entregasUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the entregas
+     */
+    select?: entregasSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the entregas
+     */
+    omit?: entregasOmit<ExtArgs> | null
+    /**
+     * The data used to update entregases.
+     */
+    data: XOR<entregasUpdateManyMutationInput, entregasUncheckedUpdateManyInput>
+    /**
+     * Filter which entregases to update
+     */
+    where?: entregasWhereInput
+    /**
+     * Limit how many entregases to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: entregasIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * entregas upsert
+   */
+  export type entregasUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the entregas
+     */
+    select?: entregasSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the entregas
+     */
+    omit?: entregasOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: entregasInclude<ExtArgs> | null
+    /**
+     * The filter to search for the entregas to update in case it exists.
+     */
+    where: entregasWhereUniqueInput
+    /**
+     * In case the entregas found by the `where` argument doesn't exist, create a new entregas with this data.
+     */
+    create: XOR<entregasCreateInput, entregasUncheckedCreateInput>
+    /**
+     * In case the entregas was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<entregasUpdateInput, entregasUncheckedUpdateInput>
+  }
+
+  /**
+   * entregas delete
+   */
+  export type entregasDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the entregas
+     */
+    select?: entregasSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the entregas
+     */
+    omit?: entregasOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: entregasInclude<ExtArgs> | null
+    /**
+     * Filter which entregas to delete.
+     */
+    where: entregasWhereUniqueInput
+  }
+
+  /**
+   * entregas deleteMany
+   */
+  export type entregasDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which entregases to delete
+     */
+    where?: entregasWhereInput
+    /**
+     * Limit how many entregases to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * entregas without action
+   */
+  export type entregasDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the entregas
+     */
+    select?: entregasSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the entregas
+     */
+    omit?: entregasOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: entregasInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model foroComentarios
+   */
+
+  export type AggregateForoComentarios = {
+    _count: ForoComentariosCountAggregateOutputType | null
+    _min: ForoComentariosMinAggregateOutputType | null
+    _max: ForoComentariosMaxAggregateOutputType | null
+  }
+
+  export type ForoComentariosMinAggregateOutputType = {
+    id: string | null
+    foroId: string | null
+    estudianteId: string | null
+    contenido: string | null
+    creadoEn: Date | null
+  }
+
+  export type ForoComentariosMaxAggregateOutputType = {
+    id: string | null
+    foroId: string | null
+    estudianteId: string | null
+    contenido: string | null
+    creadoEn: Date | null
+  }
+
+  export type ForoComentariosCountAggregateOutputType = {
+    id: number
+    foroId: number
+    estudianteId: number
+    contenido: number
+    creadoEn: number
+    _all: number
+  }
+
+
+  export type ForoComentariosMinAggregateInputType = {
+    id?: true
+    foroId?: true
+    estudianteId?: true
+    contenido?: true
+    creadoEn?: true
+  }
+
+  export type ForoComentariosMaxAggregateInputType = {
+    id?: true
+    foroId?: true
+    estudianteId?: true
+    contenido?: true
+    creadoEn?: true
+  }
+
+  export type ForoComentariosCountAggregateInputType = {
+    id?: true
+    foroId?: true
+    estudianteId?: true
+    contenido?: true
+    creadoEn?: true
+    _all?: true
+  }
+
+  export type ForoComentariosAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which foroComentarios to aggregate.
+     */
+    where?: foroComentariosWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of foroComentarios to fetch.
+     */
+    orderBy?: foroComentariosOrderByWithRelationInput | foroComentariosOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: foroComentariosWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` foroComentarios from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` foroComentarios.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned foroComentarios
+    **/
+    _count?: true | ForoComentariosCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ForoComentariosMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ForoComentariosMaxAggregateInputType
+  }
+
+  export type GetForoComentariosAggregateType<T extends ForoComentariosAggregateArgs> = {
+        [P in keyof T & keyof AggregateForoComentarios]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateForoComentarios[P]>
+      : GetScalarType<T[P], AggregateForoComentarios[P]>
+  }
+
+
+
+
+  export type foroComentariosGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: foroComentariosWhereInput
+    orderBy?: foroComentariosOrderByWithAggregationInput | foroComentariosOrderByWithAggregationInput[]
+    by: ForoComentariosScalarFieldEnum[] | ForoComentariosScalarFieldEnum
+    having?: foroComentariosScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ForoComentariosCountAggregateInputType | true
+    _min?: ForoComentariosMinAggregateInputType
+    _max?: ForoComentariosMaxAggregateInputType
+  }
+
+  export type ForoComentariosGroupByOutputType = {
+    id: string
+    foroId: string
+    estudianteId: string
+    contenido: string
+    creadoEn: Date
+    _count: ForoComentariosCountAggregateOutputType | null
+    _min: ForoComentariosMinAggregateOutputType | null
+    _max: ForoComentariosMaxAggregateOutputType | null
+  }
+
+  type GetForoComentariosGroupByPayload<T extends foroComentariosGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ForoComentariosGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ForoComentariosGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ForoComentariosGroupByOutputType[P]>
+            : GetScalarType<T[P], ForoComentariosGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type foroComentariosSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    foroId?: boolean
+    estudianteId?: boolean
+    contenido?: boolean
+    creadoEn?: boolean
+    estudiantes?: boolean | estudiantesDefaultArgs<ExtArgs>
+    foros?: boolean | forosDefaultArgs<ExtArgs>
+    foroRespuestas?: boolean | foroComentarios$foroRespuestasArgs<ExtArgs>
+    _count?: boolean | ForoComentariosCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["foroComentarios"]>
+
+  export type foroComentariosSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    foroId?: boolean
+    estudianteId?: boolean
+    contenido?: boolean
+    creadoEn?: boolean
+    estudiantes?: boolean | estudiantesDefaultArgs<ExtArgs>
+    foros?: boolean | forosDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["foroComentarios"]>
+
+  export type foroComentariosSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    foroId?: boolean
+    estudianteId?: boolean
+    contenido?: boolean
+    creadoEn?: boolean
+    estudiantes?: boolean | estudiantesDefaultArgs<ExtArgs>
+    foros?: boolean | forosDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["foroComentarios"]>
+
+  export type foroComentariosSelectScalar = {
+    id?: boolean
+    foroId?: boolean
+    estudianteId?: boolean
+    contenido?: boolean
+    creadoEn?: boolean
+  }
+
+  export type foroComentariosOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "foroId" | "estudianteId" | "contenido" | "creadoEn", ExtArgs["result"]["foroComentarios"]>
+  export type foroComentariosInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    estudiantes?: boolean | estudiantesDefaultArgs<ExtArgs>
+    foros?: boolean | forosDefaultArgs<ExtArgs>
+    foroRespuestas?: boolean | foroComentarios$foroRespuestasArgs<ExtArgs>
+    _count?: boolean | ForoComentariosCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type foroComentariosIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    estudiantes?: boolean | estudiantesDefaultArgs<ExtArgs>
+    foros?: boolean | forosDefaultArgs<ExtArgs>
+  }
+  export type foroComentariosIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    estudiantes?: boolean | estudiantesDefaultArgs<ExtArgs>
+    foros?: boolean | forosDefaultArgs<ExtArgs>
+  }
+
+  export type $foroComentariosPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "foroComentarios"
+    objects: {
+      estudiantes: Prisma.$estudiantesPayload<ExtArgs>
+      foros: Prisma.$forosPayload<ExtArgs>
+      foroRespuestas: Prisma.$foroRespuestasPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      foroId: string
+      estudianteId: string
+      contenido: string
+      creadoEn: Date
+    }, ExtArgs["result"]["foroComentarios"]>
+    composites: {}
+  }
+
+  type foroComentariosGetPayload<S extends boolean | null | undefined | foroComentariosDefaultArgs> = $Result.GetResult<Prisma.$foroComentariosPayload, S>
+
+  type foroComentariosCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<foroComentariosFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ForoComentariosCountAggregateInputType | true
+    }
+
+  export interface foroComentariosDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['foroComentarios'], meta: { name: 'foroComentarios' } }
+    /**
+     * Find zero or one ForoComentarios that matches the filter.
+     * @param {foroComentariosFindUniqueArgs} args - Arguments to find a ForoComentarios
+     * @example
+     * // Get one ForoComentarios
+     * const foroComentarios = await prisma.foroComentarios.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends foroComentariosFindUniqueArgs>(args: SelectSubset<T, foroComentariosFindUniqueArgs<ExtArgs>>): Prisma__foroComentariosClient<$Result.GetResult<Prisma.$foroComentariosPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one ForoComentarios that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {foroComentariosFindUniqueOrThrowArgs} args - Arguments to find a ForoComentarios
+     * @example
+     * // Get one ForoComentarios
+     * const foroComentarios = await prisma.foroComentarios.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends foroComentariosFindUniqueOrThrowArgs>(args: SelectSubset<T, foroComentariosFindUniqueOrThrowArgs<ExtArgs>>): Prisma__foroComentariosClient<$Result.GetResult<Prisma.$foroComentariosPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ForoComentarios that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {foroComentariosFindFirstArgs} args - Arguments to find a ForoComentarios
+     * @example
+     * // Get one ForoComentarios
+     * const foroComentarios = await prisma.foroComentarios.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends foroComentariosFindFirstArgs>(args?: SelectSubset<T, foroComentariosFindFirstArgs<ExtArgs>>): Prisma__foroComentariosClient<$Result.GetResult<Prisma.$foroComentariosPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ForoComentarios that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {foroComentariosFindFirstOrThrowArgs} args - Arguments to find a ForoComentarios
+     * @example
+     * // Get one ForoComentarios
+     * const foroComentarios = await prisma.foroComentarios.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends foroComentariosFindFirstOrThrowArgs>(args?: SelectSubset<T, foroComentariosFindFirstOrThrowArgs<ExtArgs>>): Prisma__foroComentariosClient<$Result.GetResult<Prisma.$foroComentariosPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more ForoComentarios that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {foroComentariosFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all ForoComentarios
+     * const foroComentarios = await prisma.foroComentarios.findMany()
+     * 
+     * // Get first 10 ForoComentarios
+     * const foroComentarios = await prisma.foroComentarios.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const foroComentariosWithIdOnly = await prisma.foroComentarios.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends foroComentariosFindManyArgs>(args?: SelectSubset<T, foroComentariosFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$foroComentariosPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a ForoComentarios.
+     * @param {foroComentariosCreateArgs} args - Arguments to create a ForoComentarios.
+     * @example
+     * // Create one ForoComentarios
+     * const ForoComentarios = await prisma.foroComentarios.create({
+     *   data: {
+     *     // ... data to create a ForoComentarios
+     *   }
+     * })
+     * 
+     */
+    create<T extends foroComentariosCreateArgs>(args: SelectSubset<T, foroComentariosCreateArgs<ExtArgs>>): Prisma__foroComentariosClient<$Result.GetResult<Prisma.$foroComentariosPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many ForoComentarios.
+     * @param {foroComentariosCreateManyArgs} args - Arguments to create many ForoComentarios.
+     * @example
+     * // Create many ForoComentarios
+     * const foroComentarios = await prisma.foroComentarios.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends foroComentariosCreateManyArgs>(args?: SelectSubset<T, foroComentariosCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many ForoComentarios and returns the data saved in the database.
+     * @param {foroComentariosCreateManyAndReturnArgs} args - Arguments to create many ForoComentarios.
+     * @example
+     * // Create many ForoComentarios
+     * const foroComentarios = await prisma.foroComentarios.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many ForoComentarios and only return the `id`
+     * const foroComentariosWithIdOnly = await prisma.foroComentarios.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends foroComentariosCreateManyAndReturnArgs>(args?: SelectSubset<T, foroComentariosCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$foroComentariosPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a ForoComentarios.
+     * @param {foroComentariosDeleteArgs} args - Arguments to delete one ForoComentarios.
+     * @example
+     * // Delete one ForoComentarios
+     * const ForoComentarios = await prisma.foroComentarios.delete({
+     *   where: {
+     *     // ... filter to delete one ForoComentarios
+     *   }
+     * })
+     * 
+     */
+    delete<T extends foroComentariosDeleteArgs>(args: SelectSubset<T, foroComentariosDeleteArgs<ExtArgs>>): Prisma__foroComentariosClient<$Result.GetResult<Prisma.$foroComentariosPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one ForoComentarios.
+     * @param {foroComentariosUpdateArgs} args - Arguments to update one ForoComentarios.
+     * @example
+     * // Update one ForoComentarios
+     * const foroComentarios = await prisma.foroComentarios.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends foroComentariosUpdateArgs>(args: SelectSubset<T, foroComentariosUpdateArgs<ExtArgs>>): Prisma__foroComentariosClient<$Result.GetResult<Prisma.$foroComentariosPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more ForoComentarios.
+     * @param {foroComentariosDeleteManyArgs} args - Arguments to filter ForoComentarios to delete.
+     * @example
+     * // Delete a few ForoComentarios
+     * const { count } = await prisma.foroComentarios.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends foroComentariosDeleteManyArgs>(args?: SelectSubset<T, foroComentariosDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ForoComentarios.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {foroComentariosUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many ForoComentarios
+     * const foroComentarios = await prisma.foroComentarios.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends foroComentariosUpdateManyArgs>(args: SelectSubset<T, foroComentariosUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ForoComentarios and returns the data updated in the database.
+     * @param {foroComentariosUpdateManyAndReturnArgs} args - Arguments to update many ForoComentarios.
+     * @example
+     * // Update many ForoComentarios
+     * const foroComentarios = await prisma.foroComentarios.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more ForoComentarios and only return the `id`
+     * const foroComentariosWithIdOnly = await prisma.foroComentarios.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends foroComentariosUpdateManyAndReturnArgs>(args: SelectSubset<T, foroComentariosUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$foroComentariosPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one ForoComentarios.
+     * @param {foroComentariosUpsertArgs} args - Arguments to update or create a ForoComentarios.
+     * @example
+     * // Update or create a ForoComentarios
+     * const foroComentarios = await prisma.foroComentarios.upsert({
+     *   create: {
+     *     // ... data to create a ForoComentarios
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the ForoComentarios we want to update
+     *   }
+     * })
+     */
+    upsert<T extends foroComentariosUpsertArgs>(args: SelectSubset<T, foroComentariosUpsertArgs<ExtArgs>>): Prisma__foroComentariosClient<$Result.GetResult<Prisma.$foroComentariosPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of ForoComentarios.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {foroComentariosCountArgs} args - Arguments to filter ForoComentarios to count.
+     * @example
+     * // Count the number of ForoComentarios
+     * const count = await prisma.foroComentarios.count({
+     *   where: {
+     *     // ... the filter for the ForoComentarios we want to count
+     *   }
+     * })
+    **/
+    count<T extends foroComentariosCountArgs>(
+      args?: Subset<T, foroComentariosCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ForoComentariosCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a ForoComentarios.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ForoComentariosAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ForoComentariosAggregateArgs>(args: Subset<T, ForoComentariosAggregateArgs>): Prisma.PrismaPromise<GetForoComentariosAggregateType<T>>
+
+    /**
+     * Group by ForoComentarios.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {foroComentariosGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends foroComentariosGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: foroComentariosGroupByArgs['orderBy'] }
+        : { orderBy?: foroComentariosGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, foroComentariosGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetForoComentariosGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the foroComentarios model
+   */
+  readonly fields: foroComentariosFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for foroComentarios.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__foroComentariosClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    estudiantes<T extends estudiantesDefaultArgs<ExtArgs> = {}>(args?: Subset<T, estudiantesDefaultArgs<ExtArgs>>): Prisma__estudiantesClient<$Result.GetResult<Prisma.$estudiantesPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    foros<T extends forosDefaultArgs<ExtArgs> = {}>(args?: Subset<T, forosDefaultArgs<ExtArgs>>): Prisma__forosClient<$Result.GetResult<Prisma.$forosPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    foroRespuestas<T extends foroComentarios$foroRespuestasArgs<ExtArgs> = {}>(args?: Subset<T, foroComentarios$foroRespuestasArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$foroRespuestasPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the foroComentarios model
+   */
+  interface foroComentariosFieldRefs {
+    readonly id: FieldRef<"foroComentarios", 'String'>
+    readonly foroId: FieldRef<"foroComentarios", 'String'>
+    readonly estudianteId: FieldRef<"foroComentarios", 'String'>
+    readonly contenido: FieldRef<"foroComentarios", 'String'>
+    readonly creadoEn: FieldRef<"foroComentarios", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * foroComentarios findUnique
+   */
+  export type foroComentariosFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the foroComentarios
+     */
+    select?: foroComentariosSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the foroComentarios
+     */
+    omit?: foroComentariosOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: foroComentariosInclude<ExtArgs> | null
+    /**
+     * Filter, which foroComentarios to fetch.
+     */
+    where: foroComentariosWhereUniqueInput
+  }
+
+  /**
+   * foroComentarios findUniqueOrThrow
+   */
+  export type foroComentariosFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the foroComentarios
+     */
+    select?: foroComentariosSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the foroComentarios
+     */
+    omit?: foroComentariosOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: foroComentariosInclude<ExtArgs> | null
+    /**
+     * Filter, which foroComentarios to fetch.
+     */
+    where: foroComentariosWhereUniqueInput
+  }
+
+  /**
+   * foroComentarios findFirst
+   */
+  export type foroComentariosFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the foroComentarios
+     */
+    select?: foroComentariosSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the foroComentarios
+     */
+    omit?: foroComentariosOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: foroComentariosInclude<ExtArgs> | null
+    /**
+     * Filter, which foroComentarios to fetch.
+     */
+    where?: foroComentariosWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of foroComentarios to fetch.
+     */
+    orderBy?: foroComentariosOrderByWithRelationInput | foroComentariosOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for foroComentarios.
+     */
+    cursor?: foroComentariosWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` foroComentarios from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` foroComentarios.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of foroComentarios.
+     */
+    distinct?: ForoComentariosScalarFieldEnum | ForoComentariosScalarFieldEnum[]
+  }
+
+  /**
+   * foroComentarios findFirstOrThrow
+   */
+  export type foroComentariosFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the foroComentarios
+     */
+    select?: foroComentariosSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the foroComentarios
+     */
+    omit?: foroComentariosOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: foroComentariosInclude<ExtArgs> | null
+    /**
+     * Filter, which foroComentarios to fetch.
+     */
+    where?: foroComentariosWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of foroComentarios to fetch.
+     */
+    orderBy?: foroComentariosOrderByWithRelationInput | foroComentariosOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for foroComentarios.
+     */
+    cursor?: foroComentariosWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` foroComentarios from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` foroComentarios.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of foroComentarios.
+     */
+    distinct?: ForoComentariosScalarFieldEnum | ForoComentariosScalarFieldEnum[]
+  }
+
+  /**
+   * foroComentarios findMany
+   */
+  export type foroComentariosFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the foroComentarios
+     */
+    select?: foroComentariosSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the foroComentarios
+     */
+    omit?: foroComentariosOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: foroComentariosInclude<ExtArgs> | null
+    /**
+     * Filter, which foroComentarios to fetch.
+     */
+    where?: foroComentariosWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of foroComentarios to fetch.
+     */
+    orderBy?: foroComentariosOrderByWithRelationInput | foroComentariosOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing foroComentarios.
+     */
+    cursor?: foroComentariosWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` foroComentarios from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` foroComentarios.
+     */
+    skip?: number
+    distinct?: ForoComentariosScalarFieldEnum | ForoComentariosScalarFieldEnum[]
+  }
+
+  /**
+   * foroComentarios create
+   */
+  export type foroComentariosCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the foroComentarios
+     */
+    select?: foroComentariosSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the foroComentarios
+     */
+    omit?: foroComentariosOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: foroComentariosInclude<ExtArgs> | null
+    /**
+     * The data needed to create a foroComentarios.
+     */
+    data: XOR<foroComentariosCreateInput, foroComentariosUncheckedCreateInput>
+  }
+
+  /**
+   * foroComentarios createMany
+   */
+  export type foroComentariosCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many foroComentarios.
+     */
+    data: foroComentariosCreateManyInput | foroComentariosCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * foroComentarios createManyAndReturn
+   */
+  export type foroComentariosCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the foroComentarios
+     */
+    select?: foroComentariosSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the foroComentarios
+     */
+    omit?: foroComentariosOmit<ExtArgs> | null
+    /**
+     * The data used to create many foroComentarios.
+     */
+    data: foroComentariosCreateManyInput | foroComentariosCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: foroComentariosIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * foroComentarios update
+   */
+  export type foroComentariosUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the foroComentarios
+     */
+    select?: foroComentariosSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the foroComentarios
+     */
+    omit?: foroComentariosOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: foroComentariosInclude<ExtArgs> | null
+    /**
+     * The data needed to update a foroComentarios.
+     */
+    data: XOR<foroComentariosUpdateInput, foroComentariosUncheckedUpdateInput>
+    /**
+     * Choose, which foroComentarios to update.
+     */
+    where: foroComentariosWhereUniqueInput
+  }
+
+  /**
+   * foroComentarios updateMany
+   */
+  export type foroComentariosUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update foroComentarios.
+     */
+    data: XOR<foroComentariosUpdateManyMutationInput, foroComentariosUncheckedUpdateManyInput>
+    /**
+     * Filter which foroComentarios to update
+     */
+    where?: foroComentariosWhereInput
+    /**
+     * Limit how many foroComentarios to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * foroComentarios updateManyAndReturn
+   */
+  export type foroComentariosUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the foroComentarios
+     */
+    select?: foroComentariosSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the foroComentarios
+     */
+    omit?: foroComentariosOmit<ExtArgs> | null
+    /**
+     * The data used to update foroComentarios.
+     */
+    data: XOR<foroComentariosUpdateManyMutationInput, foroComentariosUncheckedUpdateManyInput>
+    /**
+     * Filter which foroComentarios to update
+     */
+    where?: foroComentariosWhereInput
+    /**
+     * Limit how many foroComentarios to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: foroComentariosIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * foroComentarios upsert
+   */
+  export type foroComentariosUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the foroComentarios
+     */
+    select?: foroComentariosSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the foroComentarios
+     */
+    omit?: foroComentariosOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: foroComentariosInclude<ExtArgs> | null
+    /**
+     * The filter to search for the foroComentarios to update in case it exists.
+     */
+    where: foroComentariosWhereUniqueInput
+    /**
+     * In case the foroComentarios found by the `where` argument doesn't exist, create a new foroComentarios with this data.
+     */
+    create: XOR<foroComentariosCreateInput, foroComentariosUncheckedCreateInput>
+    /**
+     * In case the foroComentarios was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<foroComentariosUpdateInput, foroComentariosUncheckedUpdateInput>
+  }
+
+  /**
+   * foroComentarios delete
+   */
+  export type foroComentariosDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the foroComentarios
+     */
+    select?: foroComentariosSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the foroComentarios
+     */
+    omit?: foroComentariosOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: foroComentariosInclude<ExtArgs> | null
+    /**
+     * Filter which foroComentarios to delete.
+     */
+    where: foroComentariosWhereUniqueInput
+  }
+
+  /**
+   * foroComentarios deleteMany
+   */
+  export type foroComentariosDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which foroComentarios to delete
+     */
+    where?: foroComentariosWhereInput
+    /**
+     * Limit how many foroComentarios to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * foroComentarios.foroRespuestas
+   */
+  export type foroComentarios$foroRespuestasArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the foroRespuestas
+     */
+    select?: foroRespuestasSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the foroRespuestas
+     */
+    omit?: foroRespuestasOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: foroRespuestasInclude<ExtArgs> | null
+    where?: foroRespuestasWhereInput
+    orderBy?: foroRespuestasOrderByWithRelationInput | foroRespuestasOrderByWithRelationInput[]
+    cursor?: foroRespuestasWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ForoRespuestasScalarFieldEnum | ForoRespuestasScalarFieldEnum[]
+  }
+
+  /**
+   * foroComentarios without action
+   */
+  export type foroComentariosDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the foroComentarios
+     */
+    select?: foroComentariosSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the foroComentarios
+     */
+    omit?: foroComentariosOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: foroComentariosInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model foroRespuestas
+   */
+
+  export type AggregateForoRespuestas = {
+    _count: ForoRespuestasCountAggregateOutputType | null
+    _min: ForoRespuestasMinAggregateOutputType | null
+    _max: ForoRespuestasMaxAggregateOutputType | null
+  }
+
+  export type ForoRespuestasMinAggregateOutputType = {
+    id: string | null
+    comentarioId: string | null
+    estudianteId: string | null
+    contenido: string | null
+    creadoEn: Date | null
+  }
+
+  export type ForoRespuestasMaxAggregateOutputType = {
+    id: string | null
+    comentarioId: string | null
+    estudianteId: string | null
+    contenido: string | null
+    creadoEn: Date | null
+  }
+
+  export type ForoRespuestasCountAggregateOutputType = {
+    id: number
+    comentarioId: number
+    estudianteId: number
+    contenido: number
+    creadoEn: number
+    _all: number
+  }
+
+
+  export type ForoRespuestasMinAggregateInputType = {
+    id?: true
+    comentarioId?: true
+    estudianteId?: true
+    contenido?: true
+    creadoEn?: true
+  }
+
+  export type ForoRespuestasMaxAggregateInputType = {
+    id?: true
+    comentarioId?: true
+    estudianteId?: true
+    contenido?: true
+    creadoEn?: true
+  }
+
+  export type ForoRespuestasCountAggregateInputType = {
+    id?: true
+    comentarioId?: true
+    estudianteId?: true
+    contenido?: true
+    creadoEn?: true
+    _all?: true
+  }
+
+  export type ForoRespuestasAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which foroRespuestas to aggregate.
+     */
+    where?: foroRespuestasWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of foroRespuestas to fetch.
+     */
+    orderBy?: foroRespuestasOrderByWithRelationInput | foroRespuestasOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: foroRespuestasWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` foroRespuestas from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` foroRespuestas.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned foroRespuestas
+    **/
+    _count?: true | ForoRespuestasCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ForoRespuestasMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ForoRespuestasMaxAggregateInputType
+  }
+
+  export type GetForoRespuestasAggregateType<T extends ForoRespuestasAggregateArgs> = {
+        [P in keyof T & keyof AggregateForoRespuestas]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateForoRespuestas[P]>
+      : GetScalarType<T[P], AggregateForoRespuestas[P]>
+  }
+
+
+
+
+  export type foroRespuestasGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: foroRespuestasWhereInput
+    orderBy?: foroRespuestasOrderByWithAggregationInput | foroRespuestasOrderByWithAggregationInput[]
+    by: ForoRespuestasScalarFieldEnum[] | ForoRespuestasScalarFieldEnum
+    having?: foroRespuestasScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ForoRespuestasCountAggregateInputType | true
+    _min?: ForoRespuestasMinAggregateInputType
+    _max?: ForoRespuestasMaxAggregateInputType
+  }
+
+  export type ForoRespuestasGroupByOutputType = {
+    id: string
+    comentarioId: string
+    estudianteId: string
+    contenido: string
+    creadoEn: Date
+    _count: ForoRespuestasCountAggregateOutputType | null
+    _min: ForoRespuestasMinAggregateOutputType | null
+    _max: ForoRespuestasMaxAggregateOutputType | null
+  }
+
+  type GetForoRespuestasGroupByPayload<T extends foroRespuestasGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ForoRespuestasGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ForoRespuestasGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ForoRespuestasGroupByOutputType[P]>
+            : GetScalarType<T[P], ForoRespuestasGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type foroRespuestasSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    comentarioId?: boolean
+    estudianteId?: boolean
+    contenido?: boolean
+    creadoEn?: boolean
+    foroComentarios?: boolean | foroComentariosDefaultArgs<ExtArgs>
+    estudiantes?: boolean | estudiantesDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["foroRespuestas"]>
+
+  export type foroRespuestasSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    comentarioId?: boolean
+    estudianteId?: boolean
+    contenido?: boolean
+    creadoEn?: boolean
+    foroComentarios?: boolean | foroComentariosDefaultArgs<ExtArgs>
+    estudiantes?: boolean | estudiantesDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["foroRespuestas"]>
+
+  export type foroRespuestasSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    comentarioId?: boolean
+    estudianteId?: boolean
+    contenido?: boolean
+    creadoEn?: boolean
+    foroComentarios?: boolean | foroComentariosDefaultArgs<ExtArgs>
+    estudiantes?: boolean | estudiantesDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["foroRespuestas"]>
+
+  export type foroRespuestasSelectScalar = {
+    id?: boolean
+    comentarioId?: boolean
+    estudianteId?: boolean
+    contenido?: boolean
+    creadoEn?: boolean
+  }
+
+  export type foroRespuestasOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "comentarioId" | "estudianteId" | "contenido" | "creadoEn", ExtArgs["result"]["foroRespuestas"]>
+  export type foroRespuestasInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    foroComentarios?: boolean | foroComentariosDefaultArgs<ExtArgs>
+    estudiantes?: boolean | estudiantesDefaultArgs<ExtArgs>
+  }
+  export type foroRespuestasIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    foroComentarios?: boolean | foroComentariosDefaultArgs<ExtArgs>
+    estudiantes?: boolean | estudiantesDefaultArgs<ExtArgs>
+  }
+  export type foroRespuestasIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    foroComentarios?: boolean | foroComentariosDefaultArgs<ExtArgs>
+    estudiantes?: boolean | estudiantesDefaultArgs<ExtArgs>
+  }
+
+  export type $foroRespuestasPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "foroRespuestas"
+    objects: {
+      foroComentarios: Prisma.$foroComentariosPayload<ExtArgs>
+      estudiantes: Prisma.$estudiantesPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      comentarioId: string
+      estudianteId: string
+      contenido: string
+      creadoEn: Date
+    }, ExtArgs["result"]["foroRespuestas"]>
+    composites: {}
+  }
+
+  type foroRespuestasGetPayload<S extends boolean | null | undefined | foroRespuestasDefaultArgs> = $Result.GetResult<Prisma.$foroRespuestasPayload, S>
+
+  type foroRespuestasCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<foroRespuestasFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ForoRespuestasCountAggregateInputType | true
+    }
+
+  export interface foroRespuestasDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['foroRespuestas'], meta: { name: 'foroRespuestas' } }
+    /**
+     * Find zero or one ForoRespuestas that matches the filter.
+     * @param {foroRespuestasFindUniqueArgs} args - Arguments to find a ForoRespuestas
+     * @example
+     * // Get one ForoRespuestas
+     * const foroRespuestas = await prisma.foroRespuestas.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends foroRespuestasFindUniqueArgs>(args: SelectSubset<T, foroRespuestasFindUniqueArgs<ExtArgs>>): Prisma__foroRespuestasClient<$Result.GetResult<Prisma.$foroRespuestasPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one ForoRespuestas that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {foroRespuestasFindUniqueOrThrowArgs} args - Arguments to find a ForoRespuestas
+     * @example
+     * // Get one ForoRespuestas
+     * const foroRespuestas = await prisma.foroRespuestas.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends foroRespuestasFindUniqueOrThrowArgs>(args: SelectSubset<T, foroRespuestasFindUniqueOrThrowArgs<ExtArgs>>): Prisma__foroRespuestasClient<$Result.GetResult<Prisma.$foroRespuestasPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ForoRespuestas that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {foroRespuestasFindFirstArgs} args - Arguments to find a ForoRespuestas
+     * @example
+     * // Get one ForoRespuestas
+     * const foroRespuestas = await prisma.foroRespuestas.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends foroRespuestasFindFirstArgs>(args?: SelectSubset<T, foroRespuestasFindFirstArgs<ExtArgs>>): Prisma__foroRespuestasClient<$Result.GetResult<Prisma.$foroRespuestasPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ForoRespuestas that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {foroRespuestasFindFirstOrThrowArgs} args - Arguments to find a ForoRespuestas
+     * @example
+     * // Get one ForoRespuestas
+     * const foroRespuestas = await prisma.foroRespuestas.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends foroRespuestasFindFirstOrThrowArgs>(args?: SelectSubset<T, foroRespuestasFindFirstOrThrowArgs<ExtArgs>>): Prisma__foroRespuestasClient<$Result.GetResult<Prisma.$foroRespuestasPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more ForoRespuestas that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {foroRespuestasFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all ForoRespuestas
+     * const foroRespuestas = await prisma.foroRespuestas.findMany()
+     * 
+     * // Get first 10 ForoRespuestas
+     * const foroRespuestas = await prisma.foroRespuestas.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const foroRespuestasWithIdOnly = await prisma.foroRespuestas.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends foroRespuestasFindManyArgs>(args?: SelectSubset<T, foroRespuestasFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$foroRespuestasPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a ForoRespuestas.
+     * @param {foroRespuestasCreateArgs} args - Arguments to create a ForoRespuestas.
+     * @example
+     * // Create one ForoRespuestas
+     * const ForoRespuestas = await prisma.foroRespuestas.create({
+     *   data: {
+     *     // ... data to create a ForoRespuestas
+     *   }
+     * })
+     * 
+     */
+    create<T extends foroRespuestasCreateArgs>(args: SelectSubset<T, foroRespuestasCreateArgs<ExtArgs>>): Prisma__foroRespuestasClient<$Result.GetResult<Prisma.$foroRespuestasPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many ForoRespuestas.
+     * @param {foroRespuestasCreateManyArgs} args - Arguments to create many ForoRespuestas.
+     * @example
+     * // Create many ForoRespuestas
+     * const foroRespuestas = await prisma.foroRespuestas.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends foroRespuestasCreateManyArgs>(args?: SelectSubset<T, foroRespuestasCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many ForoRespuestas and returns the data saved in the database.
+     * @param {foroRespuestasCreateManyAndReturnArgs} args - Arguments to create many ForoRespuestas.
+     * @example
+     * // Create many ForoRespuestas
+     * const foroRespuestas = await prisma.foroRespuestas.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many ForoRespuestas and only return the `id`
+     * const foroRespuestasWithIdOnly = await prisma.foroRespuestas.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends foroRespuestasCreateManyAndReturnArgs>(args?: SelectSubset<T, foroRespuestasCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$foroRespuestasPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a ForoRespuestas.
+     * @param {foroRespuestasDeleteArgs} args - Arguments to delete one ForoRespuestas.
+     * @example
+     * // Delete one ForoRespuestas
+     * const ForoRespuestas = await prisma.foroRespuestas.delete({
+     *   where: {
+     *     // ... filter to delete one ForoRespuestas
+     *   }
+     * })
+     * 
+     */
+    delete<T extends foroRespuestasDeleteArgs>(args: SelectSubset<T, foroRespuestasDeleteArgs<ExtArgs>>): Prisma__foroRespuestasClient<$Result.GetResult<Prisma.$foroRespuestasPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one ForoRespuestas.
+     * @param {foroRespuestasUpdateArgs} args - Arguments to update one ForoRespuestas.
+     * @example
+     * // Update one ForoRespuestas
+     * const foroRespuestas = await prisma.foroRespuestas.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends foroRespuestasUpdateArgs>(args: SelectSubset<T, foroRespuestasUpdateArgs<ExtArgs>>): Prisma__foroRespuestasClient<$Result.GetResult<Prisma.$foroRespuestasPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more ForoRespuestas.
+     * @param {foroRespuestasDeleteManyArgs} args - Arguments to filter ForoRespuestas to delete.
+     * @example
+     * // Delete a few ForoRespuestas
+     * const { count } = await prisma.foroRespuestas.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends foroRespuestasDeleteManyArgs>(args?: SelectSubset<T, foroRespuestasDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ForoRespuestas.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {foroRespuestasUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many ForoRespuestas
+     * const foroRespuestas = await prisma.foroRespuestas.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends foroRespuestasUpdateManyArgs>(args: SelectSubset<T, foroRespuestasUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ForoRespuestas and returns the data updated in the database.
+     * @param {foroRespuestasUpdateManyAndReturnArgs} args - Arguments to update many ForoRespuestas.
+     * @example
+     * // Update many ForoRespuestas
+     * const foroRespuestas = await prisma.foroRespuestas.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more ForoRespuestas and only return the `id`
+     * const foroRespuestasWithIdOnly = await prisma.foroRespuestas.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends foroRespuestasUpdateManyAndReturnArgs>(args: SelectSubset<T, foroRespuestasUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$foroRespuestasPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one ForoRespuestas.
+     * @param {foroRespuestasUpsertArgs} args - Arguments to update or create a ForoRespuestas.
+     * @example
+     * // Update or create a ForoRespuestas
+     * const foroRespuestas = await prisma.foroRespuestas.upsert({
+     *   create: {
+     *     // ... data to create a ForoRespuestas
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the ForoRespuestas we want to update
+     *   }
+     * })
+     */
+    upsert<T extends foroRespuestasUpsertArgs>(args: SelectSubset<T, foroRespuestasUpsertArgs<ExtArgs>>): Prisma__foroRespuestasClient<$Result.GetResult<Prisma.$foroRespuestasPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of ForoRespuestas.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {foroRespuestasCountArgs} args - Arguments to filter ForoRespuestas to count.
+     * @example
+     * // Count the number of ForoRespuestas
+     * const count = await prisma.foroRespuestas.count({
+     *   where: {
+     *     // ... the filter for the ForoRespuestas we want to count
+     *   }
+     * })
+    **/
+    count<T extends foroRespuestasCountArgs>(
+      args?: Subset<T, foroRespuestasCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ForoRespuestasCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a ForoRespuestas.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ForoRespuestasAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ForoRespuestasAggregateArgs>(args: Subset<T, ForoRespuestasAggregateArgs>): Prisma.PrismaPromise<GetForoRespuestasAggregateType<T>>
+
+    /**
+     * Group by ForoRespuestas.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {foroRespuestasGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends foroRespuestasGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: foroRespuestasGroupByArgs['orderBy'] }
+        : { orderBy?: foroRespuestasGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, foroRespuestasGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetForoRespuestasGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the foroRespuestas model
+   */
+  readonly fields: foroRespuestasFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for foroRespuestas.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__foroRespuestasClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    foroComentarios<T extends foroComentariosDefaultArgs<ExtArgs> = {}>(args?: Subset<T, foroComentariosDefaultArgs<ExtArgs>>): Prisma__foroComentariosClient<$Result.GetResult<Prisma.$foroComentariosPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    estudiantes<T extends estudiantesDefaultArgs<ExtArgs> = {}>(args?: Subset<T, estudiantesDefaultArgs<ExtArgs>>): Prisma__estudiantesClient<$Result.GetResult<Prisma.$estudiantesPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the foroRespuestas model
+   */
+  interface foroRespuestasFieldRefs {
+    readonly id: FieldRef<"foroRespuestas", 'String'>
+    readonly comentarioId: FieldRef<"foroRespuestas", 'String'>
+    readonly estudianteId: FieldRef<"foroRespuestas", 'String'>
+    readonly contenido: FieldRef<"foroRespuestas", 'String'>
+    readonly creadoEn: FieldRef<"foroRespuestas", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * foroRespuestas findUnique
+   */
+  export type foroRespuestasFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the foroRespuestas
+     */
+    select?: foroRespuestasSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the foroRespuestas
+     */
+    omit?: foroRespuestasOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: foroRespuestasInclude<ExtArgs> | null
+    /**
+     * Filter, which foroRespuestas to fetch.
+     */
+    where: foroRespuestasWhereUniqueInput
+  }
+
+  /**
+   * foroRespuestas findUniqueOrThrow
+   */
+  export type foroRespuestasFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the foroRespuestas
+     */
+    select?: foroRespuestasSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the foroRespuestas
+     */
+    omit?: foroRespuestasOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: foroRespuestasInclude<ExtArgs> | null
+    /**
+     * Filter, which foroRespuestas to fetch.
+     */
+    where: foroRespuestasWhereUniqueInput
+  }
+
+  /**
+   * foroRespuestas findFirst
+   */
+  export type foroRespuestasFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the foroRespuestas
+     */
+    select?: foroRespuestasSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the foroRespuestas
+     */
+    omit?: foroRespuestasOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: foroRespuestasInclude<ExtArgs> | null
+    /**
+     * Filter, which foroRespuestas to fetch.
+     */
+    where?: foroRespuestasWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of foroRespuestas to fetch.
+     */
+    orderBy?: foroRespuestasOrderByWithRelationInput | foroRespuestasOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for foroRespuestas.
+     */
+    cursor?: foroRespuestasWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` foroRespuestas from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` foroRespuestas.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of foroRespuestas.
+     */
+    distinct?: ForoRespuestasScalarFieldEnum | ForoRespuestasScalarFieldEnum[]
+  }
+
+  /**
+   * foroRespuestas findFirstOrThrow
+   */
+  export type foroRespuestasFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the foroRespuestas
+     */
+    select?: foroRespuestasSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the foroRespuestas
+     */
+    omit?: foroRespuestasOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: foroRespuestasInclude<ExtArgs> | null
+    /**
+     * Filter, which foroRespuestas to fetch.
+     */
+    where?: foroRespuestasWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of foroRespuestas to fetch.
+     */
+    orderBy?: foroRespuestasOrderByWithRelationInput | foroRespuestasOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for foroRespuestas.
+     */
+    cursor?: foroRespuestasWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` foroRespuestas from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` foroRespuestas.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of foroRespuestas.
+     */
+    distinct?: ForoRespuestasScalarFieldEnum | ForoRespuestasScalarFieldEnum[]
+  }
+
+  /**
+   * foroRespuestas findMany
+   */
+  export type foroRespuestasFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the foroRespuestas
+     */
+    select?: foroRespuestasSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the foroRespuestas
+     */
+    omit?: foroRespuestasOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: foroRespuestasInclude<ExtArgs> | null
+    /**
+     * Filter, which foroRespuestas to fetch.
+     */
+    where?: foroRespuestasWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of foroRespuestas to fetch.
+     */
+    orderBy?: foroRespuestasOrderByWithRelationInput | foroRespuestasOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing foroRespuestas.
+     */
+    cursor?: foroRespuestasWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` foroRespuestas from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` foroRespuestas.
+     */
+    skip?: number
+    distinct?: ForoRespuestasScalarFieldEnum | ForoRespuestasScalarFieldEnum[]
+  }
+
+  /**
+   * foroRespuestas create
+   */
+  export type foroRespuestasCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the foroRespuestas
+     */
+    select?: foroRespuestasSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the foroRespuestas
+     */
+    omit?: foroRespuestasOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: foroRespuestasInclude<ExtArgs> | null
+    /**
+     * The data needed to create a foroRespuestas.
+     */
+    data: XOR<foroRespuestasCreateInput, foroRespuestasUncheckedCreateInput>
+  }
+
+  /**
+   * foroRespuestas createMany
+   */
+  export type foroRespuestasCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many foroRespuestas.
+     */
+    data: foroRespuestasCreateManyInput | foroRespuestasCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * foroRespuestas createManyAndReturn
+   */
+  export type foroRespuestasCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the foroRespuestas
+     */
+    select?: foroRespuestasSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the foroRespuestas
+     */
+    omit?: foroRespuestasOmit<ExtArgs> | null
+    /**
+     * The data used to create many foroRespuestas.
+     */
+    data: foroRespuestasCreateManyInput | foroRespuestasCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: foroRespuestasIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * foroRespuestas update
+   */
+  export type foroRespuestasUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the foroRespuestas
+     */
+    select?: foroRespuestasSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the foroRespuestas
+     */
+    omit?: foroRespuestasOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: foroRespuestasInclude<ExtArgs> | null
+    /**
+     * The data needed to update a foroRespuestas.
+     */
+    data: XOR<foroRespuestasUpdateInput, foroRespuestasUncheckedUpdateInput>
+    /**
+     * Choose, which foroRespuestas to update.
+     */
+    where: foroRespuestasWhereUniqueInput
+  }
+
+  /**
+   * foroRespuestas updateMany
+   */
+  export type foroRespuestasUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update foroRespuestas.
+     */
+    data: XOR<foroRespuestasUpdateManyMutationInput, foroRespuestasUncheckedUpdateManyInput>
+    /**
+     * Filter which foroRespuestas to update
+     */
+    where?: foroRespuestasWhereInput
+    /**
+     * Limit how many foroRespuestas to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * foroRespuestas updateManyAndReturn
+   */
+  export type foroRespuestasUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the foroRespuestas
+     */
+    select?: foroRespuestasSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the foroRespuestas
+     */
+    omit?: foroRespuestasOmit<ExtArgs> | null
+    /**
+     * The data used to update foroRespuestas.
+     */
+    data: XOR<foroRespuestasUpdateManyMutationInput, foroRespuestasUncheckedUpdateManyInput>
+    /**
+     * Filter which foroRespuestas to update
+     */
+    where?: foroRespuestasWhereInput
+    /**
+     * Limit how many foroRespuestas to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: foroRespuestasIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * foroRespuestas upsert
+   */
+  export type foroRespuestasUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the foroRespuestas
+     */
+    select?: foroRespuestasSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the foroRespuestas
+     */
+    omit?: foroRespuestasOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: foroRespuestasInclude<ExtArgs> | null
+    /**
+     * The filter to search for the foroRespuestas to update in case it exists.
+     */
+    where: foroRespuestasWhereUniqueInput
+    /**
+     * In case the foroRespuestas found by the `where` argument doesn't exist, create a new foroRespuestas with this data.
+     */
+    create: XOR<foroRespuestasCreateInput, foroRespuestasUncheckedCreateInput>
+    /**
+     * In case the foroRespuestas was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<foroRespuestasUpdateInput, foroRespuestasUncheckedUpdateInput>
+  }
+
+  /**
+   * foroRespuestas delete
+   */
+  export type foroRespuestasDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the foroRespuestas
+     */
+    select?: foroRespuestasSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the foroRespuestas
+     */
+    omit?: foroRespuestasOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: foroRespuestasInclude<ExtArgs> | null
+    /**
+     * Filter which foroRespuestas to delete.
+     */
+    where: foroRespuestasWhereUniqueInput
+  }
+
+  /**
+   * foroRespuestas deleteMany
+   */
+  export type foroRespuestasDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which foroRespuestas to delete
+     */
+    where?: foroRespuestasWhereInput
+    /**
+     * Limit how many foroRespuestas to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * foroRespuestas without action
+   */
+  export type foroRespuestasDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the foroRespuestas
+     */
+    select?: foroRespuestasSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the foroRespuestas
+     */
+    omit?: foroRespuestasOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: foroRespuestasInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model foros
+   */
+
+  export type AggregateForos = {
+    _count: ForosCountAggregateOutputType | null
+    _min: ForosMinAggregateOutputType | null
+    _max: ForosMaxAggregateOutputType | null
+  }
+
+  export type ForosMinAggregateOutputType = {
+    id: string | null
+    cursoId: string | null
+    creadoEn: Date | null
+  }
+
+  export type ForosMaxAggregateOutputType = {
+    id: string | null
+    cursoId: string | null
+    creadoEn: Date | null
+  }
+
+  export type ForosCountAggregateOutputType = {
+    id: number
+    cursoId: number
+    creadoEn: number
+    _all: number
+  }
+
+
+  export type ForosMinAggregateInputType = {
+    id?: true
+    cursoId?: true
+    creadoEn?: true
+  }
+
+  export type ForosMaxAggregateInputType = {
+    id?: true
+    cursoId?: true
+    creadoEn?: true
+  }
+
+  export type ForosCountAggregateInputType = {
+    id?: true
+    cursoId?: true
+    creadoEn?: true
+    _all?: true
+  }
+
+  export type ForosAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which foros to aggregate.
+     */
+    where?: forosWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of foros to fetch.
+     */
+    orderBy?: forosOrderByWithRelationInput | forosOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: forosWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` foros from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` foros.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned foros
+    **/
+    _count?: true | ForosCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ForosMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ForosMaxAggregateInputType
+  }
+
+  export type GetForosAggregateType<T extends ForosAggregateArgs> = {
+        [P in keyof T & keyof AggregateForos]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateForos[P]>
+      : GetScalarType<T[P], AggregateForos[P]>
+  }
+
+
+
+
+  export type forosGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: forosWhereInput
+    orderBy?: forosOrderByWithAggregationInput | forosOrderByWithAggregationInput[]
+    by: ForosScalarFieldEnum[] | ForosScalarFieldEnum
+    having?: forosScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ForosCountAggregateInputType | true
+    _min?: ForosMinAggregateInputType
+    _max?: ForosMaxAggregateInputType
+  }
+
+  export type ForosGroupByOutputType = {
+    id: string
+    cursoId: string
+    creadoEn: Date
+    _count: ForosCountAggregateOutputType | null
+    _min: ForosMinAggregateOutputType | null
+    _max: ForosMaxAggregateOutputType | null
+  }
+
+  type GetForosGroupByPayload<T extends forosGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ForosGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ForosGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ForosGroupByOutputType[P]>
+            : GetScalarType<T[P], ForosGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type forosSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    cursoId?: boolean
+    creadoEn?: boolean
+    foroComentarios?: boolean | foros$foroComentariosArgs<ExtArgs>
+    cursos?: boolean | cursosDefaultArgs<ExtArgs>
+    _count?: boolean | ForosCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["foros"]>
+
+  export type forosSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    cursoId?: boolean
+    creadoEn?: boolean
+    cursos?: boolean | cursosDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["foros"]>
+
+  export type forosSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    cursoId?: boolean
+    creadoEn?: boolean
+    cursos?: boolean | cursosDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["foros"]>
+
+  export type forosSelectScalar = {
+    id?: boolean
+    cursoId?: boolean
+    creadoEn?: boolean
+  }
+
+  export type forosOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "cursoId" | "creadoEn", ExtArgs["result"]["foros"]>
+  export type forosInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    foroComentarios?: boolean | foros$foroComentariosArgs<ExtArgs>
+    cursos?: boolean | cursosDefaultArgs<ExtArgs>
+    _count?: boolean | ForosCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type forosIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    cursos?: boolean | cursosDefaultArgs<ExtArgs>
+  }
+  export type forosIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    cursos?: boolean | cursosDefaultArgs<ExtArgs>
+  }
+
+  export type $forosPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "foros"
+    objects: {
+      foroComentarios: Prisma.$foroComentariosPayload<ExtArgs>[]
+      cursos: Prisma.$cursosPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      cursoId: string
+      creadoEn: Date
+    }, ExtArgs["result"]["foros"]>
+    composites: {}
+  }
+
+  type forosGetPayload<S extends boolean | null | undefined | forosDefaultArgs> = $Result.GetResult<Prisma.$forosPayload, S>
+
+  type forosCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<forosFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ForosCountAggregateInputType | true
+    }
+
+  export interface forosDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['foros'], meta: { name: 'foros' } }
+    /**
+     * Find zero or one Foros that matches the filter.
+     * @param {forosFindUniqueArgs} args - Arguments to find a Foros
+     * @example
+     * // Get one Foros
+     * const foros = await prisma.foros.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends forosFindUniqueArgs>(args: SelectSubset<T, forosFindUniqueArgs<ExtArgs>>): Prisma__forosClient<$Result.GetResult<Prisma.$forosPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Foros that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {forosFindUniqueOrThrowArgs} args - Arguments to find a Foros
+     * @example
+     * // Get one Foros
+     * const foros = await prisma.foros.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends forosFindUniqueOrThrowArgs>(args: SelectSubset<T, forosFindUniqueOrThrowArgs<ExtArgs>>): Prisma__forosClient<$Result.GetResult<Prisma.$forosPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Foros that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {forosFindFirstArgs} args - Arguments to find a Foros
+     * @example
+     * // Get one Foros
+     * const foros = await prisma.foros.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends forosFindFirstArgs>(args?: SelectSubset<T, forosFindFirstArgs<ExtArgs>>): Prisma__forosClient<$Result.GetResult<Prisma.$forosPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Foros that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {forosFindFirstOrThrowArgs} args - Arguments to find a Foros
+     * @example
+     * // Get one Foros
+     * const foros = await prisma.foros.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends forosFindFirstOrThrowArgs>(args?: SelectSubset<T, forosFindFirstOrThrowArgs<ExtArgs>>): Prisma__forosClient<$Result.GetResult<Prisma.$forosPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Foros that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {forosFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Foros
+     * const foros = await prisma.foros.findMany()
+     * 
+     * // Get first 10 Foros
+     * const foros = await prisma.foros.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const forosWithIdOnly = await prisma.foros.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends forosFindManyArgs>(args?: SelectSubset<T, forosFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$forosPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Foros.
+     * @param {forosCreateArgs} args - Arguments to create a Foros.
+     * @example
+     * // Create one Foros
+     * const Foros = await prisma.foros.create({
+     *   data: {
+     *     // ... data to create a Foros
+     *   }
+     * })
+     * 
+     */
+    create<T extends forosCreateArgs>(args: SelectSubset<T, forosCreateArgs<ExtArgs>>): Prisma__forosClient<$Result.GetResult<Prisma.$forosPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Foros.
+     * @param {forosCreateManyArgs} args - Arguments to create many Foros.
+     * @example
+     * // Create many Foros
+     * const foros = await prisma.foros.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends forosCreateManyArgs>(args?: SelectSubset<T, forosCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Foros and returns the data saved in the database.
+     * @param {forosCreateManyAndReturnArgs} args - Arguments to create many Foros.
+     * @example
+     * // Create many Foros
+     * const foros = await prisma.foros.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Foros and only return the `id`
+     * const forosWithIdOnly = await prisma.foros.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends forosCreateManyAndReturnArgs>(args?: SelectSubset<T, forosCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$forosPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Foros.
+     * @param {forosDeleteArgs} args - Arguments to delete one Foros.
+     * @example
+     * // Delete one Foros
+     * const Foros = await prisma.foros.delete({
+     *   where: {
+     *     // ... filter to delete one Foros
+     *   }
+     * })
+     * 
+     */
+    delete<T extends forosDeleteArgs>(args: SelectSubset<T, forosDeleteArgs<ExtArgs>>): Prisma__forosClient<$Result.GetResult<Prisma.$forosPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Foros.
+     * @param {forosUpdateArgs} args - Arguments to update one Foros.
+     * @example
+     * // Update one Foros
+     * const foros = await prisma.foros.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends forosUpdateArgs>(args: SelectSubset<T, forosUpdateArgs<ExtArgs>>): Prisma__forosClient<$Result.GetResult<Prisma.$forosPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Foros.
+     * @param {forosDeleteManyArgs} args - Arguments to filter Foros to delete.
+     * @example
+     * // Delete a few Foros
+     * const { count } = await prisma.foros.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends forosDeleteManyArgs>(args?: SelectSubset<T, forosDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Foros.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {forosUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Foros
+     * const foros = await prisma.foros.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends forosUpdateManyArgs>(args: SelectSubset<T, forosUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Foros and returns the data updated in the database.
+     * @param {forosUpdateManyAndReturnArgs} args - Arguments to update many Foros.
+     * @example
+     * // Update many Foros
+     * const foros = await prisma.foros.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Foros and only return the `id`
+     * const forosWithIdOnly = await prisma.foros.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends forosUpdateManyAndReturnArgs>(args: SelectSubset<T, forosUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$forosPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Foros.
+     * @param {forosUpsertArgs} args - Arguments to update or create a Foros.
+     * @example
+     * // Update or create a Foros
+     * const foros = await prisma.foros.upsert({
+     *   create: {
+     *     // ... data to create a Foros
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Foros we want to update
+     *   }
+     * })
+     */
+    upsert<T extends forosUpsertArgs>(args: SelectSubset<T, forosUpsertArgs<ExtArgs>>): Prisma__forosClient<$Result.GetResult<Prisma.$forosPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Foros.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {forosCountArgs} args - Arguments to filter Foros to count.
+     * @example
+     * // Count the number of Foros
+     * const count = await prisma.foros.count({
+     *   where: {
+     *     // ... the filter for the Foros we want to count
+     *   }
+     * })
+    **/
+    count<T extends forosCountArgs>(
+      args?: Subset<T, forosCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ForosCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Foros.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ForosAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ForosAggregateArgs>(args: Subset<T, ForosAggregateArgs>): Prisma.PrismaPromise<GetForosAggregateType<T>>
+
+    /**
+     * Group by Foros.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {forosGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends forosGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: forosGroupByArgs['orderBy'] }
+        : { orderBy?: forosGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, forosGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetForosGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the foros model
+   */
+  readonly fields: forosFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for foros.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__forosClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    foroComentarios<T extends foros$foroComentariosArgs<ExtArgs> = {}>(args?: Subset<T, foros$foroComentariosArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$foroComentariosPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    cursos<T extends cursosDefaultArgs<ExtArgs> = {}>(args?: Subset<T, cursosDefaultArgs<ExtArgs>>): Prisma__cursosClient<$Result.GetResult<Prisma.$cursosPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the foros model
+   */
+  interface forosFieldRefs {
+    readonly id: FieldRef<"foros", 'String'>
+    readonly cursoId: FieldRef<"foros", 'String'>
+    readonly creadoEn: FieldRef<"foros", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * foros findUnique
+   */
+  export type forosFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the foros
+     */
+    select?: forosSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the foros
+     */
+    omit?: forosOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: forosInclude<ExtArgs> | null
+    /**
+     * Filter, which foros to fetch.
+     */
+    where: forosWhereUniqueInput
+  }
+
+  /**
+   * foros findUniqueOrThrow
+   */
+  export type forosFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the foros
+     */
+    select?: forosSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the foros
+     */
+    omit?: forosOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: forosInclude<ExtArgs> | null
+    /**
+     * Filter, which foros to fetch.
+     */
+    where: forosWhereUniqueInput
+  }
+
+  /**
+   * foros findFirst
+   */
+  export type forosFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the foros
+     */
+    select?: forosSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the foros
+     */
+    omit?: forosOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: forosInclude<ExtArgs> | null
+    /**
+     * Filter, which foros to fetch.
+     */
+    where?: forosWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of foros to fetch.
+     */
+    orderBy?: forosOrderByWithRelationInput | forosOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for foros.
+     */
+    cursor?: forosWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` foros from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` foros.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of foros.
+     */
+    distinct?: ForosScalarFieldEnum | ForosScalarFieldEnum[]
+  }
+
+  /**
+   * foros findFirstOrThrow
+   */
+  export type forosFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the foros
+     */
+    select?: forosSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the foros
+     */
+    omit?: forosOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: forosInclude<ExtArgs> | null
+    /**
+     * Filter, which foros to fetch.
+     */
+    where?: forosWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of foros to fetch.
+     */
+    orderBy?: forosOrderByWithRelationInput | forosOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for foros.
+     */
+    cursor?: forosWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` foros from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` foros.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of foros.
+     */
+    distinct?: ForosScalarFieldEnum | ForosScalarFieldEnum[]
+  }
+
+  /**
+   * foros findMany
+   */
+  export type forosFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the foros
+     */
+    select?: forosSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the foros
+     */
+    omit?: forosOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: forosInclude<ExtArgs> | null
+    /**
+     * Filter, which foros to fetch.
+     */
+    where?: forosWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of foros to fetch.
+     */
+    orderBy?: forosOrderByWithRelationInput | forosOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing foros.
+     */
+    cursor?: forosWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` foros from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` foros.
+     */
+    skip?: number
+    distinct?: ForosScalarFieldEnum | ForosScalarFieldEnum[]
+  }
+
+  /**
+   * foros create
+   */
+  export type forosCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the foros
+     */
+    select?: forosSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the foros
+     */
+    omit?: forosOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: forosInclude<ExtArgs> | null
+    /**
+     * The data needed to create a foros.
+     */
+    data: XOR<forosCreateInput, forosUncheckedCreateInput>
+  }
+
+  /**
+   * foros createMany
+   */
+  export type forosCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many foros.
+     */
+    data: forosCreateManyInput | forosCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * foros createManyAndReturn
+   */
+  export type forosCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the foros
+     */
+    select?: forosSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the foros
+     */
+    omit?: forosOmit<ExtArgs> | null
+    /**
+     * The data used to create many foros.
+     */
+    data: forosCreateManyInput | forosCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: forosIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * foros update
+   */
+  export type forosUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the foros
+     */
+    select?: forosSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the foros
+     */
+    omit?: forosOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: forosInclude<ExtArgs> | null
+    /**
+     * The data needed to update a foros.
+     */
+    data: XOR<forosUpdateInput, forosUncheckedUpdateInput>
+    /**
+     * Choose, which foros to update.
+     */
+    where: forosWhereUniqueInput
+  }
+
+  /**
+   * foros updateMany
+   */
+  export type forosUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update foros.
+     */
+    data: XOR<forosUpdateManyMutationInput, forosUncheckedUpdateManyInput>
+    /**
+     * Filter which foros to update
+     */
+    where?: forosWhereInput
+    /**
+     * Limit how many foros to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * foros updateManyAndReturn
+   */
+  export type forosUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the foros
+     */
+    select?: forosSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the foros
+     */
+    omit?: forosOmit<ExtArgs> | null
+    /**
+     * The data used to update foros.
+     */
+    data: XOR<forosUpdateManyMutationInput, forosUncheckedUpdateManyInput>
+    /**
+     * Filter which foros to update
+     */
+    where?: forosWhereInput
+    /**
+     * Limit how many foros to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: forosIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * foros upsert
+   */
+  export type forosUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the foros
+     */
+    select?: forosSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the foros
+     */
+    omit?: forosOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: forosInclude<ExtArgs> | null
+    /**
+     * The filter to search for the foros to update in case it exists.
+     */
+    where: forosWhereUniqueInput
+    /**
+     * In case the foros found by the `where` argument doesn't exist, create a new foros with this data.
+     */
+    create: XOR<forosCreateInput, forosUncheckedCreateInput>
+    /**
+     * In case the foros was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<forosUpdateInput, forosUncheckedUpdateInput>
+  }
+
+  /**
+   * foros delete
+   */
+  export type forosDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the foros
+     */
+    select?: forosSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the foros
+     */
+    omit?: forosOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: forosInclude<ExtArgs> | null
+    /**
+     * Filter which foros to delete.
+     */
+    where: forosWhereUniqueInput
+  }
+
+  /**
+   * foros deleteMany
+   */
+  export type forosDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which foros to delete
+     */
+    where?: forosWhereInput
+    /**
+     * Limit how many foros to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * foros.foroComentarios
+   */
+  export type foros$foroComentariosArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the foroComentarios
+     */
+    select?: foroComentariosSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the foroComentarios
+     */
+    omit?: foroComentariosOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: foroComentariosInclude<ExtArgs> | null
+    where?: foroComentariosWhereInput
+    orderBy?: foroComentariosOrderByWithRelationInput | foroComentariosOrderByWithRelationInput[]
+    cursor?: foroComentariosWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ForoComentariosScalarFieldEnum | ForoComentariosScalarFieldEnum[]
+  }
+
+  /**
+   * foros without action
+   */
+  export type forosDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the foros
+     */
+    select?: forosSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the foros
+     */
+    omit?: forosOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: forosInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model tareas
+   */
+
+  export type AggregateTareas = {
+    _count: TareasCountAggregateOutputType | null
+    _avg: TareasAvgAggregateOutputType | null
+    _sum: TareasSumAggregateOutputType | null
+    _min: TareasMinAggregateOutputType | null
+    _max: TareasMaxAggregateOutputType | null
+  }
+
+  export type TareasAvgAggregateOutputType = {
+    notaMaxima: number | null
+  }
+
+  export type TareasSumAggregateOutputType = {
+    notaMaxima: number | null
+  }
+
+  export type TareasMinAggregateOutputType = {
+    id: string | null
+    edicionId: string | null
+    titulo: string | null
+    descripcion: string | null
+    fechaApertura: Date | null
+    fechaLimite: Date | null
+    notaMaxima: number | null
+    estado: $Enums.TareaEstado | null
+    creadoEn: Date | null
+    actualizadoEn: Date | null
+    recurso: string | null
+  }
+
+  export type TareasMaxAggregateOutputType = {
+    id: string | null
+    edicionId: string | null
+    titulo: string | null
+    descripcion: string | null
+    fechaApertura: Date | null
+    fechaLimite: Date | null
+    notaMaxima: number | null
+    estado: $Enums.TareaEstado | null
+    creadoEn: Date | null
+    actualizadoEn: Date | null
+    recurso: string | null
+  }
+
+  export type TareasCountAggregateOutputType = {
+    id: number
+    edicionId: number
+    titulo: number
+    descripcion: number
+    fechaApertura: number
+    fechaLimite: number
+    notaMaxima: number
+    estado: number
+    creadoEn: number
+    actualizadoEn: number
+    recurso: number
+    _all: number
+  }
+
+
+  export type TareasAvgAggregateInputType = {
+    notaMaxima?: true
+  }
+
+  export type TareasSumAggregateInputType = {
+    notaMaxima?: true
+  }
+
+  export type TareasMinAggregateInputType = {
+    id?: true
+    edicionId?: true
+    titulo?: true
+    descripcion?: true
+    fechaApertura?: true
+    fechaLimite?: true
+    notaMaxima?: true
+    estado?: true
+    creadoEn?: true
+    actualizadoEn?: true
+    recurso?: true
+  }
+
+  export type TareasMaxAggregateInputType = {
+    id?: true
+    edicionId?: true
+    titulo?: true
+    descripcion?: true
+    fechaApertura?: true
+    fechaLimite?: true
+    notaMaxima?: true
+    estado?: true
+    creadoEn?: true
+    actualizadoEn?: true
+    recurso?: true
+  }
+
+  export type TareasCountAggregateInputType = {
+    id?: true
+    edicionId?: true
+    titulo?: true
+    descripcion?: true
+    fechaApertura?: true
+    fechaLimite?: true
+    notaMaxima?: true
+    estado?: true
+    creadoEn?: true
+    actualizadoEn?: true
+    recurso?: true
+    _all?: true
+  }
+
+  export type TareasAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which tareas to aggregate.
+     */
+    where?: tareasWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of tareas to fetch.
+     */
+    orderBy?: tareasOrderByWithRelationInput | tareasOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: tareasWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` tareas from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` tareas.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned tareas
+    **/
+    _count?: true | TareasCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: TareasAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: TareasSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: TareasMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: TareasMaxAggregateInputType
+  }
+
+  export type GetTareasAggregateType<T extends TareasAggregateArgs> = {
+        [P in keyof T & keyof AggregateTareas]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateTareas[P]>
+      : GetScalarType<T[P], AggregateTareas[P]>
+  }
+
+
+
+
+  export type tareasGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: tareasWhereInput
+    orderBy?: tareasOrderByWithAggregationInput | tareasOrderByWithAggregationInput[]
+    by: TareasScalarFieldEnum[] | TareasScalarFieldEnum
+    having?: tareasScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: TareasCountAggregateInputType | true
+    _avg?: TareasAvgAggregateInputType
+    _sum?: TareasSumAggregateInputType
+    _min?: TareasMinAggregateInputType
+    _max?: TareasMaxAggregateInputType
+  }
+
+  export type TareasGroupByOutputType = {
+    id: string
+    edicionId: string
+    titulo: string
+    descripcion: string | null
+    fechaApertura: Date
+    fechaLimite: Date
+    notaMaxima: number
+    estado: $Enums.TareaEstado
+    creadoEn: Date
+    actualizadoEn: Date
+    recurso: string | null
+    _count: TareasCountAggregateOutputType | null
+    _avg: TareasAvgAggregateOutputType | null
+    _sum: TareasSumAggregateOutputType | null
+    _min: TareasMinAggregateOutputType | null
+    _max: TareasMaxAggregateOutputType | null
+  }
+
+  type GetTareasGroupByPayload<T extends tareasGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<TareasGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof TareasGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], TareasGroupByOutputType[P]>
+            : GetScalarType<T[P], TareasGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type tareasSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    edicionId?: boolean
+    titulo?: boolean
+    descripcion?: boolean
+    fechaApertura?: boolean
+    fechaLimite?: boolean
+    notaMaxima?: boolean
+    estado?: boolean
+    creadoEn?: boolean
+    actualizadoEn?: boolean
+    recurso?: boolean
+    entregas?: boolean | tareas$entregasArgs<ExtArgs>
+    edicionesCursos?: boolean | edicionesCursosDefaultArgs<ExtArgs>
+    _count?: boolean | TareasCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["tareas"]>
+
+  export type tareasSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    edicionId?: boolean
+    titulo?: boolean
+    descripcion?: boolean
+    fechaApertura?: boolean
+    fechaLimite?: boolean
+    notaMaxima?: boolean
+    estado?: boolean
+    creadoEn?: boolean
+    actualizadoEn?: boolean
+    recurso?: boolean
+    edicionesCursos?: boolean | edicionesCursosDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["tareas"]>
+
+  export type tareasSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    edicionId?: boolean
+    titulo?: boolean
+    descripcion?: boolean
+    fechaApertura?: boolean
+    fechaLimite?: boolean
+    notaMaxima?: boolean
+    estado?: boolean
+    creadoEn?: boolean
+    actualizadoEn?: boolean
+    recurso?: boolean
+    edicionesCursos?: boolean | edicionesCursosDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["tareas"]>
+
+  export type tareasSelectScalar = {
+    id?: boolean
+    edicionId?: boolean
+    titulo?: boolean
+    descripcion?: boolean
+    fechaApertura?: boolean
+    fechaLimite?: boolean
+    notaMaxima?: boolean
+    estado?: boolean
+    creadoEn?: boolean
+    actualizadoEn?: boolean
+    recurso?: boolean
+  }
+
+  export type tareasOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "edicionId" | "titulo" | "descripcion" | "fechaApertura" | "fechaLimite" | "notaMaxima" | "estado" | "creadoEn" | "actualizadoEn" | "recurso", ExtArgs["result"]["tareas"]>
+  export type tareasInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    entregas?: boolean | tareas$entregasArgs<ExtArgs>
+    edicionesCursos?: boolean | edicionesCursosDefaultArgs<ExtArgs>
+    _count?: boolean | TareasCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type tareasIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    edicionesCursos?: boolean | edicionesCursosDefaultArgs<ExtArgs>
+  }
+  export type tareasIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    edicionesCursos?: boolean | edicionesCursosDefaultArgs<ExtArgs>
+  }
+
+  export type $tareasPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "tareas"
+    objects: {
+      entregas: Prisma.$entregasPayload<ExtArgs>[]
+      edicionesCursos: Prisma.$edicionesCursosPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      edicionId: string
+      titulo: string
+      descripcion: string | null
+      fechaApertura: Date
+      fechaLimite: Date
+      notaMaxima: number
+      estado: $Enums.TareaEstado
+      creadoEn: Date
+      actualizadoEn: Date
+      recurso: string | null
+    }, ExtArgs["result"]["tareas"]>
+    composites: {}
+  }
+
+  type tareasGetPayload<S extends boolean | null | undefined | tareasDefaultArgs> = $Result.GetResult<Prisma.$tareasPayload, S>
+
+  type tareasCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<tareasFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: TareasCountAggregateInputType | true
+    }
+
+  export interface tareasDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['tareas'], meta: { name: 'tareas' } }
+    /**
+     * Find zero or one Tareas that matches the filter.
+     * @param {tareasFindUniqueArgs} args - Arguments to find a Tareas
+     * @example
+     * // Get one Tareas
+     * const tareas = await prisma.tareas.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends tareasFindUniqueArgs>(args: SelectSubset<T, tareasFindUniqueArgs<ExtArgs>>): Prisma__tareasClient<$Result.GetResult<Prisma.$tareasPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Tareas that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {tareasFindUniqueOrThrowArgs} args - Arguments to find a Tareas
+     * @example
+     * // Get one Tareas
+     * const tareas = await prisma.tareas.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends tareasFindUniqueOrThrowArgs>(args: SelectSubset<T, tareasFindUniqueOrThrowArgs<ExtArgs>>): Prisma__tareasClient<$Result.GetResult<Prisma.$tareasPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Tareas that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {tareasFindFirstArgs} args - Arguments to find a Tareas
+     * @example
+     * // Get one Tareas
+     * const tareas = await prisma.tareas.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends tareasFindFirstArgs>(args?: SelectSubset<T, tareasFindFirstArgs<ExtArgs>>): Prisma__tareasClient<$Result.GetResult<Prisma.$tareasPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Tareas that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {tareasFindFirstOrThrowArgs} args - Arguments to find a Tareas
+     * @example
+     * // Get one Tareas
+     * const tareas = await prisma.tareas.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends tareasFindFirstOrThrowArgs>(args?: SelectSubset<T, tareasFindFirstOrThrowArgs<ExtArgs>>): Prisma__tareasClient<$Result.GetResult<Prisma.$tareasPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Tareas that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {tareasFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Tareas
+     * const tareas = await prisma.tareas.findMany()
+     * 
+     * // Get first 10 Tareas
+     * const tareas = await prisma.tareas.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const tareasWithIdOnly = await prisma.tareas.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends tareasFindManyArgs>(args?: SelectSubset<T, tareasFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$tareasPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Tareas.
+     * @param {tareasCreateArgs} args - Arguments to create a Tareas.
+     * @example
+     * // Create one Tareas
+     * const Tareas = await prisma.tareas.create({
+     *   data: {
+     *     // ... data to create a Tareas
+     *   }
+     * })
+     * 
+     */
+    create<T extends tareasCreateArgs>(args: SelectSubset<T, tareasCreateArgs<ExtArgs>>): Prisma__tareasClient<$Result.GetResult<Prisma.$tareasPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Tareas.
+     * @param {tareasCreateManyArgs} args - Arguments to create many Tareas.
+     * @example
+     * // Create many Tareas
+     * const tareas = await prisma.tareas.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends tareasCreateManyArgs>(args?: SelectSubset<T, tareasCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Tareas and returns the data saved in the database.
+     * @param {tareasCreateManyAndReturnArgs} args - Arguments to create many Tareas.
+     * @example
+     * // Create many Tareas
+     * const tareas = await prisma.tareas.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Tareas and only return the `id`
+     * const tareasWithIdOnly = await prisma.tareas.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends tareasCreateManyAndReturnArgs>(args?: SelectSubset<T, tareasCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$tareasPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Tareas.
+     * @param {tareasDeleteArgs} args - Arguments to delete one Tareas.
+     * @example
+     * // Delete one Tareas
+     * const Tareas = await prisma.tareas.delete({
+     *   where: {
+     *     // ... filter to delete one Tareas
+     *   }
+     * })
+     * 
+     */
+    delete<T extends tareasDeleteArgs>(args: SelectSubset<T, tareasDeleteArgs<ExtArgs>>): Prisma__tareasClient<$Result.GetResult<Prisma.$tareasPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Tareas.
+     * @param {tareasUpdateArgs} args - Arguments to update one Tareas.
+     * @example
+     * // Update one Tareas
+     * const tareas = await prisma.tareas.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends tareasUpdateArgs>(args: SelectSubset<T, tareasUpdateArgs<ExtArgs>>): Prisma__tareasClient<$Result.GetResult<Prisma.$tareasPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Tareas.
+     * @param {tareasDeleteManyArgs} args - Arguments to filter Tareas to delete.
+     * @example
+     * // Delete a few Tareas
+     * const { count } = await prisma.tareas.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends tareasDeleteManyArgs>(args?: SelectSubset<T, tareasDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Tareas.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {tareasUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Tareas
+     * const tareas = await prisma.tareas.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends tareasUpdateManyArgs>(args: SelectSubset<T, tareasUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Tareas and returns the data updated in the database.
+     * @param {tareasUpdateManyAndReturnArgs} args - Arguments to update many Tareas.
+     * @example
+     * // Update many Tareas
+     * const tareas = await prisma.tareas.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Tareas and only return the `id`
+     * const tareasWithIdOnly = await prisma.tareas.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends tareasUpdateManyAndReturnArgs>(args: SelectSubset<T, tareasUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$tareasPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Tareas.
+     * @param {tareasUpsertArgs} args - Arguments to update or create a Tareas.
+     * @example
+     * // Update or create a Tareas
+     * const tareas = await prisma.tareas.upsert({
+     *   create: {
+     *     // ... data to create a Tareas
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Tareas we want to update
+     *   }
+     * })
+     */
+    upsert<T extends tareasUpsertArgs>(args: SelectSubset<T, tareasUpsertArgs<ExtArgs>>): Prisma__tareasClient<$Result.GetResult<Prisma.$tareasPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Tareas.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {tareasCountArgs} args - Arguments to filter Tareas to count.
+     * @example
+     * // Count the number of Tareas
+     * const count = await prisma.tareas.count({
+     *   where: {
+     *     // ... the filter for the Tareas we want to count
+     *   }
+     * })
+    **/
+    count<T extends tareasCountArgs>(
+      args?: Subset<T, tareasCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], TareasCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Tareas.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TareasAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends TareasAggregateArgs>(args: Subset<T, TareasAggregateArgs>): Prisma.PrismaPromise<GetTareasAggregateType<T>>
+
+    /**
+     * Group by Tareas.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {tareasGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends tareasGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: tareasGroupByArgs['orderBy'] }
+        : { orderBy?: tareasGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, tareasGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetTareasGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the tareas model
+   */
+  readonly fields: tareasFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for tareas.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__tareasClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    entregas<T extends tareas$entregasArgs<ExtArgs> = {}>(args?: Subset<T, tareas$entregasArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$entregasPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    edicionesCursos<T extends edicionesCursosDefaultArgs<ExtArgs> = {}>(args?: Subset<T, edicionesCursosDefaultArgs<ExtArgs>>): Prisma__edicionesCursosClient<$Result.GetResult<Prisma.$edicionesCursosPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the tareas model
+   */
+  interface tareasFieldRefs {
+    readonly id: FieldRef<"tareas", 'String'>
+    readonly edicionId: FieldRef<"tareas", 'String'>
+    readonly titulo: FieldRef<"tareas", 'String'>
+    readonly descripcion: FieldRef<"tareas", 'String'>
+    readonly fechaApertura: FieldRef<"tareas", 'DateTime'>
+    readonly fechaLimite: FieldRef<"tareas", 'DateTime'>
+    readonly notaMaxima: FieldRef<"tareas", 'Float'>
+    readonly estado: FieldRef<"tareas", 'TareaEstado'>
+    readonly creadoEn: FieldRef<"tareas", 'DateTime'>
+    readonly actualizadoEn: FieldRef<"tareas", 'DateTime'>
+    readonly recurso: FieldRef<"tareas", 'String'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * tareas findUnique
+   */
+  export type tareasFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the tareas
+     */
+    select?: tareasSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the tareas
+     */
+    omit?: tareasOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: tareasInclude<ExtArgs> | null
+    /**
+     * Filter, which tareas to fetch.
+     */
+    where: tareasWhereUniqueInput
+  }
+
+  /**
+   * tareas findUniqueOrThrow
+   */
+  export type tareasFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the tareas
+     */
+    select?: tareasSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the tareas
+     */
+    omit?: tareasOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: tareasInclude<ExtArgs> | null
+    /**
+     * Filter, which tareas to fetch.
+     */
+    where: tareasWhereUniqueInput
+  }
+
+  /**
+   * tareas findFirst
+   */
+  export type tareasFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the tareas
+     */
+    select?: tareasSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the tareas
+     */
+    omit?: tareasOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: tareasInclude<ExtArgs> | null
+    /**
+     * Filter, which tareas to fetch.
+     */
+    where?: tareasWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of tareas to fetch.
+     */
+    orderBy?: tareasOrderByWithRelationInput | tareasOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for tareas.
+     */
+    cursor?: tareasWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` tareas from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` tareas.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of tareas.
+     */
+    distinct?: TareasScalarFieldEnum | TareasScalarFieldEnum[]
+  }
+
+  /**
+   * tareas findFirstOrThrow
+   */
+  export type tareasFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the tareas
+     */
+    select?: tareasSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the tareas
+     */
+    omit?: tareasOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: tareasInclude<ExtArgs> | null
+    /**
+     * Filter, which tareas to fetch.
+     */
+    where?: tareasWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of tareas to fetch.
+     */
+    orderBy?: tareasOrderByWithRelationInput | tareasOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for tareas.
+     */
+    cursor?: tareasWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` tareas from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` tareas.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of tareas.
+     */
+    distinct?: TareasScalarFieldEnum | TareasScalarFieldEnum[]
+  }
+
+  /**
+   * tareas findMany
+   */
+  export type tareasFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the tareas
+     */
+    select?: tareasSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the tareas
+     */
+    omit?: tareasOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: tareasInclude<ExtArgs> | null
+    /**
+     * Filter, which tareas to fetch.
+     */
+    where?: tareasWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of tareas to fetch.
+     */
+    orderBy?: tareasOrderByWithRelationInput | tareasOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing tareas.
+     */
+    cursor?: tareasWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` tareas from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` tareas.
+     */
+    skip?: number
+    distinct?: TareasScalarFieldEnum | TareasScalarFieldEnum[]
+  }
+
+  /**
+   * tareas create
+   */
+  export type tareasCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the tareas
+     */
+    select?: tareasSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the tareas
+     */
+    omit?: tareasOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: tareasInclude<ExtArgs> | null
+    /**
+     * The data needed to create a tareas.
+     */
+    data: XOR<tareasCreateInput, tareasUncheckedCreateInput>
+  }
+
+  /**
+   * tareas createMany
+   */
+  export type tareasCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many tareas.
+     */
+    data: tareasCreateManyInput | tareasCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * tareas createManyAndReturn
+   */
+  export type tareasCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the tareas
+     */
+    select?: tareasSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the tareas
+     */
+    omit?: tareasOmit<ExtArgs> | null
+    /**
+     * The data used to create many tareas.
+     */
+    data: tareasCreateManyInput | tareasCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: tareasIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * tareas update
+   */
+  export type tareasUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the tareas
+     */
+    select?: tareasSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the tareas
+     */
+    omit?: tareasOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: tareasInclude<ExtArgs> | null
+    /**
+     * The data needed to update a tareas.
+     */
+    data: XOR<tareasUpdateInput, tareasUncheckedUpdateInput>
+    /**
+     * Choose, which tareas to update.
+     */
+    where: tareasWhereUniqueInput
+  }
+
+  /**
+   * tareas updateMany
+   */
+  export type tareasUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update tareas.
+     */
+    data: XOR<tareasUpdateManyMutationInput, tareasUncheckedUpdateManyInput>
+    /**
+     * Filter which tareas to update
+     */
+    where?: tareasWhereInput
+    /**
+     * Limit how many tareas to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * tareas updateManyAndReturn
+   */
+  export type tareasUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the tareas
+     */
+    select?: tareasSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the tareas
+     */
+    omit?: tareasOmit<ExtArgs> | null
+    /**
+     * The data used to update tareas.
+     */
+    data: XOR<tareasUpdateManyMutationInput, tareasUncheckedUpdateManyInput>
+    /**
+     * Filter which tareas to update
+     */
+    where?: tareasWhereInput
+    /**
+     * Limit how many tareas to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: tareasIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * tareas upsert
+   */
+  export type tareasUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the tareas
+     */
+    select?: tareasSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the tareas
+     */
+    omit?: tareasOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: tareasInclude<ExtArgs> | null
+    /**
+     * The filter to search for the tareas to update in case it exists.
+     */
+    where: tareasWhereUniqueInput
+    /**
+     * In case the tareas found by the `where` argument doesn't exist, create a new tareas with this data.
+     */
+    create: XOR<tareasCreateInput, tareasUncheckedCreateInput>
+    /**
+     * In case the tareas was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<tareasUpdateInput, tareasUncheckedUpdateInput>
+  }
+
+  /**
+   * tareas delete
+   */
+  export type tareasDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the tareas
+     */
+    select?: tareasSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the tareas
+     */
+    omit?: tareasOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: tareasInclude<ExtArgs> | null
+    /**
+     * Filter which tareas to delete.
+     */
+    where: tareasWhereUniqueInput
+  }
+
+  /**
+   * tareas deleteMany
+   */
+  export type tareasDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which tareas to delete
+     */
+    where?: tareasWhereInput
+    /**
+     * Limit how many tareas to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * tareas.entregas
+   */
+  export type tareas$entregasArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the entregas
+     */
+    select?: entregasSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the entregas
+     */
+    omit?: entregasOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: entregasInclude<ExtArgs> | null
+    where?: entregasWhereInput
+    orderBy?: entregasOrderByWithRelationInput | entregasOrderByWithRelationInput[]
+    cursor?: entregasWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: EntregasScalarFieldEnum | EntregasScalarFieldEnum[]
+  }
+
+  /**
+   * tareas without action
+   */
+  export type tareasDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the tareas
+     */
+    select?: tareasSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the tareas
+     */
+    omit?: tareasOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: tareasInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -43908,6 +50253,71 @@ export namespace Prisma {
   export type SuscripcionesScalarFieldEnum = (typeof SuscripcionesScalarFieldEnum)[keyof typeof SuscripcionesScalarFieldEnum]
 
 
+  export const EntregasScalarFieldEnum: {
+    id: 'id',
+    tareaId: 'tareaId',
+    estudianteId: 'estudianteId',
+    archivos: 'archivos',
+    comentarioAlumno: 'comentarioAlumno',
+    fechaEntrega: 'fechaEntrega',
+    nota: 'nota',
+    retroalimentacion: 'retroalimentacion',
+    estado: 'estado',
+    calificadoEn: 'calificadoEn',
+    calificadoPorId: 'calificadoPorId'
+  };
+
+  export type EntregasScalarFieldEnum = (typeof EntregasScalarFieldEnum)[keyof typeof EntregasScalarFieldEnum]
+
+
+  export const ForoComentariosScalarFieldEnum: {
+    id: 'id',
+    foroId: 'foroId',
+    estudianteId: 'estudianteId',
+    contenido: 'contenido',
+    creadoEn: 'creadoEn'
+  };
+
+  export type ForoComentariosScalarFieldEnum = (typeof ForoComentariosScalarFieldEnum)[keyof typeof ForoComentariosScalarFieldEnum]
+
+
+  export const ForoRespuestasScalarFieldEnum: {
+    id: 'id',
+    comentarioId: 'comentarioId',
+    estudianteId: 'estudianteId',
+    contenido: 'contenido',
+    creadoEn: 'creadoEn'
+  };
+
+  export type ForoRespuestasScalarFieldEnum = (typeof ForoRespuestasScalarFieldEnum)[keyof typeof ForoRespuestasScalarFieldEnum]
+
+
+  export const ForosScalarFieldEnum: {
+    id: 'id',
+    cursoId: 'cursoId',
+    creadoEn: 'creadoEn'
+  };
+
+  export type ForosScalarFieldEnum = (typeof ForosScalarFieldEnum)[keyof typeof ForosScalarFieldEnum]
+
+
+  export const TareasScalarFieldEnum: {
+    id: 'id',
+    edicionId: 'edicionId',
+    titulo: 'titulo',
+    descripcion: 'descripcion',
+    fechaApertura: 'fechaApertura',
+    fechaLimite: 'fechaLimite',
+    notaMaxima: 'notaMaxima',
+    estado: 'estado',
+    creadoEn: 'creadoEn',
+    actualizadoEn: 'actualizadoEn',
+    recurso: 'recurso'
+  };
+
+  export type TareasScalarFieldEnum = (typeof TareasScalarFieldEnum)[keyof typeof TareasScalarFieldEnum]
+
+
   export const SortOrder: {
     asc: 'asc',
     desc: 'desc'
@@ -44273,6 +50683,34 @@ export namespace Prisma {
    * Reference to a field of type 'EstadoSuscripcion[]'
    */
   export type ListEnumEstadoSuscripcionFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'EstadoSuscripcion[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'EntregaEstado'
+   */
+  export type EnumEntregaEstadoFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'EntregaEstado'>
+    
+
+
+  /**
+   * Reference to a field of type 'EntregaEstado[]'
+   */
+  export type ListEnumEntregaEstadoFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'EntregaEstado[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'TareaEstado'
+   */
+  export type EnumTareaEstadoFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TareaEstado'>
+    
+
+
+  /**
+   * Reference to a field of type 'TareaEstado[]'
+   */
+  export type ListEnumTareaEstadoFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TareaEstado[]'>
     
   /**
    * Deep Input Types
@@ -44865,6 +51303,7 @@ export namespace Prisma {
     beneficiosCursos?: BeneficiosCursosListRelationFilter
     categoriasCursos?: CategoriasCursosListRelationFilter
     edicionesCursos?: EdicionesCursosListRelationFilter
+    foros?: XOR<ForosNullableScalarRelationFilter, forosWhereInput> | null
     objetivosCursos?: ObjetivosCursosListRelationFilter
     requisitosCursos?: RequisitosCursosListRelationFilter
     reviewsCursos?: ReviewsCursosListRelationFilter
@@ -44885,6 +51324,7 @@ export namespace Prisma {
     beneficiosCursos?: beneficiosCursosOrderByRelationAggregateInput
     categoriasCursos?: categoriasCursosOrderByRelationAggregateInput
     edicionesCursos?: edicionesCursosOrderByRelationAggregateInput
+    foros?: forosOrderByWithRelationInput
     objetivosCursos?: objetivosCursosOrderByRelationAggregateInput
     requisitosCursos?: requisitosCursosOrderByRelationAggregateInput
     reviewsCursos?: reviewsCursosOrderByRelationAggregateInput
@@ -44908,6 +51348,7 @@ export namespace Prisma {
     beneficiosCursos?: BeneficiosCursosListRelationFilter
     categoriasCursos?: CategoriasCursosListRelationFilter
     edicionesCursos?: EdicionesCursosListRelationFilter
+    foros?: XOR<ForosNullableScalarRelationFilter, forosWhereInput> | null
     objetivosCursos?: ObjetivosCursosListRelationFilter
     requisitosCursos?: RequisitosCursosListRelationFilter
     reviewsCursos?: ReviewsCursosListRelationFilter
@@ -45059,6 +51500,7 @@ export namespace Prisma {
     inscripciones?: InscripcionesListRelationFilter
     pagosDocentes?: XOR<PagosDocentesNullableScalarRelationFilter, pagosDocentesWhereInput> | null
     preciosCursos?: PreciosCursosListRelationFilter
+    tareas?: TareasListRelationFilter
   }
 
   export type edicionesCursosOrderByWithRelationInput = {
@@ -45085,6 +51527,7 @@ export namespace Prisma {
     inscripciones?: inscripcionesOrderByRelationAggregateInput
     pagosDocentes?: pagosDocentesOrderByWithRelationInput
     preciosCursos?: preciosCursosOrderByRelationAggregateInput
+    tareas?: tareasOrderByRelationAggregateInput
   }
 
   export type edicionesCursosWhereUniqueInput = Prisma.AtLeast<{
@@ -45115,6 +51558,7 @@ export namespace Prisma {
     inscripciones?: InscripcionesListRelationFilter
     pagosDocentes?: XOR<PagosDocentesNullableScalarRelationFilter, pagosDocentesWhereInput> | null
     preciosCursos?: PreciosCursosListRelationFilter
+    tareas?: TareasListRelationFilter
   }, "id" | "cursoId_codigo_docenteId">
 
   export type edicionesCursosOrderByWithAggregationInput = {
@@ -45175,6 +51619,9 @@ export namespace Prisma {
     nroUpdates?: IntFilter<"estudiantes"> | number
     calificaciones?: CalificacionesListRelationFilter
     certificados?: CertificadosListRelationFilter
+    entregas?: EntregasListRelationFilter
+    foroComentarios?: ForoComentariosListRelationFilter
+    foroRespuestas?: ForoRespuestasListRelationFilter
     inscripciones?: InscripcionesListRelationFilter
     usuariosEstudiantes?: XOR<UsuariosEstudiantesNullableScalarRelationFilter, usuariosEstudiantesWhereInput> | null
   }
@@ -45192,6 +51639,9 @@ export namespace Prisma {
     nroUpdates?: SortOrder
     calificaciones?: calificacionesOrderByRelationAggregateInput
     certificados?: certificadosOrderByRelationAggregateInput
+    entregas?: entregasOrderByRelationAggregateInput
+    foroComentarios?: foroComentariosOrderByRelationAggregateInput
+    foroRespuestas?: foroRespuestasOrderByRelationAggregateInput
     inscripciones?: inscripcionesOrderByRelationAggregateInput
     usuariosEstudiantes?: usuariosEstudiantesOrderByWithRelationInput
   }
@@ -45212,6 +51662,9 @@ export namespace Prisma {
     nroUpdates?: IntFilter<"estudiantes"> | number
     calificaciones?: CalificacionesListRelationFilter
     certificados?: CertificadosListRelationFilter
+    entregas?: EntregasListRelationFilter
+    foroComentarios?: ForoComentariosListRelationFilter
+    foroRespuestas?: ForoRespuestasListRelationFilter
     inscripciones?: InscripcionesListRelationFilter
     usuariosEstudiantes?: XOR<UsuariosEstudiantesNullableScalarRelationFilter, usuariosEstudiantesWhereInput> | null
   }, "id">
@@ -46863,6 +53316,354 @@ export namespace Prisma {
     actualizadoEn?: DateTimeWithAggregatesFilter<"suscripciones"> | Date | string
   }
 
+  export type entregasWhereInput = {
+    AND?: entregasWhereInput | entregasWhereInput[]
+    OR?: entregasWhereInput[]
+    NOT?: entregasWhereInput | entregasWhereInput[]
+    id?: StringFilter<"entregas"> | string
+    tareaId?: StringFilter<"entregas"> | string
+    estudianteId?: StringFilter<"entregas"> | string
+    archivos?: JsonNullableFilter<"entregas">
+    comentarioAlumno?: StringNullableFilter<"entregas"> | string | null
+    fechaEntrega?: DateTimeFilter<"entregas"> | Date | string
+    nota?: FloatNullableFilter<"entregas"> | number | null
+    retroalimentacion?: StringNullableFilter<"entregas"> | string | null
+    estado?: EnumEntregaEstadoFilter<"entregas"> | $Enums.EntregaEstado
+    calificadoEn?: DateTimeNullableFilter<"entregas"> | Date | string | null
+    calificadoPorId?: StringNullableFilter<"entregas"> | string | null
+    estudiantes?: XOR<EstudiantesScalarRelationFilter, estudiantesWhereInput>
+    tareas?: XOR<TareasScalarRelationFilter, tareasWhereInput>
+  }
+
+  export type entregasOrderByWithRelationInput = {
+    id?: SortOrder
+    tareaId?: SortOrder
+    estudianteId?: SortOrder
+    archivos?: SortOrderInput | SortOrder
+    comentarioAlumno?: SortOrderInput | SortOrder
+    fechaEntrega?: SortOrder
+    nota?: SortOrderInput | SortOrder
+    retroalimentacion?: SortOrderInput | SortOrder
+    estado?: SortOrder
+    calificadoEn?: SortOrderInput | SortOrder
+    calificadoPorId?: SortOrderInput | SortOrder
+    estudiantes?: estudiantesOrderByWithRelationInput
+    tareas?: tareasOrderByWithRelationInput
+  }
+
+  export type entregasWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    tareaId_estudianteId?: entregasTareaIdEstudianteIdCompoundUniqueInput
+    AND?: entregasWhereInput | entregasWhereInput[]
+    OR?: entregasWhereInput[]
+    NOT?: entregasWhereInput | entregasWhereInput[]
+    tareaId?: StringFilter<"entregas"> | string
+    estudianteId?: StringFilter<"entregas"> | string
+    archivos?: JsonNullableFilter<"entregas">
+    comentarioAlumno?: StringNullableFilter<"entregas"> | string | null
+    fechaEntrega?: DateTimeFilter<"entregas"> | Date | string
+    nota?: FloatNullableFilter<"entregas"> | number | null
+    retroalimentacion?: StringNullableFilter<"entregas"> | string | null
+    estado?: EnumEntregaEstadoFilter<"entregas"> | $Enums.EntregaEstado
+    calificadoEn?: DateTimeNullableFilter<"entregas"> | Date | string | null
+    calificadoPorId?: StringNullableFilter<"entregas"> | string | null
+    estudiantes?: XOR<EstudiantesScalarRelationFilter, estudiantesWhereInput>
+    tareas?: XOR<TareasScalarRelationFilter, tareasWhereInput>
+  }, "id" | "tareaId_estudianteId">
+
+  export type entregasOrderByWithAggregationInput = {
+    id?: SortOrder
+    tareaId?: SortOrder
+    estudianteId?: SortOrder
+    archivos?: SortOrderInput | SortOrder
+    comentarioAlumno?: SortOrderInput | SortOrder
+    fechaEntrega?: SortOrder
+    nota?: SortOrderInput | SortOrder
+    retroalimentacion?: SortOrderInput | SortOrder
+    estado?: SortOrder
+    calificadoEn?: SortOrderInput | SortOrder
+    calificadoPorId?: SortOrderInput | SortOrder
+    _count?: entregasCountOrderByAggregateInput
+    _avg?: entregasAvgOrderByAggregateInput
+    _max?: entregasMaxOrderByAggregateInput
+    _min?: entregasMinOrderByAggregateInput
+    _sum?: entregasSumOrderByAggregateInput
+  }
+
+  export type entregasScalarWhereWithAggregatesInput = {
+    AND?: entregasScalarWhereWithAggregatesInput | entregasScalarWhereWithAggregatesInput[]
+    OR?: entregasScalarWhereWithAggregatesInput[]
+    NOT?: entregasScalarWhereWithAggregatesInput | entregasScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"entregas"> | string
+    tareaId?: StringWithAggregatesFilter<"entregas"> | string
+    estudianteId?: StringWithAggregatesFilter<"entregas"> | string
+    archivos?: JsonNullableWithAggregatesFilter<"entregas">
+    comentarioAlumno?: StringNullableWithAggregatesFilter<"entregas"> | string | null
+    fechaEntrega?: DateTimeWithAggregatesFilter<"entregas"> | Date | string
+    nota?: FloatNullableWithAggregatesFilter<"entregas"> | number | null
+    retroalimentacion?: StringNullableWithAggregatesFilter<"entregas"> | string | null
+    estado?: EnumEntregaEstadoWithAggregatesFilter<"entregas"> | $Enums.EntregaEstado
+    calificadoEn?: DateTimeNullableWithAggregatesFilter<"entregas"> | Date | string | null
+    calificadoPorId?: StringNullableWithAggregatesFilter<"entregas"> | string | null
+  }
+
+  export type foroComentariosWhereInput = {
+    AND?: foroComentariosWhereInput | foroComentariosWhereInput[]
+    OR?: foroComentariosWhereInput[]
+    NOT?: foroComentariosWhereInput | foroComentariosWhereInput[]
+    id?: StringFilter<"foroComentarios"> | string
+    foroId?: StringFilter<"foroComentarios"> | string
+    estudianteId?: StringFilter<"foroComentarios"> | string
+    contenido?: StringFilter<"foroComentarios"> | string
+    creadoEn?: DateTimeFilter<"foroComentarios"> | Date | string
+    estudiantes?: XOR<EstudiantesScalarRelationFilter, estudiantesWhereInput>
+    foros?: XOR<ForosScalarRelationFilter, forosWhereInput>
+    foroRespuestas?: ForoRespuestasListRelationFilter
+  }
+
+  export type foroComentariosOrderByWithRelationInput = {
+    id?: SortOrder
+    foroId?: SortOrder
+    estudianteId?: SortOrder
+    contenido?: SortOrder
+    creadoEn?: SortOrder
+    estudiantes?: estudiantesOrderByWithRelationInput
+    foros?: forosOrderByWithRelationInput
+    foroRespuestas?: foroRespuestasOrderByRelationAggregateInput
+  }
+
+  export type foroComentariosWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: foroComentariosWhereInput | foroComentariosWhereInput[]
+    OR?: foroComentariosWhereInput[]
+    NOT?: foroComentariosWhereInput | foroComentariosWhereInput[]
+    foroId?: StringFilter<"foroComentarios"> | string
+    estudianteId?: StringFilter<"foroComentarios"> | string
+    contenido?: StringFilter<"foroComentarios"> | string
+    creadoEn?: DateTimeFilter<"foroComentarios"> | Date | string
+    estudiantes?: XOR<EstudiantesScalarRelationFilter, estudiantesWhereInput>
+    foros?: XOR<ForosScalarRelationFilter, forosWhereInput>
+    foroRespuestas?: ForoRespuestasListRelationFilter
+  }, "id">
+
+  export type foroComentariosOrderByWithAggregationInput = {
+    id?: SortOrder
+    foroId?: SortOrder
+    estudianteId?: SortOrder
+    contenido?: SortOrder
+    creadoEn?: SortOrder
+    _count?: foroComentariosCountOrderByAggregateInput
+    _max?: foroComentariosMaxOrderByAggregateInput
+    _min?: foroComentariosMinOrderByAggregateInput
+  }
+
+  export type foroComentariosScalarWhereWithAggregatesInput = {
+    AND?: foroComentariosScalarWhereWithAggregatesInput | foroComentariosScalarWhereWithAggregatesInput[]
+    OR?: foroComentariosScalarWhereWithAggregatesInput[]
+    NOT?: foroComentariosScalarWhereWithAggregatesInput | foroComentariosScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"foroComentarios"> | string
+    foroId?: StringWithAggregatesFilter<"foroComentarios"> | string
+    estudianteId?: StringWithAggregatesFilter<"foroComentarios"> | string
+    contenido?: StringWithAggregatesFilter<"foroComentarios"> | string
+    creadoEn?: DateTimeWithAggregatesFilter<"foroComentarios"> | Date | string
+  }
+
+  export type foroRespuestasWhereInput = {
+    AND?: foroRespuestasWhereInput | foroRespuestasWhereInput[]
+    OR?: foroRespuestasWhereInput[]
+    NOT?: foroRespuestasWhereInput | foroRespuestasWhereInput[]
+    id?: StringFilter<"foroRespuestas"> | string
+    comentarioId?: StringFilter<"foroRespuestas"> | string
+    estudianteId?: StringFilter<"foroRespuestas"> | string
+    contenido?: StringFilter<"foroRespuestas"> | string
+    creadoEn?: DateTimeFilter<"foroRespuestas"> | Date | string
+    foroComentarios?: XOR<ForoComentariosScalarRelationFilter, foroComentariosWhereInput>
+    estudiantes?: XOR<EstudiantesScalarRelationFilter, estudiantesWhereInput>
+  }
+
+  export type foroRespuestasOrderByWithRelationInput = {
+    id?: SortOrder
+    comentarioId?: SortOrder
+    estudianteId?: SortOrder
+    contenido?: SortOrder
+    creadoEn?: SortOrder
+    foroComentarios?: foroComentariosOrderByWithRelationInput
+    estudiantes?: estudiantesOrderByWithRelationInput
+  }
+
+  export type foroRespuestasWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: foroRespuestasWhereInput | foroRespuestasWhereInput[]
+    OR?: foroRespuestasWhereInput[]
+    NOT?: foroRespuestasWhereInput | foroRespuestasWhereInput[]
+    comentarioId?: StringFilter<"foroRespuestas"> | string
+    estudianteId?: StringFilter<"foroRespuestas"> | string
+    contenido?: StringFilter<"foroRespuestas"> | string
+    creadoEn?: DateTimeFilter<"foroRespuestas"> | Date | string
+    foroComentarios?: XOR<ForoComentariosScalarRelationFilter, foroComentariosWhereInput>
+    estudiantes?: XOR<EstudiantesScalarRelationFilter, estudiantesWhereInput>
+  }, "id">
+
+  export type foroRespuestasOrderByWithAggregationInput = {
+    id?: SortOrder
+    comentarioId?: SortOrder
+    estudianteId?: SortOrder
+    contenido?: SortOrder
+    creadoEn?: SortOrder
+    _count?: foroRespuestasCountOrderByAggregateInput
+    _max?: foroRespuestasMaxOrderByAggregateInput
+    _min?: foroRespuestasMinOrderByAggregateInput
+  }
+
+  export type foroRespuestasScalarWhereWithAggregatesInput = {
+    AND?: foroRespuestasScalarWhereWithAggregatesInput | foroRespuestasScalarWhereWithAggregatesInput[]
+    OR?: foroRespuestasScalarWhereWithAggregatesInput[]
+    NOT?: foroRespuestasScalarWhereWithAggregatesInput | foroRespuestasScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"foroRespuestas"> | string
+    comentarioId?: StringWithAggregatesFilter<"foroRespuestas"> | string
+    estudianteId?: StringWithAggregatesFilter<"foroRespuestas"> | string
+    contenido?: StringWithAggregatesFilter<"foroRespuestas"> | string
+    creadoEn?: DateTimeWithAggregatesFilter<"foroRespuestas"> | Date | string
+  }
+
+  export type forosWhereInput = {
+    AND?: forosWhereInput | forosWhereInput[]
+    OR?: forosWhereInput[]
+    NOT?: forosWhereInput | forosWhereInput[]
+    id?: StringFilter<"foros"> | string
+    cursoId?: StringFilter<"foros"> | string
+    creadoEn?: DateTimeFilter<"foros"> | Date | string
+    foroComentarios?: ForoComentariosListRelationFilter
+    cursos?: XOR<CursosScalarRelationFilter, cursosWhereInput>
+  }
+
+  export type forosOrderByWithRelationInput = {
+    id?: SortOrder
+    cursoId?: SortOrder
+    creadoEn?: SortOrder
+    foroComentarios?: foroComentariosOrderByRelationAggregateInput
+    cursos?: cursosOrderByWithRelationInput
+  }
+
+  export type forosWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    cursoId?: string
+    AND?: forosWhereInput | forosWhereInput[]
+    OR?: forosWhereInput[]
+    NOT?: forosWhereInput | forosWhereInput[]
+    creadoEn?: DateTimeFilter<"foros"> | Date | string
+    foroComentarios?: ForoComentariosListRelationFilter
+    cursos?: XOR<CursosScalarRelationFilter, cursosWhereInput>
+  }, "id" | "cursoId">
+
+  export type forosOrderByWithAggregationInput = {
+    id?: SortOrder
+    cursoId?: SortOrder
+    creadoEn?: SortOrder
+    _count?: forosCountOrderByAggregateInput
+    _max?: forosMaxOrderByAggregateInput
+    _min?: forosMinOrderByAggregateInput
+  }
+
+  export type forosScalarWhereWithAggregatesInput = {
+    AND?: forosScalarWhereWithAggregatesInput | forosScalarWhereWithAggregatesInput[]
+    OR?: forosScalarWhereWithAggregatesInput[]
+    NOT?: forosScalarWhereWithAggregatesInput | forosScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"foros"> | string
+    cursoId?: StringWithAggregatesFilter<"foros"> | string
+    creadoEn?: DateTimeWithAggregatesFilter<"foros"> | Date | string
+  }
+
+  export type tareasWhereInput = {
+    AND?: tareasWhereInput | tareasWhereInput[]
+    OR?: tareasWhereInput[]
+    NOT?: tareasWhereInput | tareasWhereInput[]
+    id?: StringFilter<"tareas"> | string
+    edicionId?: StringFilter<"tareas"> | string
+    titulo?: StringFilter<"tareas"> | string
+    descripcion?: StringNullableFilter<"tareas"> | string | null
+    fechaApertura?: DateTimeFilter<"tareas"> | Date | string
+    fechaLimite?: DateTimeFilter<"tareas"> | Date | string
+    notaMaxima?: FloatFilter<"tareas"> | number
+    estado?: EnumTareaEstadoFilter<"tareas"> | $Enums.TareaEstado
+    creadoEn?: DateTimeFilter<"tareas"> | Date | string
+    actualizadoEn?: DateTimeFilter<"tareas"> | Date | string
+    recurso?: StringNullableFilter<"tareas"> | string | null
+    entregas?: EntregasListRelationFilter
+    edicionesCursos?: XOR<EdicionesCursosScalarRelationFilter, edicionesCursosWhereInput>
+  }
+
+  export type tareasOrderByWithRelationInput = {
+    id?: SortOrder
+    edicionId?: SortOrder
+    titulo?: SortOrder
+    descripcion?: SortOrderInput | SortOrder
+    fechaApertura?: SortOrder
+    fechaLimite?: SortOrder
+    notaMaxima?: SortOrder
+    estado?: SortOrder
+    creadoEn?: SortOrder
+    actualizadoEn?: SortOrder
+    recurso?: SortOrderInput | SortOrder
+    entregas?: entregasOrderByRelationAggregateInput
+    edicionesCursos?: edicionesCursosOrderByWithRelationInput
+  }
+
+  export type tareasWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: tareasWhereInput | tareasWhereInput[]
+    OR?: tareasWhereInput[]
+    NOT?: tareasWhereInput | tareasWhereInput[]
+    edicionId?: StringFilter<"tareas"> | string
+    titulo?: StringFilter<"tareas"> | string
+    descripcion?: StringNullableFilter<"tareas"> | string | null
+    fechaApertura?: DateTimeFilter<"tareas"> | Date | string
+    fechaLimite?: DateTimeFilter<"tareas"> | Date | string
+    notaMaxima?: FloatFilter<"tareas"> | number
+    estado?: EnumTareaEstadoFilter<"tareas"> | $Enums.TareaEstado
+    creadoEn?: DateTimeFilter<"tareas"> | Date | string
+    actualizadoEn?: DateTimeFilter<"tareas"> | Date | string
+    recurso?: StringNullableFilter<"tareas"> | string | null
+    entregas?: EntregasListRelationFilter
+    edicionesCursos?: XOR<EdicionesCursosScalarRelationFilter, edicionesCursosWhereInput>
+  }, "id">
+
+  export type tareasOrderByWithAggregationInput = {
+    id?: SortOrder
+    edicionId?: SortOrder
+    titulo?: SortOrder
+    descripcion?: SortOrderInput | SortOrder
+    fechaApertura?: SortOrder
+    fechaLimite?: SortOrder
+    notaMaxima?: SortOrder
+    estado?: SortOrder
+    creadoEn?: SortOrder
+    actualizadoEn?: SortOrder
+    recurso?: SortOrderInput | SortOrder
+    _count?: tareasCountOrderByAggregateInput
+    _avg?: tareasAvgOrderByAggregateInput
+    _max?: tareasMaxOrderByAggregateInput
+    _min?: tareasMinOrderByAggregateInput
+    _sum?: tareasSumOrderByAggregateInput
+  }
+
+  export type tareasScalarWhereWithAggregatesInput = {
+    AND?: tareasScalarWhereWithAggregatesInput | tareasScalarWhereWithAggregatesInput[]
+    OR?: tareasScalarWhereWithAggregatesInput[]
+    NOT?: tareasScalarWhereWithAggregatesInput | tareasScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"tareas"> | string
+    edicionId?: StringWithAggregatesFilter<"tareas"> | string
+    titulo?: StringWithAggregatesFilter<"tareas"> | string
+    descripcion?: StringNullableWithAggregatesFilter<"tareas"> | string | null
+    fechaApertura?: DateTimeWithAggregatesFilter<"tareas"> | Date | string
+    fechaLimite?: DateTimeWithAggregatesFilter<"tareas"> | Date | string
+    notaMaxima?: FloatWithAggregatesFilter<"tareas"> | number
+    estado?: EnumTareaEstadoWithAggregatesFilter<"tareas"> | $Enums.TareaEstado
+    creadoEn?: DateTimeWithAggregatesFilter<"tareas"> | Date | string
+    actualizadoEn?: DateTimeWithAggregatesFilter<"tareas"> | Date | string
+    recurso?: StringNullableWithAggregatesFilter<"tareas"> | string | null
+  }
+
   export type auditoriaCreateInput = {
     id?: string
     tabla: $Enums.Tabla
@@ -47464,6 +54265,7 @@ export namespace Prisma {
     beneficiosCursos?: beneficiosCursosCreateNestedManyWithoutCursosInput
     categoriasCursos?: categoriasCursosCreateNestedManyWithoutCursosInput
     edicionesCursos?: edicionesCursosCreateNestedManyWithoutCursosInput
+    foros?: forosCreateNestedOneWithoutCursosInput
     objetivosCursos?: objetivosCursosCreateNestedManyWithoutCursosInput
     requisitosCursos?: requisitosCursosCreateNestedManyWithoutCursosInput
     reviewsCursos?: reviewsCursosCreateNestedManyWithoutCursosInput
@@ -47484,6 +54286,7 @@ export namespace Prisma {
     beneficiosCursos?: beneficiosCursosUncheckedCreateNestedManyWithoutCursosInput
     categoriasCursos?: categoriasCursosUncheckedCreateNestedManyWithoutCursosInput
     edicionesCursos?: edicionesCursosUncheckedCreateNestedManyWithoutCursosInput
+    foros?: forosUncheckedCreateNestedOneWithoutCursosInput
     objetivosCursos?: objetivosCursosUncheckedCreateNestedManyWithoutCursosInput
     requisitosCursos?: requisitosCursosUncheckedCreateNestedManyWithoutCursosInput
     reviewsCursos?: reviewsCursosUncheckedCreateNestedManyWithoutCursosInput
@@ -47504,6 +54307,7 @@ export namespace Prisma {
     beneficiosCursos?: beneficiosCursosUpdateManyWithoutCursosNestedInput
     categoriasCursos?: categoriasCursosUpdateManyWithoutCursosNestedInput
     edicionesCursos?: edicionesCursosUpdateManyWithoutCursosNestedInput
+    foros?: forosUpdateOneWithoutCursosNestedInput
     objetivosCursos?: objetivosCursosUpdateManyWithoutCursosNestedInput
     requisitosCursos?: requisitosCursosUpdateManyWithoutCursosNestedInput
     reviewsCursos?: reviewsCursosUpdateManyWithoutCursosNestedInput
@@ -47524,6 +54328,7 @@ export namespace Prisma {
     beneficiosCursos?: beneficiosCursosUncheckedUpdateManyWithoutCursosNestedInput
     categoriasCursos?: categoriasCursosUncheckedUpdateManyWithoutCursosNestedInput
     edicionesCursos?: edicionesCursosUncheckedUpdateManyWithoutCursosNestedInput
+    foros?: forosUncheckedUpdateOneWithoutCursosNestedInput
     objetivosCursos?: objetivosCursosUncheckedUpdateManyWithoutCursosNestedInput
     requisitosCursos?: requisitosCursosUncheckedUpdateManyWithoutCursosNestedInput
     reviewsCursos?: reviewsCursosUncheckedUpdateManyWithoutCursosNestedInput
@@ -47684,6 +54489,7 @@ export namespace Prisma {
     inscripciones?: inscripcionesCreateNestedManyWithoutEdicionesCursosInput
     pagosDocentes?: pagosDocentesCreateNestedOneWithoutEdicionesCursosInput
     preciosCursos?: preciosCursosCreateNestedManyWithoutEdicionesCursosInput
+    tareas?: tareasCreateNestedManyWithoutEdicionesCursosInput
   }
 
   export type edicionesCursosUncheckedCreateInput = {
@@ -47708,6 +54514,7 @@ export namespace Prisma {
     inscripciones?: inscripcionesUncheckedCreateNestedManyWithoutEdicionesCursosInput
     pagosDocentes?: pagosDocentesUncheckedCreateNestedOneWithoutEdicionesCursosInput
     preciosCursos?: preciosCursosUncheckedCreateNestedManyWithoutEdicionesCursosInput
+    tareas?: tareasUncheckedCreateNestedManyWithoutEdicionesCursosInput
   }
 
   export type edicionesCursosUpdateInput = {
@@ -47732,6 +54539,7 @@ export namespace Prisma {
     inscripciones?: inscripcionesUpdateManyWithoutEdicionesCursosNestedInput
     pagosDocentes?: pagosDocentesUpdateOneWithoutEdicionesCursosNestedInput
     preciosCursos?: preciosCursosUpdateManyWithoutEdicionesCursosNestedInput
+    tareas?: tareasUpdateManyWithoutEdicionesCursosNestedInput
   }
 
   export type edicionesCursosUncheckedUpdateInput = {
@@ -47756,6 +54564,7 @@ export namespace Prisma {
     inscripciones?: inscripcionesUncheckedUpdateManyWithoutEdicionesCursosNestedInput
     pagosDocentes?: pagosDocentesUncheckedUpdateOneWithoutEdicionesCursosNestedInput
     preciosCursos?: preciosCursosUncheckedUpdateManyWithoutEdicionesCursosNestedInput
+    tareas?: tareasUncheckedUpdateManyWithoutEdicionesCursosNestedInput
   }
 
   export type edicionesCursosCreateManyInput = {
@@ -47820,6 +54629,9 @@ export namespace Prisma {
     nroUpdates?: number
     calificaciones?: calificacionesCreateNestedManyWithoutEstudiantesInput
     certificados?: certificadosCreateNestedManyWithoutEstudiantesInput
+    entregas?: entregasCreateNestedManyWithoutEstudiantesInput
+    foroComentarios?: foroComentariosCreateNestedManyWithoutEstudiantesInput
+    foroRespuestas?: foroRespuestasCreateNestedManyWithoutEstudiantesInput
     inscripciones?: inscripcionesCreateNestedManyWithoutEstudiantesInput
     usuariosEstudiantes?: usuariosEstudiantesCreateNestedOneWithoutEstudiantesInput
   }
@@ -47837,6 +54649,9 @@ export namespace Prisma {
     nroUpdates?: number
     calificaciones?: calificacionesUncheckedCreateNestedManyWithoutEstudiantesInput
     certificados?: certificadosUncheckedCreateNestedManyWithoutEstudiantesInput
+    entregas?: entregasUncheckedCreateNestedManyWithoutEstudiantesInput
+    foroComentarios?: foroComentariosUncheckedCreateNestedManyWithoutEstudiantesInput
+    foroRespuestas?: foroRespuestasUncheckedCreateNestedManyWithoutEstudiantesInput
     inscripciones?: inscripcionesUncheckedCreateNestedManyWithoutEstudiantesInput
     usuariosEstudiantes?: usuariosEstudiantesUncheckedCreateNestedOneWithoutEstudiantesInput
   }
@@ -47854,6 +54669,9 @@ export namespace Prisma {
     nroUpdates?: IntFieldUpdateOperationsInput | number
     calificaciones?: calificacionesUpdateManyWithoutEstudiantesNestedInput
     certificados?: certificadosUpdateManyWithoutEstudiantesNestedInput
+    entregas?: entregasUpdateManyWithoutEstudiantesNestedInput
+    foroComentarios?: foroComentariosUpdateManyWithoutEstudiantesNestedInput
+    foroRespuestas?: foroRespuestasUpdateManyWithoutEstudiantesNestedInput
     inscripciones?: inscripcionesUpdateManyWithoutEstudiantesNestedInput
     usuariosEstudiantes?: usuariosEstudiantesUpdateOneWithoutEstudiantesNestedInput
   }
@@ -47871,6 +54689,9 @@ export namespace Prisma {
     nroUpdates?: IntFieldUpdateOperationsInput | number
     calificaciones?: calificacionesUncheckedUpdateManyWithoutEstudiantesNestedInput
     certificados?: certificadosUncheckedUpdateManyWithoutEstudiantesNestedInput
+    entregas?: entregasUncheckedUpdateManyWithoutEstudiantesNestedInput
+    foroComentarios?: foroComentariosUncheckedUpdateManyWithoutEstudiantesNestedInput
+    foroRespuestas?: foroRespuestasUncheckedUpdateManyWithoutEstudiantesNestedInput
     inscripciones?: inscripcionesUncheckedUpdateManyWithoutEstudiantesNestedInput
     usuariosEstudiantes?: usuariosEstudiantesUncheckedUpdateOneWithoutEstudiantesNestedInput
   }
@@ -49636,6 +56457,360 @@ export namespace Prisma {
     actualizadoEn?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type entregasCreateInput = {
+    id: string
+    archivos?: NullableJsonNullValueInput | InputJsonValue
+    comentarioAlumno?: string | null
+    fechaEntrega?: Date | string
+    nota?: number | null
+    retroalimentacion?: string | null
+    estado?: $Enums.EntregaEstado
+    calificadoEn?: Date | string | null
+    calificadoPorId?: string | null
+    estudiantes: estudiantesCreateNestedOneWithoutEntregasInput
+    tareas: tareasCreateNestedOneWithoutEntregasInput
+  }
+
+  export type entregasUncheckedCreateInput = {
+    id: string
+    tareaId: string
+    estudianteId: string
+    archivos?: NullableJsonNullValueInput | InputJsonValue
+    comentarioAlumno?: string | null
+    fechaEntrega?: Date | string
+    nota?: number | null
+    retroalimentacion?: string | null
+    estado?: $Enums.EntregaEstado
+    calificadoEn?: Date | string | null
+    calificadoPorId?: string | null
+  }
+
+  export type entregasUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    archivos?: NullableJsonNullValueInput | InputJsonValue
+    comentarioAlumno?: NullableStringFieldUpdateOperationsInput | string | null
+    fechaEntrega?: DateTimeFieldUpdateOperationsInput | Date | string
+    nota?: NullableFloatFieldUpdateOperationsInput | number | null
+    retroalimentacion?: NullableStringFieldUpdateOperationsInput | string | null
+    estado?: EnumEntregaEstadoFieldUpdateOperationsInput | $Enums.EntregaEstado
+    calificadoEn?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    calificadoPorId?: NullableStringFieldUpdateOperationsInput | string | null
+    estudiantes?: estudiantesUpdateOneRequiredWithoutEntregasNestedInput
+    tareas?: tareasUpdateOneRequiredWithoutEntregasNestedInput
+  }
+
+  export type entregasUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    tareaId?: StringFieldUpdateOperationsInput | string
+    estudianteId?: StringFieldUpdateOperationsInput | string
+    archivos?: NullableJsonNullValueInput | InputJsonValue
+    comentarioAlumno?: NullableStringFieldUpdateOperationsInput | string | null
+    fechaEntrega?: DateTimeFieldUpdateOperationsInput | Date | string
+    nota?: NullableFloatFieldUpdateOperationsInput | number | null
+    retroalimentacion?: NullableStringFieldUpdateOperationsInput | string | null
+    estado?: EnumEntregaEstadoFieldUpdateOperationsInput | $Enums.EntregaEstado
+    calificadoEn?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    calificadoPorId?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type entregasCreateManyInput = {
+    id: string
+    tareaId: string
+    estudianteId: string
+    archivos?: NullableJsonNullValueInput | InputJsonValue
+    comentarioAlumno?: string | null
+    fechaEntrega?: Date | string
+    nota?: number | null
+    retroalimentacion?: string | null
+    estado?: $Enums.EntregaEstado
+    calificadoEn?: Date | string | null
+    calificadoPorId?: string | null
+  }
+
+  export type entregasUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    archivos?: NullableJsonNullValueInput | InputJsonValue
+    comentarioAlumno?: NullableStringFieldUpdateOperationsInput | string | null
+    fechaEntrega?: DateTimeFieldUpdateOperationsInput | Date | string
+    nota?: NullableFloatFieldUpdateOperationsInput | number | null
+    retroalimentacion?: NullableStringFieldUpdateOperationsInput | string | null
+    estado?: EnumEntregaEstadoFieldUpdateOperationsInput | $Enums.EntregaEstado
+    calificadoEn?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    calificadoPorId?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type entregasUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    tareaId?: StringFieldUpdateOperationsInput | string
+    estudianteId?: StringFieldUpdateOperationsInput | string
+    archivos?: NullableJsonNullValueInput | InputJsonValue
+    comentarioAlumno?: NullableStringFieldUpdateOperationsInput | string | null
+    fechaEntrega?: DateTimeFieldUpdateOperationsInput | Date | string
+    nota?: NullableFloatFieldUpdateOperationsInput | number | null
+    retroalimentacion?: NullableStringFieldUpdateOperationsInput | string | null
+    estado?: EnumEntregaEstadoFieldUpdateOperationsInput | $Enums.EntregaEstado
+    calificadoEn?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    calificadoPorId?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type foroComentariosCreateInput = {
+    id: string
+    contenido: string
+    creadoEn?: Date | string
+    estudiantes: estudiantesCreateNestedOneWithoutForoComentariosInput
+    foros: forosCreateNestedOneWithoutForoComentariosInput
+    foroRespuestas?: foroRespuestasCreateNestedManyWithoutForoComentariosInput
+  }
+
+  export type foroComentariosUncheckedCreateInput = {
+    id: string
+    foroId: string
+    estudianteId: string
+    contenido: string
+    creadoEn?: Date | string
+    foroRespuestas?: foroRespuestasUncheckedCreateNestedManyWithoutForoComentariosInput
+  }
+
+  export type foroComentariosUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    contenido?: StringFieldUpdateOperationsInput | string
+    creadoEn?: DateTimeFieldUpdateOperationsInput | Date | string
+    estudiantes?: estudiantesUpdateOneRequiredWithoutForoComentariosNestedInput
+    foros?: forosUpdateOneRequiredWithoutForoComentariosNestedInput
+    foroRespuestas?: foroRespuestasUpdateManyWithoutForoComentariosNestedInput
+  }
+
+  export type foroComentariosUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    foroId?: StringFieldUpdateOperationsInput | string
+    estudianteId?: StringFieldUpdateOperationsInput | string
+    contenido?: StringFieldUpdateOperationsInput | string
+    creadoEn?: DateTimeFieldUpdateOperationsInput | Date | string
+    foroRespuestas?: foroRespuestasUncheckedUpdateManyWithoutForoComentariosNestedInput
+  }
+
+  export type foroComentariosCreateManyInput = {
+    id: string
+    foroId: string
+    estudianteId: string
+    contenido: string
+    creadoEn?: Date | string
+  }
+
+  export type foroComentariosUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    contenido?: StringFieldUpdateOperationsInput | string
+    creadoEn?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type foroComentariosUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    foroId?: StringFieldUpdateOperationsInput | string
+    estudianteId?: StringFieldUpdateOperationsInput | string
+    contenido?: StringFieldUpdateOperationsInput | string
+    creadoEn?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type foroRespuestasCreateInput = {
+    id: string
+    contenido: string
+    creadoEn?: Date | string
+    foroComentarios: foroComentariosCreateNestedOneWithoutForoRespuestasInput
+    estudiantes: estudiantesCreateNestedOneWithoutForoRespuestasInput
+  }
+
+  export type foroRespuestasUncheckedCreateInput = {
+    id: string
+    comentarioId: string
+    estudianteId: string
+    contenido: string
+    creadoEn?: Date | string
+  }
+
+  export type foroRespuestasUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    contenido?: StringFieldUpdateOperationsInput | string
+    creadoEn?: DateTimeFieldUpdateOperationsInput | Date | string
+    foroComentarios?: foroComentariosUpdateOneRequiredWithoutForoRespuestasNestedInput
+    estudiantes?: estudiantesUpdateOneRequiredWithoutForoRespuestasNestedInput
+  }
+
+  export type foroRespuestasUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    comentarioId?: StringFieldUpdateOperationsInput | string
+    estudianteId?: StringFieldUpdateOperationsInput | string
+    contenido?: StringFieldUpdateOperationsInput | string
+    creadoEn?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type foroRespuestasCreateManyInput = {
+    id: string
+    comentarioId: string
+    estudianteId: string
+    contenido: string
+    creadoEn?: Date | string
+  }
+
+  export type foroRespuestasUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    contenido?: StringFieldUpdateOperationsInput | string
+    creadoEn?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type foroRespuestasUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    comentarioId?: StringFieldUpdateOperationsInput | string
+    estudianteId?: StringFieldUpdateOperationsInput | string
+    contenido?: StringFieldUpdateOperationsInput | string
+    creadoEn?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type forosCreateInput = {
+    id: string
+    creadoEn?: Date | string
+    foroComentarios?: foroComentariosCreateNestedManyWithoutForosInput
+    cursos: cursosCreateNestedOneWithoutForosInput
+  }
+
+  export type forosUncheckedCreateInput = {
+    id: string
+    cursoId: string
+    creadoEn?: Date | string
+    foroComentarios?: foroComentariosUncheckedCreateNestedManyWithoutForosInput
+  }
+
+  export type forosUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    creadoEn?: DateTimeFieldUpdateOperationsInput | Date | string
+    foroComentarios?: foroComentariosUpdateManyWithoutForosNestedInput
+    cursos?: cursosUpdateOneRequiredWithoutForosNestedInput
+  }
+
+  export type forosUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    cursoId?: StringFieldUpdateOperationsInput | string
+    creadoEn?: DateTimeFieldUpdateOperationsInput | Date | string
+    foroComentarios?: foroComentariosUncheckedUpdateManyWithoutForosNestedInput
+  }
+
+  export type forosCreateManyInput = {
+    id: string
+    cursoId: string
+    creadoEn?: Date | string
+  }
+
+  export type forosUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    creadoEn?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type forosUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    cursoId?: StringFieldUpdateOperationsInput | string
+    creadoEn?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type tareasCreateInput = {
+    id: string
+    titulo: string
+    descripcion?: string | null
+    fechaApertura?: Date | string
+    fechaLimite: Date | string
+    notaMaxima?: number
+    estado?: $Enums.TareaEstado
+    creadoEn?: Date | string
+    actualizadoEn: Date | string
+    recurso?: string | null
+    entregas?: entregasCreateNestedManyWithoutTareasInput
+    edicionesCursos: edicionesCursosCreateNestedOneWithoutTareasInput
+  }
+
+  export type tareasUncheckedCreateInput = {
+    id: string
+    edicionId: string
+    titulo: string
+    descripcion?: string | null
+    fechaApertura?: Date | string
+    fechaLimite: Date | string
+    notaMaxima?: number
+    estado?: $Enums.TareaEstado
+    creadoEn?: Date | string
+    actualizadoEn: Date | string
+    recurso?: string | null
+    entregas?: entregasUncheckedCreateNestedManyWithoutTareasInput
+  }
+
+  export type tareasUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    titulo?: StringFieldUpdateOperationsInput | string
+    descripcion?: NullableStringFieldUpdateOperationsInput | string | null
+    fechaApertura?: DateTimeFieldUpdateOperationsInput | Date | string
+    fechaLimite?: DateTimeFieldUpdateOperationsInput | Date | string
+    notaMaxima?: FloatFieldUpdateOperationsInput | number
+    estado?: EnumTareaEstadoFieldUpdateOperationsInput | $Enums.TareaEstado
+    creadoEn?: DateTimeFieldUpdateOperationsInput | Date | string
+    actualizadoEn?: DateTimeFieldUpdateOperationsInput | Date | string
+    recurso?: NullableStringFieldUpdateOperationsInput | string | null
+    entregas?: entregasUpdateManyWithoutTareasNestedInput
+    edicionesCursos?: edicionesCursosUpdateOneRequiredWithoutTareasNestedInput
+  }
+
+  export type tareasUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    edicionId?: StringFieldUpdateOperationsInput | string
+    titulo?: StringFieldUpdateOperationsInput | string
+    descripcion?: NullableStringFieldUpdateOperationsInput | string | null
+    fechaApertura?: DateTimeFieldUpdateOperationsInput | Date | string
+    fechaLimite?: DateTimeFieldUpdateOperationsInput | Date | string
+    notaMaxima?: FloatFieldUpdateOperationsInput | number
+    estado?: EnumTareaEstadoFieldUpdateOperationsInput | $Enums.TareaEstado
+    creadoEn?: DateTimeFieldUpdateOperationsInput | Date | string
+    actualizadoEn?: DateTimeFieldUpdateOperationsInput | Date | string
+    recurso?: NullableStringFieldUpdateOperationsInput | string | null
+    entregas?: entregasUncheckedUpdateManyWithoutTareasNestedInput
+  }
+
+  export type tareasCreateManyInput = {
+    id: string
+    edicionId: string
+    titulo: string
+    descripcion?: string | null
+    fechaApertura?: Date | string
+    fechaLimite: Date | string
+    notaMaxima?: number
+    estado?: $Enums.TareaEstado
+    creadoEn?: Date | string
+    actualizadoEn: Date | string
+    recurso?: string | null
+  }
+
+  export type tareasUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    titulo?: StringFieldUpdateOperationsInput | string
+    descripcion?: NullableStringFieldUpdateOperationsInput | string | null
+    fechaApertura?: DateTimeFieldUpdateOperationsInput | Date | string
+    fechaLimite?: DateTimeFieldUpdateOperationsInput | Date | string
+    notaMaxima?: FloatFieldUpdateOperationsInput | number
+    estado?: EnumTareaEstadoFieldUpdateOperationsInput | $Enums.TareaEstado
+    creadoEn?: DateTimeFieldUpdateOperationsInput | Date | string
+    actualizadoEn?: DateTimeFieldUpdateOperationsInput | Date | string
+    recurso?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type tareasUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    edicionId?: StringFieldUpdateOperationsInput | string
+    titulo?: StringFieldUpdateOperationsInput | string
+    descripcion?: NullableStringFieldUpdateOperationsInput | string | null
+    fechaApertura?: DateTimeFieldUpdateOperationsInput | Date | string
+    fechaLimite?: DateTimeFieldUpdateOperationsInput | Date | string
+    notaMaxima?: FloatFieldUpdateOperationsInput | number
+    estado?: EnumTareaEstadoFieldUpdateOperationsInput | $Enums.TareaEstado
+    creadoEn?: DateTimeFieldUpdateOperationsInput | Date | string
+    actualizadoEn?: DateTimeFieldUpdateOperationsInput | Date | string
+    recurso?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
   export type StringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -50370,6 +57545,11 @@ export namespace Prisma {
     none?: edicionesCursosWhereInput
   }
 
+  export type ForosNullableScalarRelationFilter = {
+    is?: forosWhereInput | null
+    isNot?: forosWhereInput | null
+  }
+
   export type ObjetivosCursosListRelationFilter = {
     every?: objetivosCursosWhereInput
     some?: objetivosCursosWhereInput
@@ -50565,6 +57745,12 @@ export namespace Prisma {
     none?: preciosCursosWhereInput
   }
 
+  export type TareasListRelationFilter = {
+    every?: tareasWhereInput
+    some?: tareasWhereInput
+    none?: tareasWhereInput
+  }
+
   export type certificadosOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
@@ -50586,6 +57772,10 @@ export namespace Prisma {
   }
 
   export type preciosCursosOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type tareasOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -50690,7 +57880,37 @@ export namespace Prisma {
     none?: calificacionesWhereInput
   }
 
+  export type EntregasListRelationFilter = {
+    every?: entregasWhereInput
+    some?: entregasWhereInput
+    none?: entregasWhereInput
+  }
+
+  export type ForoComentariosListRelationFilter = {
+    every?: foroComentariosWhereInput
+    some?: foroComentariosWhereInput
+    none?: foroComentariosWhereInput
+  }
+
+  export type ForoRespuestasListRelationFilter = {
+    every?: foroRespuestasWhereInput
+    some?: foroRespuestasWhereInput
+    none?: foroRespuestasWhereInput
+  }
+
   export type calificacionesOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type entregasOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type foroComentariosOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type foroRespuestasOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -51995,6 +59215,224 @@ export namespace Prisma {
     _max?: NestedEnumEstadoSuscripcionFilter<$PrismaModel>
   }
 
+  export type EnumEntregaEstadoFilter<$PrismaModel = never> = {
+    equals?: $Enums.EntregaEstado | EnumEntregaEstadoFieldRefInput<$PrismaModel>
+    in?: $Enums.EntregaEstado[] | ListEnumEntregaEstadoFieldRefInput<$PrismaModel>
+    notIn?: $Enums.EntregaEstado[] | ListEnumEntregaEstadoFieldRefInput<$PrismaModel>
+    not?: NestedEnumEntregaEstadoFilter<$PrismaModel> | $Enums.EntregaEstado
+  }
+
+  export type TareasScalarRelationFilter = {
+    is?: tareasWhereInput
+    isNot?: tareasWhereInput
+  }
+
+  export type entregasTareaIdEstudianteIdCompoundUniqueInput = {
+    tareaId: string
+    estudianteId: string
+  }
+
+  export type entregasCountOrderByAggregateInput = {
+    id?: SortOrder
+    tareaId?: SortOrder
+    estudianteId?: SortOrder
+    archivos?: SortOrder
+    comentarioAlumno?: SortOrder
+    fechaEntrega?: SortOrder
+    nota?: SortOrder
+    retroalimentacion?: SortOrder
+    estado?: SortOrder
+    calificadoEn?: SortOrder
+    calificadoPorId?: SortOrder
+  }
+
+  export type entregasAvgOrderByAggregateInput = {
+    nota?: SortOrder
+  }
+
+  export type entregasMaxOrderByAggregateInput = {
+    id?: SortOrder
+    tareaId?: SortOrder
+    estudianteId?: SortOrder
+    comentarioAlumno?: SortOrder
+    fechaEntrega?: SortOrder
+    nota?: SortOrder
+    retroalimentacion?: SortOrder
+    estado?: SortOrder
+    calificadoEn?: SortOrder
+    calificadoPorId?: SortOrder
+  }
+
+  export type entregasMinOrderByAggregateInput = {
+    id?: SortOrder
+    tareaId?: SortOrder
+    estudianteId?: SortOrder
+    comentarioAlumno?: SortOrder
+    fechaEntrega?: SortOrder
+    nota?: SortOrder
+    retroalimentacion?: SortOrder
+    estado?: SortOrder
+    calificadoEn?: SortOrder
+    calificadoPorId?: SortOrder
+  }
+
+  export type entregasSumOrderByAggregateInput = {
+    nota?: SortOrder
+  }
+
+  export type EnumEntregaEstadoWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.EntregaEstado | EnumEntregaEstadoFieldRefInput<$PrismaModel>
+    in?: $Enums.EntregaEstado[] | ListEnumEntregaEstadoFieldRefInput<$PrismaModel>
+    notIn?: $Enums.EntregaEstado[] | ListEnumEntregaEstadoFieldRefInput<$PrismaModel>
+    not?: NestedEnumEntregaEstadoWithAggregatesFilter<$PrismaModel> | $Enums.EntregaEstado
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumEntregaEstadoFilter<$PrismaModel>
+    _max?: NestedEnumEntregaEstadoFilter<$PrismaModel>
+  }
+
+  export type ForosScalarRelationFilter = {
+    is?: forosWhereInput
+    isNot?: forosWhereInput
+  }
+
+  export type foroComentariosCountOrderByAggregateInput = {
+    id?: SortOrder
+    foroId?: SortOrder
+    estudianteId?: SortOrder
+    contenido?: SortOrder
+    creadoEn?: SortOrder
+  }
+
+  export type foroComentariosMaxOrderByAggregateInput = {
+    id?: SortOrder
+    foroId?: SortOrder
+    estudianteId?: SortOrder
+    contenido?: SortOrder
+    creadoEn?: SortOrder
+  }
+
+  export type foroComentariosMinOrderByAggregateInput = {
+    id?: SortOrder
+    foroId?: SortOrder
+    estudianteId?: SortOrder
+    contenido?: SortOrder
+    creadoEn?: SortOrder
+  }
+
+  export type ForoComentariosScalarRelationFilter = {
+    is?: foroComentariosWhereInput
+    isNot?: foroComentariosWhereInput
+  }
+
+  export type foroRespuestasCountOrderByAggregateInput = {
+    id?: SortOrder
+    comentarioId?: SortOrder
+    estudianteId?: SortOrder
+    contenido?: SortOrder
+    creadoEn?: SortOrder
+  }
+
+  export type foroRespuestasMaxOrderByAggregateInput = {
+    id?: SortOrder
+    comentarioId?: SortOrder
+    estudianteId?: SortOrder
+    contenido?: SortOrder
+    creadoEn?: SortOrder
+  }
+
+  export type foroRespuestasMinOrderByAggregateInput = {
+    id?: SortOrder
+    comentarioId?: SortOrder
+    estudianteId?: SortOrder
+    contenido?: SortOrder
+    creadoEn?: SortOrder
+  }
+
+  export type forosCountOrderByAggregateInput = {
+    id?: SortOrder
+    cursoId?: SortOrder
+    creadoEn?: SortOrder
+  }
+
+  export type forosMaxOrderByAggregateInput = {
+    id?: SortOrder
+    cursoId?: SortOrder
+    creadoEn?: SortOrder
+  }
+
+  export type forosMinOrderByAggregateInput = {
+    id?: SortOrder
+    cursoId?: SortOrder
+    creadoEn?: SortOrder
+  }
+
+  export type EnumTareaEstadoFilter<$PrismaModel = never> = {
+    equals?: $Enums.TareaEstado | EnumTareaEstadoFieldRefInput<$PrismaModel>
+    in?: $Enums.TareaEstado[] | ListEnumTareaEstadoFieldRefInput<$PrismaModel>
+    notIn?: $Enums.TareaEstado[] | ListEnumTareaEstadoFieldRefInput<$PrismaModel>
+    not?: NestedEnumTareaEstadoFilter<$PrismaModel> | $Enums.TareaEstado
+  }
+
+  export type tareasCountOrderByAggregateInput = {
+    id?: SortOrder
+    edicionId?: SortOrder
+    titulo?: SortOrder
+    descripcion?: SortOrder
+    fechaApertura?: SortOrder
+    fechaLimite?: SortOrder
+    notaMaxima?: SortOrder
+    estado?: SortOrder
+    creadoEn?: SortOrder
+    actualizadoEn?: SortOrder
+    recurso?: SortOrder
+  }
+
+  export type tareasAvgOrderByAggregateInput = {
+    notaMaxima?: SortOrder
+  }
+
+  export type tareasMaxOrderByAggregateInput = {
+    id?: SortOrder
+    edicionId?: SortOrder
+    titulo?: SortOrder
+    descripcion?: SortOrder
+    fechaApertura?: SortOrder
+    fechaLimite?: SortOrder
+    notaMaxima?: SortOrder
+    estado?: SortOrder
+    creadoEn?: SortOrder
+    actualizadoEn?: SortOrder
+    recurso?: SortOrder
+  }
+
+  export type tareasMinOrderByAggregateInput = {
+    id?: SortOrder
+    edicionId?: SortOrder
+    titulo?: SortOrder
+    descripcion?: SortOrder
+    fechaApertura?: SortOrder
+    fechaLimite?: SortOrder
+    notaMaxima?: SortOrder
+    estado?: SortOrder
+    creadoEn?: SortOrder
+    actualizadoEn?: SortOrder
+    recurso?: SortOrder
+  }
+
+  export type tareasSumOrderByAggregateInput = {
+    notaMaxima?: SortOrder
+  }
+
+  export type EnumTareaEstadoWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.TareaEstado | EnumTareaEstadoFieldRefInput<$PrismaModel>
+    in?: $Enums.TareaEstado[] | ListEnumTareaEstadoFieldRefInput<$PrismaModel>
+    notIn?: $Enums.TareaEstado[] | ListEnumTareaEstadoFieldRefInput<$PrismaModel>
+    not?: NestedEnumTareaEstadoWithAggregatesFilter<$PrismaModel> | $Enums.TareaEstado
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumTareaEstadoFilter<$PrismaModel>
+    _max?: NestedEnumTareaEstadoFilter<$PrismaModel>
+  }
+
   export type usuariosAdministradoresCreateNestedOneWithoutAuditoriaInput = {
     create?: XOR<usuariosAdministradoresCreateWithoutAuditoriaInput, usuariosAdministradoresUncheckedCreateWithoutAuditoriaInput>
     connectOrCreate?: usuariosAdministradoresCreateOrConnectWithoutAuditoriaInput
@@ -52398,6 +59836,12 @@ export namespace Prisma {
     connect?: edicionesCursosWhereUniqueInput | edicionesCursosWhereUniqueInput[]
   }
 
+  export type forosCreateNestedOneWithoutCursosInput = {
+    create?: XOR<forosCreateWithoutCursosInput, forosUncheckedCreateWithoutCursosInput>
+    connectOrCreate?: forosCreateOrConnectWithoutCursosInput
+    connect?: forosWhereUniqueInput
+  }
+
   export type objetivosCursosCreateNestedManyWithoutCursosInput = {
     create?: XOR<objetivosCursosCreateWithoutCursosInput, objetivosCursosUncheckedCreateWithoutCursosInput> | objetivosCursosCreateWithoutCursosInput[] | objetivosCursosUncheckedCreateWithoutCursosInput[]
     connectOrCreate?: objetivosCursosCreateOrConnectWithoutCursosInput | objetivosCursosCreateOrConnectWithoutCursosInput[]
@@ -52438,6 +59882,12 @@ export namespace Prisma {
     connectOrCreate?: edicionesCursosCreateOrConnectWithoutCursosInput | edicionesCursosCreateOrConnectWithoutCursosInput[]
     createMany?: edicionesCursosCreateManyCursosInputEnvelope
     connect?: edicionesCursosWhereUniqueInput | edicionesCursosWhereUniqueInput[]
+  }
+
+  export type forosUncheckedCreateNestedOneWithoutCursosInput = {
+    create?: XOR<forosCreateWithoutCursosInput, forosUncheckedCreateWithoutCursosInput>
+    connectOrCreate?: forosCreateOrConnectWithoutCursosInput
+    connect?: forosWhereUniqueInput
   }
 
   export type objetivosCursosUncheckedCreateNestedManyWithoutCursosInput = {
@@ -52501,6 +59951,16 @@ export namespace Prisma {
     update?: edicionesCursosUpdateWithWhereUniqueWithoutCursosInput | edicionesCursosUpdateWithWhereUniqueWithoutCursosInput[]
     updateMany?: edicionesCursosUpdateManyWithWhereWithoutCursosInput | edicionesCursosUpdateManyWithWhereWithoutCursosInput[]
     deleteMany?: edicionesCursosScalarWhereInput | edicionesCursosScalarWhereInput[]
+  }
+
+  export type forosUpdateOneWithoutCursosNestedInput = {
+    create?: XOR<forosCreateWithoutCursosInput, forosUncheckedCreateWithoutCursosInput>
+    connectOrCreate?: forosCreateOrConnectWithoutCursosInput
+    upsert?: forosUpsertWithoutCursosInput
+    disconnect?: forosWhereInput | boolean
+    delete?: forosWhereInput | boolean
+    connect?: forosWhereUniqueInput
+    update?: XOR<XOR<forosUpdateToOneWithWhereWithoutCursosInput, forosUpdateWithoutCursosInput>, forosUncheckedUpdateWithoutCursosInput>
   }
 
   export type objetivosCursosUpdateManyWithoutCursosNestedInput = {
@@ -52585,6 +60045,16 @@ export namespace Prisma {
     update?: edicionesCursosUpdateWithWhereUniqueWithoutCursosInput | edicionesCursosUpdateWithWhereUniqueWithoutCursosInput[]
     updateMany?: edicionesCursosUpdateManyWithWhereWithoutCursosInput | edicionesCursosUpdateManyWithWhereWithoutCursosInput[]
     deleteMany?: edicionesCursosScalarWhereInput | edicionesCursosScalarWhereInput[]
+  }
+
+  export type forosUncheckedUpdateOneWithoutCursosNestedInput = {
+    create?: XOR<forosCreateWithoutCursosInput, forosUncheckedCreateWithoutCursosInput>
+    connectOrCreate?: forosCreateOrConnectWithoutCursosInput
+    upsert?: forosUpsertWithoutCursosInput
+    disconnect?: forosWhereInput | boolean
+    delete?: forosWhereInput | boolean
+    connect?: forosWhereUniqueInput
+    update?: XOR<XOR<forosUpdateToOneWithWhereWithoutCursosInput, forosUpdateWithoutCursosInput>, forosUncheckedUpdateWithoutCursosInput>
   }
 
   export type objetivosCursosUncheckedUpdateManyWithoutCursosNestedInput = {
@@ -52787,6 +60257,13 @@ export namespace Prisma {
     connect?: preciosCursosWhereUniqueInput | preciosCursosWhereUniqueInput[]
   }
 
+  export type tareasCreateNestedManyWithoutEdicionesCursosInput = {
+    create?: XOR<tareasCreateWithoutEdicionesCursosInput, tareasUncheckedCreateWithoutEdicionesCursosInput> | tareasCreateWithoutEdicionesCursosInput[] | tareasUncheckedCreateWithoutEdicionesCursosInput[]
+    connectOrCreate?: tareasCreateOrConnectWithoutEdicionesCursosInput | tareasCreateOrConnectWithoutEdicionesCursosInput[]
+    createMany?: tareasCreateManyEdicionesCursosInputEnvelope
+    connect?: tareasWhereUniqueInput | tareasWhereUniqueInput[]
+  }
+
   export type certificadosUncheckedCreateNestedManyWithoutEdicionesCursosInput = {
     create?: XOR<certificadosCreateWithoutEdicionesCursosInput, certificadosUncheckedCreateWithoutEdicionesCursosInput> | certificadosCreateWithoutEdicionesCursosInput[] | certificadosUncheckedCreateWithoutEdicionesCursosInput[]
     connectOrCreate?: certificadosCreateOrConnectWithoutEdicionesCursosInput | certificadosCreateOrConnectWithoutEdicionesCursosInput[]
@@ -52833,6 +60310,13 @@ export namespace Prisma {
     connectOrCreate?: preciosCursosCreateOrConnectWithoutEdicionesCursosInput | preciosCursosCreateOrConnectWithoutEdicionesCursosInput[]
     createMany?: preciosCursosCreateManyEdicionesCursosInputEnvelope
     connect?: preciosCursosWhereUniqueInput | preciosCursosWhereUniqueInput[]
+  }
+
+  export type tareasUncheckedCreateNestedManyWithoutEdicionesCursosInput = {
+    create?: XOR<tareasCreateWithoutEdicionesCursosInput, tareasUncheckedCreateWithoutEdicionesCursosInput> | tareasCreateWithoutEdicionesCursosInput[] | tareasUncheckedCreateWithoutEdicionesCursosInput[]
+    connectOrCreate?: tareasCreateOrConnectWithoutEdicionesCursosInput | tareasCreateOrConnectWithoutEdicionesCursosInput[]
+    createMany?: tareasCreateManyEdicionesCursosInputEnvelope
+    connect?: tareasWhereUniqueInput | tareasWhereUniqueInput[]
   }
 
   export type EnumEdicionEstadoFieldUpdateOperationsInput = {
@@ -52951,6 +60435,20 @@ export namespace Prisma {
     deleteMany?: preciosCursosScalarWhereInput | preciosCursosScalarWhereInput[]
   }
 
+  export type tareasUpdateManyWithoutEdicionesCursosNestedInput = {
+    create?: XOR<tareasCreateWithoutEdicionesCursosInput, tareasUncheckedCreateWithoutEdicionesCursosInput> | tareasCreateWithoutEdicionesCursosInput[] | tareasUncheckedCreateWithoutEdicionesCursosInput[]
+    connectOrCreate?: tareasCreateOrConnectWithoutEdicionesCursosInput | tareasCreateOrConnectWithoutEdicionesCursosInput[]
+    upsert?: tareasUpsertWithWhereUniqueWithoutEdicionesCursosInput | tareasUpsertWithWhereUniqueWithoutEdicionesCursosInput[]
+    createMany?: tareasCreateManyEdicionesCursosInputEnvelope
+    set?: tareasWhereUniqueInput | tareasWhereUniqueInput[]
+    disconnect?: tareasWhereUniqueInput | tareasWhereUniqueInput[]
+    delete?: tareasWhereUniqueInput | tareasWhereUniqueInput[]
+    connect?: tareasWhereUniqueInput | tareasWhereUniqueInput[]
+    update?: tareasUpdateWithWhereUniqueWithoutEdicionesCursosInput | tareasUpdateWithWhereUniqueWithoutEdicionesCursosInput[]
+    updateMany?: tareasUpdateManyWithWhereWithoutEdicionesCursosInput | tareasUpdateManyWithWhereWithoutEdicionesCursosInput[]
+    deleteMany?: tareasScalarWhereInput | tareasScalarWhereInput[]
+  }
+
   export type certificadosUncheckedUpdateManyWithoutEdicionesCursosNestedInput = {
     create?: XOR<certificadosCreateWithoutEdicionesCursosInput, certificadosUncheckedCreateWithoutEdicionesCursosInput> | certificadosCreateWithoutEdicionesCursosInput[] | certificadosUncheckedCreateWithoutEdicionesCursosInput[]
     connectOrCreate?: certificadosCreateOrConnectWithoutEdicionesCursosInput | certificadosCreateOrConnectWithoutEdicionesCursosInput[]
@@ -53045,6 +60543,20 @@ export namespace Prisma {
     deleteMany?: preciosCursosScalarWhereInput | preciosCursosScalarWhereInput[]
   }
 
+  export type tareasUncheckedUpdateManyWithoutEdicionesCursosNestedInput = {
+    create?: XOR<tareasCreateWithoutEdicionesCursosInput, tareasUncheckedCreateWithoutEdicionesCursosInput> | tareasCreateWithoutEdicionesCursosInput[] | tareasUncheckedCreateWithoutEdicionesCursosInput[]
+    connectOrCreate?: tareasCreateOrConnectWithoutEdicionesCursosInput | tareasCreateOrConnectWithoutEdicionesCursosInput[]
+    upsert?: tareasUpsertWithWhereUniqueWithoutEdicionesCursosInput | tareasUpsertWithWhereUniqueWithoutEdicionesCursosInput[]
+    createMany?: tareasCreateManyEdicionesCursosInputEnvelope
+    set?: tareasWhereUniqueInput | tareasWhereUniqueInput[]
+    disconnect?: tareasWhereUniqueInput | tareasWhereUniqueInput[]
+    delete?: tareasWhereUniqueInput | tareasWhereUniqueInput[]
+    connect?: tareasWhereUniqueInput | tareasWhereUniqueInput[]
+    update?: tareasUpdateWithWhereUniqueWithoutEdicionesCursosInput | tareasUpdateWithWhereUniqueWithoutEdicionesCursosInput[]
+    updateMany?: tareasUpdateManyWithWhereWithoutEdicionesCursosInput | tareasUpdateManyWithWhereWithoutEdicionesCursosInput[]
+    deleteMany?: tareasScalarWhereInput | tareasScalarWhereInput[]
+  }
+
   export type calificacionesCreateNestedManyWithoutEstudiantesInput = {
     create?: XOR<calificacionesCreateWithoutEstudiantesInput, calificacionesUncheckedCreateWithoutEstudiantesInput> | calificacionesCreateWithoutEstudiantesInput[] | calificacionesUncheckedCreateWithoutEstudiantesInput[]
     connectOrCreate?: calificacionesCreateOrConnectWithoutEstudiantesInput | calificacionesCreateOrConnectWithoutEstudiantesInput[]
@@ -53057,6 +60569,27 @@ export namespace Prisma {
     connectOrCreate?: certificadosCreateOrConnectWithoutEstudiantesInput | certificadosCreateOrConnectWithoutEstudiantesInput[]
     createMany?: certificadosCreateManyEstudiantesInputEnvelope
     connect?: certificadosWhereUniqueInput | certificadosWhereUniqueInput[]
+  }
+
+  export type entregasCreateNestedManyWithoutEstudiantesInput = {
+    create?: XOR<entregasCreateWithoutEstudiantesInput, entregasUncheckedCreateWithoutEstudiantesInput> | entregasCreateWithoutEstudiantesInput[] | entregasUncheckedCreateWithoutEstudiantesInput[]
+    connectOrCreate?: entregasCreateOrConnectWithoutEstudiantesInput | entregasCreateOrConnectWithoutEstudiantesInput[]
+    createMany?: entregasCreateManyEstudiantesInputEnvelope
+    connect?: entregasWhereUniqueInput | entregasWhereUniqueInput[]
+  }
+
+  export type foroComentariosCreateNestedManyWithoutEstudiantesInput = {
+    create?: XOR<foroComentariosCreateWithoutEstudiantesInput, foroComentariosUncheckedCreateWithoutEstudiantesInput> | foroComentariosCreateWithoutEstudiantesInput[] | foroComentariosUncheckedCreateWithoutEstudiantesInput[]
+    connectOrCreate?: foroComentariosCreateOrConnectWithoutEstudiantesInput | foroComentariosCreateOrConnectWithoutEstudiantesInput[]
+    createMany?: foroComentariosCreateManyEstudiantesInputEnvelope
+    connect?: foroComentariosWhereUniqueInput | foroComentariosWhereUniqueInput[]
+  }
+
+  export type foroRespuestasCreateNestedManyWithoutEstudiantesInput = {
+    create?: XOR<foroRespuestasCreateWithoutEstudiantesInput, foroRespuestasUncheckedCreateWithoutEstudiantesInput> | foroRespuestasCreateWithoutEstudiantesInput[] | foroRespuestasUncheckedCreateWithoutEstudiantesInput[]
+    connectOrCreate?: foroRespuestasCreateOrConnectWithoutEstudiantesInput | foroRespuestasCreateOrConnectWithoutEstudiantesInput[]
+    createMany?: foroRespuestasCreateManyEstudiantesInputEnvelope
+    connect?: foroRespuestasWhereUniqueInput | foroRespuestasWhereUniqueInput[]
   }
 
   export type inscripcionesCreateNestedManyWithoutEstudiantesInput = {
@@ -53084,6 +60617,27 @@ export namespace Prisma {
     connectOrCreate?: certificadosCreateOrConnectWithoutEstudiantesInput | certificadosCreateOrConnectWithoutEstudiantesInput[]
     createMany?: certificadosCreateManyEstudiantesInputEnvelope
     connect?: certificadosWhereUniqueInput | certificadosWhereUniqueInput[]
+  }
+
+  export type entregasUncheckedCreateNestedManyWithoutEstudiantesInput = {
+    create?: XOR<entregasCreateWithoutEstudiantesInput, entregasUncheckedCreateWithoutEstudiantesInput> | entregasCreateWithoutEstudiantesInput[] | entregasUncheckedCreateWithoutEstudiantesInput[]
+    connectOrCreate?: entregasCreateOrConnectWithoutEstudiantesInput | entregasCreateOrConnectWithoutEstudiantesInput[]
+    createMany?: entregasCreateManyEstudiantesInputEnvelope
+    connect?: entregasWhereUniqueInput | entregasWhereUniqueInput[]
+  }
+
+  export type foroComentariosUncheckedCreateNestedManyWithoutEstudiantesInput = {
+    create?: XOR<foroComentariosCreateWithoutEstudiantesInput, foroComentariosUncheckedCreateWithoutEstudiantesInput> | foroComentariosCreateWithoutEstudiantesInput[] | foroComentariosUncheckedCreateWithoutEstudiantesInput[]
+    connectOrCreate?: foroComentariosCreateOrConnectWithoutEstudiantesInput | foroComentariosCreateOrConnectWithoutEstudiantesInput[]
+    createMany?: foroComentariosCreateManyEstudiantesInputEnvelope
+    connect?: foroComentariosWhereUniqueInput | foroComentariosWhereUniqueInput[]
+  }
+
+  export type foroRespuestasUncheckedCreateNestedManyWithoutEstudiantesInput = {
+    create?: XOR<foroRespuestasCreateWithoutEstudiantesInput, foroRespuestasUncheckedCreateWithoutEstudiantesInput> | foroRespuestasCreateWithoutEstudiantesInput[] | foroRespuestasUncheckedCreateWithoutEstudiantesInput[]
+    connectOrCreate?: foroRespuestasCreateOrConnectWithoutEstudiantesInput | foroRespuestasCreateOrConnectWithoutEstudiantesInput[]
+    createMany?: foroRespuestasCreateManyEstudiantesInputEnvelope
+    connect?: foroRespuestasWhereUniqueInput | foroRespuestasWhereUniqueInput[]
   }
 
   export type inscripcionesUncheckedCreateNestedManyWithoutEstudiantesInput = {
@@ -53133,6 +60687,48 @@ export namespace Prisma {
     update?: certificadosUpdateWithWhereUniqueWithoutEstudiantesInput | certificadosUpdateWithWhereUniqueWithoutEstudiantesInput[]
     updateMany?: certificadosUpdateManyWithWhereWithoutEstudiantesInput | certificadosUpdateManyWithWhereWithoutEstudiantesInput[]
     deleteMany?: certificadosScalarWhereInput | certificadosScalarWhereInput[]
+  }
+
+  export type entregasUpdateManyWithoutEstudiantesNestedInput = {
+    create?: XOR<entregasCreateWithoutEstudiantesInput, entregasUncheckedCreateWithoutEstudiantesInput> | entregasCreateWithoutEstudiantesInput[] | entregasUncheckedCreateWithoutEstudiantesInput[]
+    connectOrCreate?: entregasCreateOrConnectWithoutEstudiantesInput | entregasCreateOrConnectWithoutEstudiantesInput[]
+    upsert?: entregasUpsertWithWhereUniqueWithoutEstudiantesInput | entregasUpsertWithWhereUniqueWithoutEstudiantesInput[]
+    createMany?: entregasCreateManyEstudiantesInputEnvelope
+    set?: entregasWhereUniqueInput | entregasWhereUniqueInput[]
+    disconnect?: entregasWhereUniqueInput | entregasWhereUniqueInput[]
+    delete?: entregasWhereUniqueInput | entregasWhereUniqueInput[]
+    connect?: entregasWhereUniqueInput | entregasWhereUniqueInput[]
+    update?: entregasUpdateWithWhereUniqueWithoutEstudiantesInput | entregasUpdateWithWhereUniqueWithoutEstudiantesInput[]
+    updateMany?: entregasUpdateManyWithWhereWithoutEstudiantesInput | entregasUpdateManyWithWhereWithoutEstudiantesInput[]
+    deleteMany?: entregasScalarWhereInput | entregasScalarWhereInput[]
+  }
+
+  export type foroComentariosUpdateManyWithoutEstudiantesNestedInput = {
+    create?: XOR<foroComentariosCreateWithoutEstudiantesInput, foroComentariosUncheckedCreateWithoutEstudiantesInput> | foroComentariosCreateWithoutEstudiantesInput[] | foroComentariosUncheckedCreateWithoutEstudiantesInput[]
+    connectOrCreate?: foroComentariosCreateOrConnectWithoutEstudiantesInput | foroComentariosCreateOrConnectWithoutEstudiantesInput[]
+    upsert?: foroComentariosUpsertWithWhereUniqueWithoutEstudiantesInput | foroComentariosUpsertWithWhereUniqueWithoutEstudiantesInput[]
+    createMany?: foroComentariosCreateManyEstudiantesInputEnvelope
+    set?: foroComentariosWhereUniqueInput | foroComentariosWhereUniqueInput[]
+    disconnect?: foroComentariosWhereUniqueInput | foroComentariosWhereUniqueInput[]
+    delete?: foroComentariosWhereUniqueInput | foroComentariosWhereUniqueInput[]
+    connect?: foroComentariosWhereUniqueInput | foroComentariosWhereUniqueInput[]
+    update?: foroComentariosUpdateWithWhereUniqueWithoutEstudiantesInput | foroComentariosUpdateWithWhereUniqueWithoutEstudiantesInput[]
+    updateMany?: foroComentariosUpdateManyWithWhereWithoutEstudiantesInput | foroComentariosUpdateManyWithWhereWithoutEstudiantesInput[]
+    deleteMany?: foroComentariosScalarWhereInput | foroComentariosScalarWhereInput[]
+  }
+
+  export type foroRespuestasUpdateManyWithoutEstudiantesNestedInput = {
+    create?: XOR<foroRespuestasCreateWithoutEstudiantesInput, foroRespuestasUncheckedCreateWithoutEstudiantesInput> | foroRespuestasCreateWithoutEstudiantesInput[] | foroRespuestasUncheckedCreateWithoutEstudiantesInput[]
+    connectOrCreate?: foroRespuestasCreateOrConnectWithoutEstudiantesInput | foroRespuestasCreateOrConnectWithoutEstudiantesInput[]
+    upsert?: foroRespuestasUpsertWithWhereUniqueWithoutEstudiantesInput | foroRespuestasUpsertWithWhereUniqueWithoutEstudiantesInput[]
+    createMany?: foroRespuestasCreateManyEstudiantesInputEnvelope
+    set?: foroRespuestasWhereUniqueInput | foroRespuestasWhereUniqueInput[]
+    disconnect?: foroRespuestasWhereUniqueInput | foroRespuestasWhereUniqueInput[]
+    delete?: foroRespuestasWhereUniqueInput | foroRespuestasWhereUniqueInput[]
+    connect?: foroRespuestasWhereUniqueInput | foroRespuestasWhereUniqueInput[]
+    update?: foroRespuestasUpdateWithWhereUniqueWithoutEstudiantesInput | foroRespuestasUpdateWithWhereUniqueWithoutEstudiantesInput[]
+    updateMany?: foroRespuestasUpdateManyWithWhereWithoutEstudiantesInput | foroRespuestasUpdateManyWithWhereWithoutEstudiantesInput[]
+    deleteMany?: foroRespuestasScalarWhereInput | foroRespuestasScalarWhereInput[]
   }
 
   export type inscripcionesUpdateManyWithoutEstudiantesNestedInput = {
@@ -53185,6 +60781,48 @@ export namespace Prisma {
     update?: certificadosUpdateWithWhereUniqueWithoutEstudiantesInput | certificadosUpdateWithWhereUniqueWithoutEstudiantesInput[]
     updateMany?: certificadosUpdateManyWithWhereWithoutEstudiantesInput | certificadosUpdateManyWithWhereWithoutEstudiantesInput[]
     deleteMany?: certificadosScalarWhereInput | certificadosScalarWhereInput[]
+  }
+
+  export type entregasUncheckedUpdateManyWithoutEstudiantesNestedInput = {
+    create?: XOR<entregasCreateWithoutEstudiantesInput, entregasUncheckedCreateWithoutEstudiantesInput> | entregasCreateWithoutEstudiantesInput[] | entregasUncheckedCreateWithoutEstudiantesInput[]
+    connectOrCreate?: entregasCreateOrConnectWithoutEstudiantesInput | entregasCreateOrConnectWithoutEstudiantesInput[]
+    upsert?: entregasUpsertWithWhereUniqueWithoutEstudiantesInput | entregasUpsertWithWhereUniqueWithoutEstudiantesInput[]
+    createMany?: entregasCreateManyEstudiantesInputEnvelope
+    set?: entregasWhereUniqueInput | entregasWhereUniqueInput[]
+    disconnect?: entregasWhereUniqueInput | entregasWhereUniqueInput[]
+    delete?: entregasWhereUniqueInput | entregasWhereUniqueInput[]
+    connect?: entregasWhereUniqueInput | entregasWhereUniqueInput[]
+    update?: entregasUpdateWithWhereUniqueWithoutEstudiantesInput | entregasUpdateWithWhereUniqueWithoutEstudiantesInput[]
+    updateMany?: entregasUpdateManyWithWhereWithoutEstudiantesInput | entregasUpdateManyWithWhereWithoutEstudiantesInput[]
+    deleteMany?: entregasScalarWhereInput | entregasScalarWhereInput[]
+  }
+
+  export type foroComentariosUncheckedUpdateManyWithoutEstudiantesNestedInput = {
+    create?: XOR<foroComentariosCreateWithoutEstudiantesInput, foroComentariosUncheckedCreateWithoutEstudiantesInput> | foroComentariosCreateWithoutEstudiantesInput[] | foroComentariosUncheckedCreateWithoutEstudiantesInput[]
+    connectOrCreate?: foroComentariosCreateOrConnectWithoutEstudiantesInput | foroComentariosCreateOrConnectWithoutEstudiantesInput[]
+    upsert?: foroComentariosUpsertWithWhereUniqueWithoutEstudiantesInput | foroComentariosUpsertWithWhereUniqueWithoutEstudiantesInput[]
+    createMany?: foroComentariosCreateManyEstudiantesInputEnvelope
+    set?: foroComentariosWhereUniqueInput | foroComentariosWhereUniqueInput[]
+    disconnect?: foroComentariosWhereUniqueInput | foroComentariosWhereUniqueInput[]
+    delete?: foroComentariosWhereUniqueInput | foroComentariosWhereUniqueInput[]
+    connect?: foroComentariosWhereUniqueInput | foroComentariosWhereUniqueInput[]
+    update?: foroComentariosUpdateWithWhereUniqueWithoutEstudiantesInput | foroComentariosUpdateWithWhereUniqueWithoutEstudiantesInput[]
+    updateMany?: foroComentariosUpdateManyWithWhereWithoutEstudiantesInput | foroComentariosUpdateManyWithWhereWithoutEstudiantesInput[]
+    deleteMany?: foroComentariosScalarWhereInput | foroComentariosScalarWhereInput[]
+  }
+
+  export type foroRespuestasUncheckedUpdateManyWithoutEstudiantesNestedInput = {
+    create?: XOR<foroRespuestasCreateWithoutEstudiantesInput, foroRespuestasUncheckedCreateWithoutEstudiantesInput> | foroRespuestasCreateWithoutEstudiantesInput[] | foroRespuestasUncheckedCreateWithoutEstudiantesInput[]
+    connectOrCreate?: foroRespuestasCreateOrConnectWithoutEstudiantesInput | foroRespuestasCreateOrConnectWithoutEstudiantesInput[]
+    upsert?: foroRespuestasUpsertWithWhereUniqueWithoutEstudiantesInput | foroRespuestasUpsertWithWhereUniqueWithoutEstudiantesInput[]
+    createMany?: foroRespuestasCreateManyEstudiantesInputEnvelope
+    set?: foroRespuestasWhereUniqueInput | foroRespuestasWhereUniqueInput[]
+    disconnect?: foroRespuestasWhereUniqueInput | foroRespuestasWhereUniqueInput[]
+    delete?: foroRespuestasWhereUniqueInput | foroRespuestasWhereUniqueInput[]
+    connect?: foroRespuestasWhereUniqueInput | foroRespuestasWhereUniqueInput[]
+    update?: foroRespuestasUpdateWithWhereUniqueWithoutEstudiantesInput | foroRespuestasUpdateWithWhereUniqueWithoutEstudiantesInput[]
+    updateMany?: foroRespuestasUpdateManyWithWhereWithoutEstudiantesInput | foroRespuestasUpdateManyWithWhereWithoutEstudiantesInput[]
+    deleteMany?: foroRespuestasScalarWhereInput | foroRespuestasScalarWhereInput[]
   }
 
   export type inscripcionesUncheckedUpdateManyWithoutEstudiantesNestedInput = {
@@ -54693,6 +62331,252 @@ export namespace Prisma {
     update?: XOR<XOR<usuariosEstudiantesUpdateToOneWithWhereWithoutSuscripcionesInput, usuariosEstudiantesUpdateWithoutSuscripcionesInput>, usuariosEstudiantesUncheckedUpdateWithoutSuscripcionesInput>
   }
 
+  export type estudiantesCreateNestedOneWithoutEntregasInput = {
+    create?: XOR<estudiantesCreateWithoutEntregasInput, estudiantesUncheckedCreateWithoutEntregasInput>
+    connectOrCreate?: estudiantesCreateOrConnectWithoutEntregasInput
+    connect?: estudiantesWhereUniqueInput
+  }
+
+  export type tareasCreateNestedOneWithoutEntregasInput = {
+    create?: XOR<tareasCreateWithoutEntregasInput, tareasUncheckedCreateWithoutEntregasInput>
+    connectOrCreate?: tareasCreateOrConnectWithoutEntregasInput
+    connect?: tareasWhereUniqueInput
+  }
+
+  export type EnumEntregaEstadoFieldUpdateOperationsInput = {
+    set?: $Enums.EntregaEstado
+  }
+
+  export type estudiantesUpdateOneRequiredWithoutEntregasNestedInput = {
+    create?: XOR<estudiantesCreateWithoutEntregasInput, estudiantesUncheckedCreateWithoutEntregasInput>
+    connectOrCreate?: estudiantesCreateOrConnectWithoutEntregasInput
+    upsert?: estudiantesUpsertWithoutEntregasInput
+    connect?: estudiantesWhereUniqueInput
+    update?: XOR<XOR<estudiantesUpdateToOneWithWhereWithoutEntregasInput, estudiantesUpdateWithoutEntregasInput>, estudiantesUncheckedUpdateWithoutEntregasInput>
+  }
+
+  export type tareasUpdateOneRequiredWithoutEntregasNestedInput = {
+    create?: XOR<tareasCreateWithoutEntregasInput, tareasUncheckedCreateWithoutEntregasInput>
+    connectOrCreate?: tareasCreateOrConnectWithoutEntregasInput
+    upsert?: tareasUpsertWithoutEntregasInput
+    connect?: tareasWhereUniqueInput
+    update?: XOR<XOR<tareasUpdateToOneWithWhereWithoutEntregasInput, tareasUpdateWithoutEntregasInput>, tareasUncheckedUpdateWithoutEntregasInput>
+  }
+
+  export type estudiantesCreateNestedOneWithoutForoComentariosInput = {
+    create?: XOR<estudiantesCreateWithoutForoComentariosInput, estudiantesUncheckedCreateWithoutForoComentariosInput>
+    connectOrCreate?: estudiantesCreateOrConnectWithoutForoComentariosInput
+    connect?: estudiantesWhereUniqueInput
+  }
+
+  export type forosCreateNestedOneWithoutForoComentariosInput = {
+    create?: XOR<forosCreateWithoutForoComentariosInput, forosUncheckedCreateWithoutForoComentariosInput>
+    connectOrCreate?: forosCreateOrConnectWithoutForoComentariosInput
+    connect?: forosWhereUniqueInput
+  }
+
+  export type foroRespuestasCreateNestedManyWithoutForoComentariosInput = {
+    create?: XOR<foroRespuestasCreateWithoutForoComentariosInput, foroRespuestasUncheckedCreateWithoutForoComentariosInput> | foroRespuestasCreateWithoutForoComentariosInput[] | foroRespuestasUncheckedCreateWithoutForoComentariosInput[]
+    connectOrCreate?: foroRespuestasCreateOrConnectWithoutForoComentariosInput | foroRespuestasCreateOrConnectWithoutForoComentariosInput[]
+    createMany?: foroRespuestasCreateManyForoComentariosInputEnvelope
+    connect?: foroRespuestasWhereUniqueInput | foroRespuestasWhereUniqueInput[]
+  }
+
+  export type foroRespuestasUncheckedCreateNestedManyWithoutForoComentariosInput = {
+    create?: XOR<foroRespuestasCreateWithoutForoComentariosInput, foroRespuestasUncheckedCreateWithoutForoComentariosInput> | foroRespuestasCreateWithoutForoComentariosInput[] | foroRespuestasUncheckedCreateWithoutForoComentariosInput[]
+    connectOrCreate?: foroRespuestasCreateOrConnectWithoutForoComentariosInput | foroRespuestasCreateOrConnectWithoutForoComentariosInput[]
+    createMany?: foroRespuestasCreateManyForoComentariosInputEnvelope
+    connect?: foroRespuestasWhereUniqueInput | foroRespuestasWhereUniqueInput[]
+  }
+
+  export type estudiantesUpdateOneRequiredWithoutForoComentariosNestedInput = {
+    create?: XOR<estudiantesCreateWithoutForoComentariosInput, estudiantesUncheckedCreateWithoutForoComentariosInput>
+    connectOrCreate?: estudiantesCreateOrConnectWithoutForoComentariosInput
+    upsert?: estudiantesUpsertWithoutForoComentariosInput
+    connect?: estudiantesWhereUniqueInput
+    update?: XOR<XOR<estudiantesUpdateToOneWithWhereWithoutForoComentariosInput, estudiantesUpdateWithoutForoComentariosInput>, estudiantesUncheckedUpdateWithoutForoComentariosInput>
+  }
+
+  export type forosUpdateOneRequiredWithoutForoComentariosNestedInput = {
+    create?: XOR<forosCreateWithoutForoComentariosInput, forosUncheckedCreateWithoutForoComentariosInput>
+    connectOrCreate?: forosCreateOrConnectWithoutForoComentariosInput
+    upsert?: forosUpsertWithoutForoComentariosInput
+    connect?: forosWhereUniqueInput
+    update?: XOR<XOR<forosUpdateToOneWithWhereWithoutForoComentariosInput, forosUpdateWithoutForoComentariosInput>, forosUncheckedUpdateWithoutForoComentariosInput>
+  }
+
+  export type foroRespuestasUpdateManyWithoutForoComentariosNestedInput = {
+    create?: XOR<foroRespuestasCreateWithoutForoComentariosInput, foroRespuestasUncheckedCreateWithoutForoComentariosInput> | foroRespuestasCreateWithoutForoComentariosInput[] | foroRespuestasUncheckedCreateWithoutForoComentariosInput[]
+    connectOrCreate?: foroRespuestasCreateOrConnectWithoutForoComentariosInput | foroRespuestasCreateOrConnectWithoutForoComentariosInput[]
+    upsert?: foroRespuestasUpsertWithWhereUniqueWithoutForoComentariosInput | foroRespuestasUpsertWithWhereUniqueWithoutForoComentariosInput[]
+    createMany?: foroRespuestasCreateManyForoComentariosInputEnvelope
+    set?: foroRespuestasWhereUniqueInput | foroRespuestasWhereUniqueInput[]
+    disconnect?: foroRespuestasWhereUniqueInput | foroRespuestasWhereUniqueInput[]
+    delete?: foroRespuestasWhereUniqueInput | foroRespuestasWhereUniqueInput[]
+    connect?: foroRespuestasWhereUniqueInput | foroRespuestasWhereUniqueInput[]
+    update?: foroRespuestasUpdateWithWhereUniqueWithoutForoComentariosInput | foroRespuestasUpdateWithWhereUniqueWithoutForoComentariosInput[]
+    updateMany?: foroRespuestasUpdateManyWithWhereWithoutForoComentariosInput | foroRespuestasUpdateManyWithWhereWithoutForoComentariosInput[]
+    deleteMany?: foroRespuestasScalarWhereInput | foroRespuestasScalarWhereInput[]
+  }
+
+  export type foroRespuestasUncheckedUpdateManyWithoutForoComentariosNestedInput = {
+    create?: XOR<foroRespuestasCreateWithoutForoComentariosInput, foroRespuestasUncheckedCreateWithoutForoComentariosInput> | foroRespuestasCreateWithoutForoComentariosInput[] | foroRespuestasUncheckedCreateWithoutForoComentariosInput[]
+    connectOrCreate?: foroRespuestasCreateOrConnectWithoutForoComentariosInput | foroRespuestasCreateOrConnectWithoutForoComentariosInput[]
+    upsert?: foroRespuestasUpsertWithWhereUniqueWithoutForoComentariosInput | foroRespuestasUpsertWithWhereUniqueWithoutForoComentariosInput[]
+    createMany?: foroRespuestasCreateManyForoComentariosInputEnvelope
+    set?: foroRespuestasWhereUniqueInput | foroRespuestasWhereUniqueInput[]
+    disconnect?: foroRespuestasWhereUniqueInput | foroRespuestasWhereUniqueInput[]
+    delete?: foroRespuestasWhereUniqueInput | foroRespuestasWhereUniqueInput[]
+    connect?: foroRespuestasWhereUniqueInput | foroRespuestasWhereUniqueInput[]
+    update?: foroRespuestasUpdateWithWhereUniqueWithoutForoComentariosInput | foroRespuestasUpdateWithWhereUniqueWithoutForoComentariosInput[]
+    updateMany?: foroRespuestasUpdateManyWithWhereWithoutForoComentariosInput | foroRespuestasUpdateManyWithWhereWithoutForoComentariosInput[]
+    deleteMany?: foroRespuestasScalarWhereInput | foroRespuestasScalarWhereInput[]
+  }
+
+  export type foroComentariosCreateNestedOneWithoutForoRespuestasInput = {
+    create?: XOR<foroComentariosCreateWithoutForoRespuestasInput, foroComentariosUncheckedCreateWithoutForoRespuestasInput>
+    connectOrCreate?: foroComentariosCreateOrConnectWithoutForoRespuestasInput
+    connect?: foroComentariosWhereUniqueInput
+  }
+
+  export type estudiantesCreateNestedOneWithoutForoRespuestasInput = {
+    create?: XOR<estudiantesCreateWithoutForoRespuestasInput, estudiantesUncheckedCreateWithoutForoRespuestasInput>
+    connectOrCreate?: estudiantesCreateOrConnectWithoutForoRespuestasInput
+    connect?: estudiantesWhereUniqueInput
+  }
+
+  export type foroComentariosUpdateOneRequiredWithoutForoRespuestasNestedInput = {
+    create?: XOR<foroComentariosCreateWithoutForoRespuestasInput, foroComentariosUncheckedCreateWithoutForoRespuestasInput>
+    connectOrCreate?: foroComentariosCreateOrConnectWithoutForoRespuestasInput
+    upsert?: foroComentariosUpsertWithoutForoRespuestasInput
+    connect?: foroComentariosWhereUniqueInput
+    update?: XOR<XOR<foroComentariosUpdateToOneWithWhereWithoutForoRespuestasInput, foroComentariosUpdateWithoutForoRespuestasInput>, foroComentariosUncheckedUpdateWithoutForoRespuestasInput>
+  }
+
+  export type estudiantesUpdateOneRequiredWithoutForoRespuestasNestedInput = {
+    create?: XOR<estudiantesCreateWithoutForoRespuestasInput, estudiantesUncheckedCreateWithoutForoRespuestasInput>
+    connectOrCreate?: estudiantesCreateOrConnectWithoutForoRespuestasInput
+    upsert?: estudiantesUpsertWithoutForoRespuestasInput
+    connect?: estudiantesWhereUniqueInput
+    update?: XOR<XOR<estudiantesUpdateToOneWithWhereWithoutForoRespuestasInput, estudiantesUpdateWithoutForoRespuestasInput>, estudiantesUncheckedUpdateWithoutForoRespuestasInput>
+  }
+
+  export type foroComentariosCreateNestedManyWithoutForosInput = {
+    create?: XOR<foroComentariosCreateWithoutForosInput, foroComentariosUncheckedCreateWithoutForosInput> | foroComentariosCreateWithoutForosInput[] | foroComentariosUncheckedCreateWithoutForosInput[]
+    connectOrCreate?: foroComentariosCreateOrConnectWithoutForosInput | foroComentariosCreateOrConnectWithoutForosInput[]
+    createMany?: foroComentariosCreateManyForosInputEnvelope
+    connect?: foroComentariosWhereUniqueInput | foroComentariosWhereUniqueInput[]
+  }
+
+  export type cursosCreateNestedOneWithoutForosInput = {
+    create?: XOR<cursosCreateWithoutForosInput, cursosUncheckedCreateWithoutForosInput>
+    connectOrCreate?: cursosCreateOrConnectWithoutForosInput
+    connect?: cursosWhereUniqueInput
+  }
+
+  export type foroComentariosUncheckedCreateNestedManyWithoutForosInput = {
+    create?: XOR<foroComentariosCreateWithoutForosInput, foroComentariosUncheckedCreateWithoutForosInput> | foroComentariosCreateWithoutForosInput[] | foroComentariosUncheckedCreateWithoutForosInput[]
+    connectOrCreate?: foroComentariosCreateOrConnectWithoutForosInput | foroComentariosCreateOrConnectWithoutForosInput[]
+    createMany?: foroComentariosCreateManyForosInputEnvelope
+    connect?: foroComentariosWhereUniqueInput | foroComentariosWhereUniqueInput[]
+  }
+
+  export type foroComentariosUpdateManyWithoutForosNestedInput = {
+    create?: XOR<foroComentariosCreateWithoutForosInput, foroComentariosUncheckedCreateWithoutForosInput> | foroComentariosCreateWithoutForosInput[] | foroComentariosUncheckedCreateWithoutForosInput[]
+    connectOrCreate?: foroComentariosCreateOrConnectWithoutForosInput | foroComentariosCreateOrConnectWithoutForosInput[]
+    upsert?: foroComentariosUpsertWithWhereUniqueWithoutForosInput | foroComentariosUpsertWithWhereUniqueWithoutForosInput[]
+    createMany?: foroComentariosCreateManyForosInputEnvelope
+    set?: foroComentariosWhereUniqueInput | foroComentariosWhereUniqueInput[]
+    disconnect?: foroComentariosWhereUniqueInput | foroComentariosWhereUniqueInput[]
+    delete?: foroComentariosWhereUniqueInput | foroComentariosWhereUniqueInput[]
+    connect?: foroComentariosWhereUniqueInput | foroComentariosWhereUniqueInput[]
+    update?: foroComentariosUpdateWithWhereUniqueWithoutForosInput | foroComentariosUpdateWithWhereUniqueWithoutForosInput[]
+    updateMany?: foroComentariosUpdateManyWithWhereWithoutForosInput | foroComentariosUpdateManyWithWhereWithoutForosInput[]
+    deleteMany?: foroComentariosScalarWhereInput | foroComentariosScalarWhereInput[]
+  }
+
+  export type cursosUpdateOneRequiredWithoutForosNestedInput = {
+    create?: XOR<cursosCreateWithoutForosInput, cursosUncheckedCreateWithoutForosInput>
+    connectOrCreate?: cursosCreateOrConnectWithoutForosInput
+    upsert?: cursosUpsertWithoutForosInput
+    connect?: cursosWhereUniqueInput
+    update?: XOR<XOR<cursosUpdateToOneWithWhereWithoutForosInput, cursosUpdateWithoutForosInput>, cursosUncheckedUpdateWithoutForosInput>
+  }
+
+  export type foroComentariosUncheckedUpdateManyWithoutForosNestedInput = {
+    create?: XOR<foroComentariosCreateWithoutForosInput, foroComentariosUncheckedCreateWithoutForosInput> | foroComentariosCreateWithoutForosInput[] | foroComentariosUncheckedCreateWithoutForosInput[]
+    connectOrCreate?: foroComentariosCreateOrConnectWithoutForosInput | foroComentariosCreateOrConnectWithoutForosInput[]
+    upsert?: foroComentariosUpsertWithWhereUniqueWithoutForosInput | foroComentariosUpsertWithWhereUniqueWithoutForosInput[]
+    createMany?: foroComentariosCreateManyForosInputEnvelope
+    set?: foroComentariosWhereUniqueInput | foroComentariosWhereUniqueInput[]
+    disconnect?: foroComentariosWhereUniqueInput | foroComentariosWhereUniqueInput[]
+    delete?: foroComentariosWhereUniqueInput | foroComentariosWhereUniqueInput[]
+    connect?: foroComentariosWhereUniqueInput | foroComentariosWhereUniqueInput[]
+    update?: foroComentariosUpdateWithWhereUniqueWithoutForosInput | foroComentariosUpdateWithWhereUniqueWithoutForosInput[]
+    updateMany?: foroComentariosUpdateManyWithWhereWithoutForosInput | foroComentariosUpdateManyWithWhereWithoutForosInput[]
+    deleteMany?: foroComentariosScalarWhereInput | foroComentariosScalarWhereInput[]
+  }
+
+  export type entregasCreateNestedManyWithoutTareasInput = {
+    create?: XOR<entregasCreateWithoutTareasInput, entregasUncheckedCreateWithoutTareasInput> | entregasCreateWithoutTareasInput[] | entregasUncheckedCreateWithoutTareasInput[]
+    connectOrCreate?: entregasCreateOrConnectWithoutTareasInput | entregasCreateOrConnectWithoutTareasInput[]
+    createMany?: entregasCreateManyTareasInputEnvelope
+    connect?: entregasWhereUniqueInput | entregasWhereUniqueInput[]
+  }
+
+  export type edicionesCursosCreateNestedOneWithoutTareasInput = {
+    create?: XOR<edicionesCursosCreateWithoutTareasInput, edicionesCursosUncheckedCreateWithoutTareasInput>
+    connectOrCreate?: edicionesCursosCreateOrConnectWithoutTareasInput
+    connect?: edicionesCursosWhereUniqueInput
+  }
+
+  export type entregasUncheckedCreateNestedManyWithoutTareasInput = {
+    create?: XOR<entregasCreateWithoutTareasInput, entregasUncheckedCreateWithoutTareasInput> | entregasCreateWithoutTareasInput[] | entregasUncheckedCreateWithoutTareasInput[]
+    connectOrCreate?: entregasCreateOrConnectWithoutTareasInput | entregasCreateOrConnectWithoutTareasInput[]
+    createMany?: entregasCreateManyTareasInputEnvelope
+    connect?: entregasWhereUniqueInput | entregasWhereUniqueInput[]
+  }
+
+  export type EnumTareaEstadoFieldUpdateOperationsInput = {
+    set?: $Enums.TareaEstado
+  }
+
+  export type entregasUpdateManyWithoutTareasNestedInput = {
+    create?: XOR<entregasCreateWithoutTareasInput, entregasUncheckedCreateWithoutTareasInput> | entregasCreateWithoutTareasInput[] | entregasUncheckedCreateWithoutTareasInput[]
+    connectOrCreate?: entregasCreateOrConnectWithoutTareasInput | entregasCreateOrConnectWithoutTareasInput[]
+    upsert?: entregasUpsertWithWhereUniqueWithoutTareasInput | entregasUpsertWithWhereUniqueWithoutTareasInput[]
+    createMany?: entregasCreateManyTareasInputEnvelope
+    set?: entregasWhereUniqueInput | entregasWhereUniqueInput[]
+    disconnect?: entregasWhereUniqueInput | entregasWhereUniqueInput[]
+    delete?: entregasWhereUniqueInput | entregasWhereUniqueInput[]
+    connect?: entregasWhereUniqueInput | entregasWhereUniqueInput[]
+    update?: entregasUpdateWithWhereUniqueWithoutTareasInput | entregasUpdateWithWhereUniqueWithoutTareasInput[]
+    updateMany?: entregasUpdateManyWithWhereWithoutTareasInput | entregasUpdateManyWithWhereWithoutTareasInput[]
+    deleteMany?: entregasScalarWhereInput | entregasScalarWhereInput[]
+  }
+
+  export type edicionesCursosUpdateOneRequiredWithoutTareasNestedInput = {
+    create?: XOR<edicionesCursosCreateWithoutTareasInput, edicionesCursosUncheckedCreateWithoutTareasInput>
+    connectOrCreate?: edicionesCursosCreateOrConnectWithoutTareasInput
+    upsert?: edicionesCursosUpsertWithoutTareasInput
+    connect?: edicionesCursosWhereUniqueInput
+    update?: XOR<XOR<edicionesCursosUpdateToOneWithWhereWithoutTareasInput, edicionesCursosUpdateWithoutTareasInput>, edicionesCursosUncheckedUpdateWithoutTareasInput>
+  }
+
+  export type entregasUncheckedUpdateManyWithoutTareasNestedInput = {
+    create?: XOR<entregasCreateWithoutTareasInput, entregasUncheckedCreateWithoutTareasInput> | entregasCreateWithoutTareasInput[] | entregasUncheckedCreateWithoutTareasInput[]
+    connectOrCreate?: entregasCreateOrConnectWithoutTareasInput | entregasCreateOrConnectWithoutTareasInput[]
+    upsert?: entregasUpsertWithWhereUniqueWithoutTareasInput | entregasUpsertWithWhereUniqueWithoutTareasInput[]
+    createMany?: entregasCreateManyTareasInputEnvelope
+    set?: entregasWhereUniqueInput | entregasWhereUniqueInput[]
+    disconnect?: entregasWhereUniqueInput | entregasWhereUniqueInput[]
+    delete?: entregasWhereUniqueInput | entregasWhereUniqueInput[]
+    connect?: entregasWhereUniqueInput | entregasWhereUniqueInput[]
+    update?: entregasUpdateWithWhereUniqueWithoutTareasInput | entregasUpdateWithWhereUniqueWithoutTareasInput[]
+    updateMany?: entregasUpdateManyWithWhereWithoutTareasInput | entregasUpdateManyWithWhereWithoutTareasInput[]
+    deleteMany?: entregasScalarWhereInput | entregasScalarWhereInput[]
+  }
+
   export type NestedStringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -55274,6 +63158,40 @@ export namespace Prisma {
     _max?: NestedEnumEstadoSuscripcionFilter<$PrismaModel>
   }
 
+  export type NestedEnumEntregaEstadoFilter<$PrismaModel = never> = {
+    equals?: $Enums.EntregaEstado | EnumEntregaEstadoFieldRefInput<$PrismaModel>
+    in?: $Enums.EntregaEstado[] | ListEnumEntregaEstadoFieldRefInput<$PrismaModel>
+    notIn?: $Enums.EntregaEstado[] | ListEnumEntregaEstadoFieldRefInput<$PrismaModel>
+    not?: NestedEnumEntregaEstadoFilter<$PrismaModel> | $Enums.EntregaEstado
+  }
+
+  export type NestedEnumEntregaEstadoWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.EntregaEstado | EnumEntregaEstadoFieldRefInput<$PrismaModel>
+    in?: $Enums.EntregaEstado[] | ListEnumEntregaEstadoFieldRefInput<$PrismaModel>
+    notIn?: $Enums.EntregaEstado[] | ListEnumEntregaEstadoFieldRefInput<$PrismaModel>
+    not?: NestedEnumEntregaEstadoWithAggregatesFilter<$PrismaModel> | $Enums.EntregaEstado
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumEntregaEstadoFilter<$PrismaModel>
+    _max?: NestedEnumEntregaEstadoFilter<$PrismaModel>
+  }
+
+  export type NestedEnumTareaEstadoFilter<$PrismaModel = never> = {
+    equals?: $Enums.TareaEstado | EnumTareaEstadoFieldRefInput<$PrismaModel>
+    in?: $Enums.TareaEstado[] | ListEnumTareaEstadoFieldRefInput<$PrismaModel>
+    notIn?: $Enums.TareaEstado[] | ListEnumTareaEstadoFieldRefInput<$PrismaModel>
+    not?: NestedEnumTareaEstadoFilter<$PrismaModel> | $Enums.TareaEstado
+  }
+
+  export type NestedEnumTareaEstadoWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.TareaEstado | EnumTareaEstadoFieldRefInput<$PrismaModel>
+    in?: $Enums.TareaEstado[] | ListEnumTareaEstadoFieldRefInput<$PrismaModel>
+    notIn?: $Enums.TareaEstado[] | ListEnumTareaEstadoFieldRefInput<$PrismaModel>
+    not?: NestedEnumTareaEstadoWithAggregatesFilter<$PrismaModel> | $Enums.TareaEstado
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumTareaEstadoFilter<$PrismaModel>
+    _max?: NestedEnumTareaEstadoFilter<$PrismaModel>
+  }
+
   export type usuariosAdministradoresCreateWithoutAuditoriaInput = {
     id?: string
     correo: string
@@ -55356,6 +63274,7 @@ export namespace Prisma {
     codigo: string
     categoriasCursos?: categoriasCursosCreateNestedManyWithoutCursosInput
     edicionesCursos?: edicionesCursosCreateNestedManyWithoutCursosInput
+    foros?: forosCreateNestedOneWithoutCursosInput
     objetivosCursos?: objetivosCursosCreateNestedManyWithoutCursosInput
     requisitosCursos?: requisitosCursosCreateNestedManyWithoutCursosInput
     reviewsCursos?: reviewsCursosCreateNestedManyWithoutCursosInput
@@ -55375,6 +63294,7 @@ export namespace Prisma {
     codigo: string
     categoriasCursos?: categoriasCursosUncheckedCreateNestedManyWithoutCursosInput
     edicionesCursos?: edicionesCursosUncheckedCreateNestedManyWithoutCursosInput
+    foros?: forosUncheckedCreateNestedOneWithoutCursosInput
     objetivosCursos?: objetivosCursosUncheckedCreateNestedManyWithoutCursosInput
     requisitosCursos?: requisitosCursosUncheckedCreateNestedManyWithoutCursosInput
     reviewsCursos?: reviewsCursosUncheckedCreateNestedManyWithoutCursosInput
@@ -55410,6 +63330,7 @@ export namespace Prisma {
     codigo?: StringFieldUpdateOperationsInput | string
     categoriasCursos?: categoriasCursosUpdateManyWithoutCursosNestedInput
     edicionesCursos?: edicionesCursosUpdateManyWithoutCursosNestedInput
+    foros?: forosUpdateOneWithoutCursosNestedInput
     objetivosCursos?: objetivosCursosUpdateManyWithoutCursosNestedInput
     requisitosCursos?: requisitosCursosUpdateManyWithoutCursosNestedInput
     reviewsCursos?: reviewsCursosUpdateManyWithoutCursosNestedInput
@@ -55429,6 +63350,7 @@ export namespace Prisma {
     codigo?: StringFieldUpdateOperationsInput | string
     categoriasCursos?: categoriasCursosUncheckedUpdateManyWithoutCursosNestedInput
     edicionesCursos?: edicionesCursosUncheckedUpdateManyWithoutCursosNestedInput
+    foros?: forosUncheckedUpdateOneWithoutCursosNestedInput
     objetivosCursos?: objetivosCursosUncheckedUpdateManyWithoutCursosNestedInput
     requisitosCursos?: requisitosCursosUncheckedUpdateManyWithoutCursosNestedInput
     reviewsCursos?: reviewsCursosUncheckedUpdateManyWithoutCursosNestedInput
@@ -55446,6 +63368,9 @@ export namespace Prisma {
     actualizadoEn: Date | string
     nroUpdates?: number
     certificados?: certificadosCreateNestedManyWithoutEstudiantesInput
+    entregas?: entregasCreateNestedManyWithoutEstudiantesInput
+    foroComentarios?: foroComentariosCreateNestedManyWithoutEstudiantesInput
+    foroRespuestas?: foroRespuestasCreateNestedManyWithoutEstudiantesInput
     inscripciones?: inscripcionesCreateNestedManyWithoutEstudiantesInput
     usuariosEstudiantes?: usuariosEstudiantesCreateNestedOneWithoutEstudiantesInput
   }
@@ -55462,6 +63387,9 @@ export namespace Prisma {
     actualizadoEn: Date | string
     nroUpdates?: number
     certificados?: certificadosUncheckedCreateNestedManyWithoutEstudiantesInput
+    entregas?: entregasUncheckedCreateNestedManyWithoutEstudiantesInput
+    foroComentarios?: foroComentariosUncheckedCreateNestedManyWithoutEstudiantesInput
+    foroRespuestas?: foroRespuestasUncheckedCreateNestedManyWithoutEstudiantesInput
     inscripciones?: inscripcionesUncheckedCreateNestedManyWithoutEstudiantesInput
     usuariosEstudiantes?: usuariosEstudiantesUncheckedCreateNestedOneWithoutEstudiantesInput
   }
@@ -55523,6 +63451,9 @@ export namespace Prisma {
     actualizadoEn?: DateTimeFieldUpdateOperationsInput | Date | string
     nroUpdates?: IntFieldUpdateOperationsInput | number
     certificados?: certificadosUpdateManyWithoutEstudiantesNestedInput
+    entregas?: entregasUpdateManyWithoutEstudiantesNestedInput
+    foroComentarios?: foroComentariosUpdateManyWithoutEstudiantesNestedInput
+    foroRespuestas?: foroRespuestasUpdateManyWithoutEstudiantesNestedInput
     inscripciones?: inscripcionesUpdateManyWithoutEstudiantesNestedInput
     usuariosEstudiantes?: usuariosEstudiantesUpdateOneWithoutEstudiantesNestedInput
   }
@@ -55539,6 +63470,9 @@ export namespace Prisma {
     actualizadoEn?: DateTimeFieldUpdateOperationsInput | Date | string
     nroUpdates?: IntFieldUpdateOperationsInput | number
     certificados?: certificadosUncheckedUpdateManyWithoutEstudiantesNestedInput
+    entregas?: entregasUncheckedUpdateManyWithoutEstudiantesNestedInput
+    foroComentarios?: foroComentariosUncheckedUpdateManyWithoutEstudiantesNestedInput
+    foroRespuestas?: foroRespuestasUncheckedUpdateManyWithoutEstudiantesNestedInput
     inscripciones?: inscripcionesUncheckedUpdateManyWithoutEstudiantesNestedInput
     usuariosEstudiantes?: usuariosEstudiantesUncheckedUpdateOneWithoutEstudiantesNestedInput
   }
@@ -55658,6 +63592,7 @@ export namespace Prisma {
     codigo: string
     beneficiosCursos?: beneficiosCursosCreateNestedManyWithoutCursosInput
     edicionesCursos?: edicionesCursosCreateNestedManyWithoutCursosInput
+    foros?: forosCreateNestedOneWithoutCursosInput
     objetivosCursos?: objetivosCursosCreateNestedManyWithoutCursosInput
     requisitosCursos?: requisitosCursosCreateNestedManyWithoutCursosInput
     reviewsCursos?: reviewsCursosCreateNestedManyWithoutCursosInput
@@ -55677,6 +63612,7 @@ export namespace Prisma {
     codigo: string
     beneficiosCursos?: beneficiosCursosUncheckedCreateNestedManyWithoutCursosInput
     edicionesCursos?: edicionesCursosUncheckedCreateNestedManyWithoutCursosInput
+    foros?: forosUncheckedCreateNestedOneWithoutCursosInput
     objetivosCursos?: objetivosCursosUncheckedCreateNestedManyWithoutCursosInput
     requisitosCursos?: requisitosCursosUncheckedCreateNestedManyWithoutCursosInput
     reviewsCursos?: reviewsCursosUncheckedCreateNestedManyWithoutCursosInput
@@ -55739,6 +63675,7 @@ export namespace Prisma {
     codigo?: StringFieldUpdateOperationsInput | string
     beneficiosCursos?: beneficiosCursosUpdateManyWithoutCursosNestedInput
     edicionesCursos?: edicionesCursosUpdateManyWithoutCursosNestedInput
+    foros?: forosUpdateOneWithoutCursosNestedInput
     objetivosCursos?: objetivosCursosUpdateManyWithoutCursosNestedInput
     requisitosCursos?: requisitosCursosUpdateManyWithoutCursosNestedInput
     reviewsCursos?: reviewsCursosUpdateManyWithoutCursosNestedInput
@@ -55758,6 +63695,7 @@ export namespace Prisma {
     codigo?: StringFieldUpdateOperationsInput | string
     beneficiosCursos?: beneficiosCursosUncheckedUpdateManyWithoutCursosNestedInput
     edicionesCursos?: edicionesCursosUncheckedUpdateManyWithoutCursosNestedInput
+    foros?: forosUncheckedUpdateOneWithoutCursosNestedInput
     objetivosCursos?: objetivosCursosUncheckedUpdateManyWithoutCursosNestedInput
     requisitosCursos?: requisitosCursosUncheckedUpdateManyWithoutCursosNestedInput
     reviewsCursos?: reviewsCursosUncheckedUpdateManyWithoutCursosNestedInput
@@ -55784,6 +63722,7 @@ export namespace Prisma {
     inscripciones?: inscripcionesCreateNestedManyWithoutEdicionesCursosInput
     pagosDocentes?: pagosDocentesCreateNestedOneWithoutEdicionesCursosInput
     preciosCursos?: preciosCursosCreateNestedManyWithoutEdicionesCursosInput
+    tareas?: tareasCreateNestedManyWithoutEdicionesCursosInput
   }
 
   export type edicionesCursosUncheckedCreateWithoutCertificadosInput = {
@@ -55807,6 +63746,7 @@ export namespace Prisma {
     inscripciones?: inscripcionesUncheckedCreateNestedManyWithoutEdicionesCursosInput
     pagosDocentes?: pagosDocentesUncheckedCreateNestedOneWithoutEdicionesCursosInput
     preciosCursos?: preciosCursosUncheckedCreateNestedManyWithoutEdicionesCursosInput
+    tareas?: tareasUncheckedCreateNestedManyWithoutEdicionesCursosInput
   }
 
   export type edicionesCursosCreateOrConnectWithoutCertificadosInput = {
@@ -55826,6 +63766,9 @@ export namespace Prisma {
     actualizadoEn: Date | string
     nroUpdates?: number
     calificaciones?: calificacionesCreateNestedManyWithoutEstudiantesInput
+    entregas?: entregasCreateNestedManyWithoutEstudiantesInput
+    foroComentarios?: foroComentariosCreateNestedManyWithoutEstudiantesInput
+    foroRespuestas?: foroRespuestasCreateNestedManyWithoutEstudiantesInput
     inscripciones?: inscripcionesCreateNestedManyWithoutEstudiantesInput
     usuariosEstudiantes?: usuariosEstudiantesCreateNestedOneWithoutEstudiantesInput
   }
@@ -55842,6 +63785,9 @@ export namespace Prisma {
     actualizadoEn: Date | string
     nroUpdates?: number
     calificaciones?: calificacionesUncheckedCreateNestedManyWithoutEstudiantesInput
+    entregas?: entregasUncheckedCreateNestedManyWithoutEstudiantesInput
+    foroComentarios?: foroComentariosUncheckedCreateNestedManyWithoutEstudiantesInput
+    foroRespuestas?: foroRespuestasUncheckedCreateNestedManyWithoutEstudiantesInput
     inscripciones?: inscripcionesUncheckedCreateNestedManyWithoutEstudiantesInput
     usuariosEstudiantes?: usuariosEstudiantesUncheckedCreateNestedOneWithoutEstudiantesInput
   }
@@ -55883,6 +63829,7 @@ export namespace Prisma {
     inscripciones?: inscripcionesUpdateManyWithoutEdicionesCursosNestedInput
     pagosDocentes?: pagosDocentesUpdateOneWithoutEdicionesCursosNestedInput
     preciosCursos?: preciosCursosUpdateManyWithoutEdicionesCursosNestedInput
+    tareas?: tareasUpdateManyWithoutEdicionesCursosNestedInput
   }
 
   export type edicionesCursosUncheckedUpdateWithoutCertificadosInput = {
@@ -55906,6 +63853,7 @@ export namespace Prisma {
     inscripciones?: inscripcionesUncheckedUpdateManyWithoutEdicionesCursosNestedInput
     pagosDocentes?: pagosDocentesUncheckedUpdateOneWithoutEdicionesCursosNestedInput
     preciosCursos?: preciosCursosUncheckedUpdateManyWithoutEdicionesCursosNestedInput
+    tareas?: tareasUncheckedUpdateManyWithoutEdicionesCursosNestedInput
   }
 
   export type estudiantesUpsertWithoutCertificadosInput = {
@@ -55931,6 +63879,9 @@ export namespace Prisma {
     actualizadoEn?: DateTimeFieldUpdateOperationsInput | Date | string
     nroUpdates?: IntFieldUpdateOperationsInput | number
     calificaciones?: calificacionesUpdateManyWithoutEstudiantesNestedInput
+    entregas?: entregasUpdateManyWithoutEstudiantesNestedInput
+    foroComentarios?: foroComentariosUpdateManyWithoutEstudiantesNestedInput
+    foroRespuestas?: foroRespuestasUpdateManyWithoutEstudiantesNestedInput
     inscripciones?: inscripcionesUpdateManyWithoutEstudiantesNestedInput
     usuariosEstudiantes?: usuariosEstudiantesUpdateOneWithoutEstudiantesNestedInput
   }
@@ -55947,6 +63898,9 @@ export namespace Prisma {
     actualizadoEn?: DateTimeFieldUpdateOperationsInput | Date | string
     nroUpdates?: IntFieldUpdateOperationsInput | number
     calificaciones?: calificacionesUncheckedUpdateManyWithoutEstudiantesNestedInput
+    entregas?: entregasUncheckedUpdateManyWithoutEstudiantesNestedInput
+    foroComentarios?: foroComentariosUncheckedUpdateManyWithoutEstudiantesNestedInput
+    foroRespuestas?: foroRespuestasUncheckedUpdateManyWithoutEstudiantesNestedInput
     inscripciones?: inscripcionesUncheckedUpdateManyWithoutEstudiantesNestedInput
     usuariosEstudiantes?: usuariosEstudiantesUncheckedUpdateOneWithoutEstudiantesNestedInput
   }
@@ -55972,6 +63926,7 @@ export namespace Prisma {
     inscripciones?: inscripcionesCreateNestedManyWithoutEdicionesCursosInput
     pagosDocentes?: pagosDocentesCreateNestedOneWithoutEdicionesCursosInput
     preciosCursos?: preciosCursosCreateNestedManyWithoutEdicionesCursosInput
+    tareas?: tareasCreateNestedManyWithoutEdicionesCursosInput
   }
 
   export type edicionesCursosUncheckedCreateWithoutClasesInput = {
@@ -55995,6 +63950,7 @@ export namespace Prisma {
     inscripciones?: inscripcionesUncheckedCreateNestedManyWithoutEdicionesCursosInput
     pagosDocentes?: pagosDocentesUncheckedCreateNestedOneWithoutEdicionesCursosInput
     preciosCursos?: preciosCursosUncheckedCreateNestedManyWithoutEdicionesCursosInput
+    tareas?: tareasUncheckedCreateNestedManyWithoutEdicionesCursosInput
   }
 
   export type edicionesCursosCreateOrConnectWithoutClasesInput = {
@@ -56088,6 +64044,7 @@ export namespace Prisma {
     inscripciones?: inscripcionesUpdateManyWithoutEdicionesCursosNestedInput
     pagosDocentes?: pagosDocentesUpdateOneWithoutEdicionesCursosNestedInput
     preciosCursos?: preciosCursosUpdateManyWithoutEdicionesCursosNestedInput
+    tareas?: tareasUpdateManyWithoutEdicionesCursosNestedInput
   }
 
   export type edicionesCursosUncheckedUpdateWithoutClasesInput = {
@@ -56111,6 +64068,7 @@ export namespace Prisma {
     inscripciones?: inscripcionesUncheckedUpdateManyWithoutEdicionesCursosNestedInput
     pagosDocentes?: pagosDocentesUncheckedUpdateOneWithoutEdicionesCursosNestedInput
     preciosCursos?: preciosCursosUncheckedUpdateManyWithoutEdicionesCursosNestedInput
+    tareas?: tareasUncheckedUpdateManyWithoutEdicionesCursosNestedInput
   }
 
   export type grabacionesUpsertWithWhereUniqueWithoutClasesInput = {
@@ -56191,6 +64149,7 @@ export namespace Prisma {
     inscripciones?: inscripcionesCreateNestedManyWithoutEdicionesCursosInput
     pagosDocentes?: pagosDocentesCreateNestedOneWithoutEdicionesCursosInput
     preciosCursos?: preciosCursosCreateNestedManyWithoutEdicionesCursosInput
+    tareas?: tareasCreateNestedManyWithoutEdicionesCursosInput
   }
 
   export type edicionesCursosUncheckedCreateWithoutComprasInput = {
@@ -56214,6 +64173,7 @@ export namespace Prisma {
     inscripciones?: inscripcionesUncheckedCreateNestedManyWithoutEdicionesCursosInput
     pagosDocentes?: pagosDocentesUncheckedCreateNestedOneWithoutEdicionesCursosInput
     preciosCursos?: preciosCursosUncheckedCreateNestedManyWithoutEdicionesCursosInput
+    tareas?: tareasUncheckedCreateNestedManyWithoutEdicionesCursosInput
   }
 
   export type edicionesCursosCreateOrConnectWithoutComprasInput = {
@@ -56315,6 +64275,7 @@ export namespace Prisma {
     inscripciones?: inscripcionesUpdateManyWithoutEdicionesCursosNestedInput
     pagosDocentes?: pagosDocentesUpdateOneWithoutEdicionesCursosNestedInput
     preciosCursos?: preciosCursosUpdateManyWithoutEdicionesCursosNestedInput
+    tareas?: tareasUpdateManyWithoutEdicionesCursosNestedInput
   }
 
   export type edicionesCursosUncheckedUpdateWithoutComprasInput = {
@@ -56338,6 +64299,7 @@ export namespace Prisma {
     inscripciones?: inscripcionesUncheckedUpdateManyWithoutEdicionesCursosNestedInput
     pagosDocentes?: pagosDocentesUncheckedUpdateOneWithoutEdicionesCursosNestedInput
     preciosCursos?: preciosCursosUncheckedUpdateManyWithoutEdicionesCursosNestedInput
+    tareas?: tareasUncheckedUpdateManyWithoutEdicionesCursosNestedInput
   }
 
   export type usuariosEstudiantesUpsertWithoutComprasInput = {
@@ -56479,6 +64441,7 @@ export namespace Prisma {
     inscripciones?: inscripcionesCreateNestedManyWithoutEdicionesCursosInput
     pagosDocentes?: pagosDocentesCreateNestedOneWithoutEdicionesCursosInput
     preciosCursos?: preciosCursosCreateNestedManyWithoutEdicionesCursosInput
+    tareas?: tareasCreateNestedManyWithoutEdicionesCursosInput
   }
 
   export type edicionesCursosUncheckedCreateWithoutCursosInput = {
@@ -56502,6 +64465,7 @@ export namespace Prisma {
     inscripciones?: inscripcionesUncheckedCreateNestedManyWithoutEdicionesCursosInput
     pagosDocentes?: pagosDocentesUncheckedCreateNestedOneWithoutEdicionesCursosInput
     preciosCursos?: preciosCursosUncheckedCreateNestedManyWithoutEdicionesCursosInput
+    tareas?: tareasUncheckedCreateNestedManyWithoutEdicionesCursosInput
   }
 
   export type edicionesCursosCreateOrConnectWithoutCursosInput = {
@@ -56512,6 +64476,23 @@ export namespace Prisma {
   export type edicionesCursosCreateManyCursosInputEnvelope = {
     data: edicionesCursosCreateManyCursosInput | edicionesCursosCreateManyCursosInput[]
     skipDuplicates?: boolean
+  }
+
+  export type forosCreateWithoutCursosInput = {
+    id: string
+    creadoEn?: Date | string
+    foroComentarios?: foroComentariosCreateNestedManyWithoutForosInput
+  }
+
+  export type forosUncheckedCreateWithoutCursosInput = {
+    id: string
+    creadoEn?: Date | string
+    foroComentarios?: foroComentariosUncheckedCreateNestedManyWithoutForosInput
+  }
+
+  export type forosCreateOrConnectWithoutCursosInput = {
+    where: forosWhereUniqueInput
+    create: XOR<forosCreateWithoutCursosInput, forosUncheckedCreateWithoutCursosInput>
   }
 
   export type objetivosCursosCreateWithoutCursosInput = {
@@ -56669,6 +64650,29 @@ export namespace Prisma {
     docenteId?: StringNullableFilter<"edicionesCursos"> | string | null
   }
 
+  export type forosUpsertWithoutCursosInput = {
+    update: XOR<forosUpdateWithoutCursosInput, forosUncheckedUpdateWithoutCursosInput>
+    create: XOR<forosCreateWithoutCursosInput, forosUncheckedCreateWithoutCursosInput>
+    where?: forosWhereInput
+  }
+
+  export type forosUpdateToOneWithWhereWithoutCursosInput = {
+    where?: forosWhereInput
+    data: XOR<forosUpdateWithoutCursosInput, forosUncheckedUpdateWithoutCursosInput>
+  }
+
+  export type forosUpdateWithoutCursosInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    creadoEn?: DateTimeFieldUpdateOperationsInput | Date | string
+    foroComentarios?: foroComentariosUpdateManyWithoutForosNestedInput
+  }
+
+  export type forosUncheckedUpdateWithoutCursosInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    creadoEn?: DateTimeFieldUpdateOperationsInput | Date | string
+    foroComentarios?: foroComentariosUncheckedUpdateManyWithoutForosNestedInput
+  }
+
   export type objetivosCursosUpsertWithWhereUniqueWithoutCursosInput = {
     where: objetivosCursosWhereUniqueInput
     update: XOR<objetivosCursosUpdateWithoutCursosInput, objetivosCursosUncheckedUpdateWithoutCursosInput>
@@ -56804,6 +64808,7 @@ export namespace Prisma {
     inscripciones?: inscripcionesCreateNestedManyWithoutEdicionesCursosInput
     pagosDocentes?: pagosDocentesCreateNestedOneWithoutEdicionesCursosInput
     preciosCursos?: preciosCursosCreateNestedManyWithoutEdicionesCursosInput
+    tareas?: tareasCreateNestedManyWithoutEdicionesCursosInput
   }
 
   export type edicionesCursosUncheckedCreateWithoutDocenteInput = {
@@ -56827,6 +64832,7 @@ export namespace Prisma {
     inscripciones?: inscripcionesUncheckedCreateNestedManyWithoutEdicionesCursosInput
     pagosDocentes?: pagosDocentesUncheckedCreateNestedOneWithoutEdicionesCursosInput
     preciosCursos?: preciosCursosUncheckedCreateNestedManyWithoutEdicionesCursosInput
+    tareas?: tareasUncheckedCreateNestedManyWithoutEdicionesCursosInput
   }
 
   export type edicionesCursosCreateOrConnectWithoutDocenteInput = {
@@ -57081,6 +65087,7 @@ export namespace Prisma {
     codigo: string
     beneficiosCursos?: beneficiosCursosCreateNestedManyWithoutCursosInput
     categoriasCursos?: categoriasCursosCreateNestedManyWithoutCursosInput
+    foros?: forosCreateNestedOneWithoutCursosInput
     objetivosCursos?: objetivosCursosCreateNestedManyWithoutCursosInput
     requisitosCursos?: requisitosCursosCreateNestedManyWithoutCursosInput
     reviewsCursos?: reviewsCursosCreateNestedManyWithoutCursosInput
@@ -57100,6 +65107,7 @@ export namespace Prisma {
     codigo: string
     beneficiosCursos?: beneficiosCursosUncheckedCreateNestedManyWithoutCursosInput
     categoriasCursos?: categoriasCursosUncheckedCreateNestedManyWithoutCursosInput
+    foros?: forosUncheckedCreateNestedOneWithoutCursosInput
     objetivosCursos?: objetivosCursosUncheckedCreateNestedManyWithoutCursosInput
     requisitosCursos?: requisitosCursosUncheckedCreateNestedManyWithoutCursosInput
     reviewsCursos?: reviewsCursosUncheckedCreateNestedManyWithoutCursosInput
@@ -57268,6 +65276,44 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type tareasCreateWithoutEdicionesCursosInput = {
+    id: string
+    titulo: string
+    descripcion?: string | null
+    fechaApertura?: Date | string
+    fechaLimite: Date | string
+    notaMaxima?: number
+    estado?: $Enums.TareaEstado
+    creadoEn?: Date | string
+    actualizadoEn: Date | string
+    recurso?: string | null
+    entregas?: entregasCreateNestedManyWithoutTareasInput
+  }
+
+  export type tareasUncheckedCreateWithoutEdicionesCursosInput = {
+    id: string
+    titulo: string
+    descripcion?: string | null
+    fechaApertura?: Date | string
+    fechaLimite: Date | string
+    notaMaxima?: number
+    estado?: $Enums.TareaEstado
+    creadoEn?: Date | string
+    actualizadoEn: Date | string
+    recurso?: string | null
+    entregas?: entregasUncheckedCreateNestedManyWithoutTareasInput
+  }
+
+  export type tareasCreateOrConnectWithoutEdicionesCursosInput = {
+    where: tareasWhereUniqueInput
+    create: XOR<tareasCreateWithoutEdicionesCursosInput, tareasUncheckedCreateWithoutEdicionesCursosInput>
+  }
+
+  export type tareasCreateManyEdicionesCursosInputEnvelope = {
+    data: tareasCreateManyEdicionesCursosInput | tareasCreateManyEdicionesCursosInput[]
+    skipDuplicates?: boolean
+  }
+
   export type certificadosUpsertWithWhereUniqueWithoutEdicionesCursosInput = {
     where: certificadosWhereUniqueInput
     update: XOR<certificadosUpdateWithoutEdicionesCursosInput, certificadosUncheckedUpdateWithoutEdicionesCursosInput>
@@ -57391,6 +65437,7 @@ export namespace Prisma {
     codigo?: StringFieldUpdateOperationsInput | string
     beneficiosCursos?: beneficiosCursosUpdateManyWithoutCursosNestedInput
     categoriasCursos?: categoriasCursosUpdateManyWithoutCursosNestedInput
+    foros?: forosUpdateOneWithoutCursosNestedInput
     objetivosCursos?: objetivosCursosUpdateManyWithoutCursosNestedInput
     requisitosCursos?: requisitosCursosUpdateManyWithoutCursosNestedInput
     reviewsCursos?: reviewsCursosUpdateManyWithoutCursosNestedInput
@@ -57410,6 +65457,7 @@ export namespace Prisma {
     codigo?: StringFieldUpdateOperationsInput | string
     beneficiosCursos?: beneficiosCursosUncheckedUpdateManyWithoutCursosNestedInput
     categoriasCursos?: categoriasCursosUncheckedUpdateManyWithoutCursosNestedInput
+    foros?: forosUncheckedUpdateOneWithoutCursosNestedInput
     objetivosCursos?: objetivosCursosUncheckedUpdateManyWithoutCursosNestedInput
     requisitosCursos?: requisitosCursosUncheckedUpdateManyWithoutCursosNestedInput
     reviewsCursos?: reviewsCursosUncheckedUpdateManyWithoutCursosNestedInput
@@ -57579,6 +65627,39 @@ export namespace Prisma {
     actualizadoEn?: DateTimeFilter<"preciosCursos"> | Date | string
   }
 
+  export type tareasUpsertWithWhereUniqueWithoutEdicionesCursosInput = {
+    where: tareasWhereUniqueInput
+    update: XOR<tareasUpdateWithoutEdicionesCursosInput, tareasUncheckedUpdateWithoutEdicionesCursosInput>
+    create: XOR<tareasCreateWithoutEdicionesCursosInput, tareasUncheckedCreateWithoutEdicionesCursosInput>
+  }
+
+  export type tareasUpdateWithWhereUniqueWithoutEdicionesCursosInput = {
+    where: tareasWhereUniqueInput
+    data: XOR<tareasUpdateWithoutEdicionesCursosInput, tareasUncheckedUpdateWithoutEdicionesCursosInput>
+  }
+
+  export type tareasUpdateManyWithWhereWithoutEdicionesCursosInput = {
+    where: tareasScalarWhereInput
+    data: XOR<tareasUpdateManyMutationInput, tareasUncheckedUpdateManyWithoutEdicionesCursosInput>
+  }
+
+  export type tareasScalarWhereInput = {
+    AND?: tareasScalarWhereInput | tareasScalarWhereInput[]
+    OR?: tareasScalarWhereInput[]
+    NOT?: tareasScalarWhereInput | tareasScalarWhereInput[]
+    id?: StringFilter<"tareas"> | string
+    edicionId?: StringFilter<"tareas"> | string
+    titulo?: StringFilter<"tareas"> | string
+    descripcion?: StringNullableFilter<"tareas"> | string | null
+    fechaApertura?: DateTimeFilter<"tareas"> | Date | string
+    fechaLimite?: DateTimeFilter<"tareas"> | Date | string
+    notaMaxima?: FloatFilter<"tareas"> | number
+    estado?: EnumTareaEstadoFilter<"tareas"> | $Enums.TareaEstado
+    creadoEn?: DateTimeFilter<"tareas"> | Date | string
+    actualizadoEn?: DateTimeFilter<"tareas"> | Date | string
+    recurso?: StringNullableFilter<"tareas"> | string | null
+  }
+
   export type calificacionesCreateWithoutEstudiantesInput = {
     id?: string
     aprobado?: boolean
@@ -57636,6 +65717,92 @@ export namespace Prisma {
 
   export type certificadosCreateManyEstudiantesInputEnvelope = {
     data: certificadosCreateManyEstudiantesInput | certificadosCreateManyEstudiantesInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type entregasCreateWithoutEstudiantesInput = {
+    id: string
+    archivos?: NullableJsonNullValueInput | InputJsonValue
+    comentarioAlumno?: string | null
+    fechaEntrega?: Date | string
+    nota?: number | null
+    retroalimentacion?: string | null
+    estado?: $Enums.EntregaEstado
+    calificadoEn?: Date | string | null
+    calificadoPorId?: string | null
+    tareas: tareasCreateNestedOneWithoutEntregasInput
+  }
+
+  export type entregasUncheckedCreateWithoutEstudiantesInput = {
+    id: string
+    tareaId: string
+    archivos?: NullableJsonNullValueInput | InputJsonValue
+    comentarioAlumno?: string | null
+    fechaEntrega?: Date | string
+    nota?: number | null
+    retroalimentacion?: string | null
+    estado?: $Enums.EntregaEstado
+    calificadoEn?: Date | string | null
+    calificadoPorId?: string | null
+  }
+
+  export type entregasCreateOrConnectWithoutEstudiantesInput = {
+    where: entregasWhereUniqueInput
+    create: XOR<entregasCreateWithoutEstudiantesInput, entregasUncheckedCreateWithoutEstudiantesInput>
+  }
+
+  export type entregasCreateManyEstudiantesInputEnvelope = {
+    data: entregasCreateManyEstudiantesInput | entregasCreateManyEstudiantesInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type foroComentariosCreateWithoutEstudiantesInput = {
+    id: string
+    contenido: string
+    creadoEn?: Date | string
+    foros: forosCreateNestedOneWithoutForoComentariosInput
+    foroRespuestas?: foroRespuestasCreateNestedManyWithoutForoComentariosInput
+  }
+
+  export type foroComentariosUncheckedCreateWithoutEstudiantesInput = {
+    id: string
+    foroId: string
+    contenido: string
+    creadoEn?: Date | string
+    foroRespuestas?: foroRespuestasUncheckedCreateNestedManyWithoutForoComentariosInput
+  }
+
+  export type foroComentariosCreateOrConnectWithoutEstudiantesInput = {
+    where: foroComentariosWhereUniqueInput
+    create: XOR<foroComentariosCreateWithoutEstudiantesInput, foroComentariosUncheckedCreateWithoutEstudiantesInput>
+  }
+
+  export type foroComentariosCreateManyEstudiantesInputEnvelope = {
+    data: foroComentariosCreateManyEstudiantesInput | foroComentariosCreateManyEstudiantesInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type foroRespuestasCreateWithoutEstudiantesInput = {
+    id: string
+    contenido: string
+    creadoEn?: Date | string
+    foroComentarios: foroComentariosCreateNestedOneWithoutForoRespuestasInput
+  }
+
+  export type foroRespuestasUncheckedCreateWithoutEstudiantesInput = {
+    id: string
+    comentarioId: string
+    contenido: string
+    creadoEn?: Date | string
+  }
+
+  export type foroRespuestasCreateOrConnectWithoutEstudiantesInput = {
+    where: foroRespuestasWhereUniqueInput
+    create: XOR<foroRespuestasCreateWithoutEstudiantesInput, foroRespuestasUncheckedCreateWithoutEstudiantesInput>
+  }
+
+  export type foroRespuestasCreateManyEstudiantesInputEnvelope = {
+    data: foroRespuestasCreateManyEstudiantesInput | foroRespuestasCreateManyEstudiantesInput[]
     skipDuplicates?: boolean
   }
 
@@ -57749,6 +65916,93 @@ export namespace Prisma {
   export type certificadosUpdateManyWithWhereWithoutEstudiantesInput = {
     where: certificadosScalarWhereInput
     data: XOR<certificadosUpdateManyMutationInput, certificadosUncheckedUpdateManyWithoutEstudiantesInput>
+  }
+
+  export type entregasUpsertWithWhereUniqueWithoutEstudiantesInput = {
+    where: entregasWhereUniqueInput
+    update: XOR<entregasUpdateWithoutEstudiantesInput, entregasUncheckedUpdateWithoutEstudiantesInput>
+    create: XOR<entregasCreateWithoutEstudiantesInput, entregasUncheckedCreateWithoutEstudiantesInput>
+  }
+
+  export type entregasUpdateWithWhereUniqueWithoutEstudiantesInput = {
+    where: entregasWhereUniqueInput
+    data: XOR<entregasUpdateWithoutEstudiantesInput, entregasUncheckedUpdateWithoutEstudiantesInput>
+  }
+
+  export type entregasUpdateManyWithWhereWithoutEstudiantesInput = {
+    where: entregasScalarWhereInput
+    data: XOR<entregasUpdateManyMutationInput, entregasUncheckedUpdateManyWithoutEstudiantesInput>
+  }
+
+  export type entregasScalarWhereInput = {
+    AND?: entregasScalarWhereInput | entregasScalarWhereInput[]
+    OR?: entregasScalarWhereInput[]
+    NOT?: entregasScalarWhereInput | entregasScalarWhereInput[]
+    id?: StringFilter<"entregas"> | string
+    tareaId?: StringFilter<"entregas"> | string
+    estudianteId?: StringFilter<"entregas"> | string
+    archivos?: JsonNullableFilter<"entregas">
+    comentarioAlumno?: StringNullableFilter<"entregas"> | string | null
+    fechaEntrega?: DateTimeFilter<"entregas"> | Date | string
+    nota?: FloatNullableFilter<"entregas"> | number | null
+    retroalimentacion?: StringNullableFilter<"entregas"> | string | null
+    estado?: EnumEntregaEstadoFilter<"entregas"> | $Enums.EntregaEstado
+    calificadoEn?: DateTimeNullableFilter<"entregas"> | Date | string | null
+    calificadoPorId?: StringNullableFilter<"entregas"> | string | null
+  }
+
+  export type foroComentariosUpsertWithWhereUniqueWithoutEstudiantesInput = {
+    where: foroComentariosWhereUniqueInput
+    update: XOR<foroComentariosUpdateWithoutEstudiantesInput, foroComentariosUncheckedUpdateWithoutEstudiantesInput>
+    create: XOR<foroComentariosCreateWithoutEstudiantesInput, foroComentariosUncheckedCreateWithoutEstudiantesInput>
+  }
+
+  export type foroComentariosUpdateWithWhereUniqueWithoutEstudiantesInput = {
+    where: foroComentariosWhereUniqueInput
+    data: XOR<foroComentariosUpdateWithoutEstudiantesInput, foroComentariosUncheckedUpdateWithoutEstudiantesInput>
+  }
+
+  export type foroComentariosUpdateManyWithWhereWithoutEstudiantesInput = {
+    where: foroComentariosScalarWhereInput
+    data: XOR<foroComentariosUpdateManyMutationInput, foroComentariosUncheckedUpdateManyWithoutEstudiantesInput>
+  }
+
+  export type foroComentariosScalarWhereInput = {
+    AND?: foroComentariosScalarWhereInput | foroComentariosScalarWhereInput[]
+    OR?: foroComentariosScalarWhereInput[]
+    NOT?: foroComentariosScalarWhereInput | foroComentariosScalarWhereInput[]
+    id?: StringFilter<"foroComentarios"> | string
+    foroId?: StringFilter<"foroComentarios"> | string
+    estudianteId?: StringFilter<"foroComentarios"> | string
+    contenido?: StringFilter<"foroComentarios"> | string
+    creadoEn?: DateTimeFilter<"foroComentarios"> | Date | string
+  }
+
+  export type foroRespuestasUpsertWithWhereUniqueWithoutEstudiantesInput = {
+    where: foroRespuestasWhereUniqueInput
+    update: XOR<foroRespuestasUpdateWithoutEstudiantesInput, foroRespuestasUncheckedUpdateWithoutEstudiantesInput>
+    create: XOR<foroRespuestasCreateWithoutEstudiantesInput, foroRespuestasUncheckedCreateWithoutEstudiantesInput>
+  }
+
+  export type foroRespuestasUpdateWithWhereUniqueWithoutEstudiantesInput = {
+    where: foroRespuestasWhereUniqueInput
+    data: XOR<foroRespuestasUpdateWithoutEstudiantesInput, foroRespuestasUncheckedUpdateWithoutEstudiantesInput>
+  }
+
+  export type foroRespuestasUpdateManyWithWhereWithoutEstudiantesInput = {
+    where: foroRespuestasScalarWhereInput
+    data: XOR<foroRespuestasUpdateManyMutationInput, foroRespuestasUncheckedUpdateManyWithoutEstudiantesInput>
+  }
+
+  export type foroRespuestasScalarWhereInput = {
+    AND?: foroRespuestasScalarWhereInput | foroRespuestasScalarWhereInput[]
+    OR?: foroRespuestasScalarWhereInput[]
+    NOT?: foroRespuestasScalarWhereInput | foroRespuestasScalarWhereInput[]
+    id?: StringFilter<"foroRespuestas"> | string
+    comentarioId?: StringFilter<"foroRespuestas"> | string
+    estudianteId?: StringFilter<"foroRespuestas"> | string
+    contenido?: StringFilter<"foroRespuestas"> | string
+    creadoEn?: DateTimeFilter<"foroRespuestas"> | Date | string
   }
 
   export type inscripcionesUpsertWithWhereUniqueWithoutEstudiantesInput = {
@@ -58021,6 +66275,7 @@ export namespace Prisma {
     inscripciones?: inscripcionesCreateNestedManyWithoutEdicionesCursosInput
     pagosDocentes?: pagosDocentesCreateNestedOneWithoutEdicionesCursosInput
     preciosCursos?: preciosCursosCreateNestedManyWithoutEdicionesCursosInput
+    tareas?: tareasCreateNestedManyWithoutEdicionesCursosInput
   }
 
   export type edicionesCursosUncheckedCreateWithoutExamenesInput = {
@@ -58044,6 +66299,7 @@ export namespace Prisma {
     inscripciones?: inscripcionesUncheckedCreateNestedManyWithoutEdicionesCursosInput
     pagosDocentes?: pagosDocentesUncheckedCreateNestedOneWithoutEdicionesCursosInput
     preciosCursos?: preciosCursosUncheckedCreateNestedManyWithoutEdicionesCursosInput
+    tareas?: tareasUncheckedCreateNestedManyWithoutEdicionesCursosInput
   }
 
   export type edicionesCursosCreateOrConnectWithoutExamenesInput = {
@@ -58099,6 +66355,7 @@ export namespace Prisma {
     inscripciones?: inscripcionesUpdateManyWithoutEdicionesCursosNestedInput
     pagosDocentes?: pagosDocentesUpdateOneWithoutEdicionesCursosNestedInput
     preciosCursos?: preciosCursosUpdateManyWithoutEdicionesCursosNestedInput
+    tareas?: tareasUpdateManyWithoutEdicionesCursosNestedInput
   }
 
   export type edicionesCursosUncheckedUpdateWithoutExamenesInput = {
@@ -58122,6 +66379,7 @@ export namespace Prisma {
     inscripciones?: inscripcionesUncheckedUpdateManyWithoutEdicionesCursosNestedInput
     pagosDocentes?: pagosDocentesUncheckedUpdateOneWithoutEdicionesCursosNestedInput
     preciosCursos?: preciosCursosUncheckedUpdateManyWithoutEdicionesCursosNestedInput
+    tareas?: tareasUncheckedUpdateManyWithoutEdicionesCursosNestedInput
   }
 
   export type clasesCreateWithoutGrabacionesInput = {
@@ -58322,6 +66580,7 @@ export namespace Prisma {
     examenes?: examenesCreateNestedManyWithoutEdicionesCursosInput
     pagosDocentes?: pagosDocentesCreateNestedOneWithoutEdicionesCursosInput
     preciosCursos?: preciosCursosCreateNestedManyWithoutEdicionesCursosInput
+    tareas?: tareasCreateNestedManyWithoutEdicionesCursosInput
   }
 
   export type edicionesCursosUncheckedCreateWithoutInscripcionesInput = {
@@ -58345,6 +66604,7 @@ export namespace Prisma {
     examenes?: examenesUncheckedCreateNestedManyWithoutEdicionesCursosInput
     pagosDocentes?: pagosDocentesUncheckedCreateNestedOneWithoutEdicionesCursosInput
     preciosCursos?: preciosCursosUncheckedCreateNestedManyWithoutEdicionesCursosInput
+    tareas?: tareasUncheckedCreateNestedManyWithoutEdicionesCursosInput
   }
 
   export type edicionesCursosCreateOrConnectWithoutInscripcionesInput = {
@@ -58365,6 +66625,9 @@ export namespace Prisma {
     nroUpdates?: number
     calificaciones?: calificacionesCreateNestedManyWithoutEstudiantesInput
     certificados?: certificadosCreateNestedManyWithoutEstudiantesInput
+    entregas?: entregasCreateNestedManyWithoutEstudiantesInput
+    foroComentarios?: foroComentariosCreateNestedManyWithoutEstudiantesInput
+    foroRespuestas?: foroRespuestasCreateNestedManyWithoutEstudiantesInput
     usuariosEstudiantes?: usuariosEstudiantesCreateNestedOneWithoutEstudiantesInput
   }
 
@@ -58381,6 +66644,9 @@ export namespace Prisma {
     nroUpdates?: number
     calificaciones?: calificacionesUncheckedCreateNestedManyWithoutEstudiantesInput
     certificados?: certificadosUncheckedCreateNestedManyWithoutEstudiantesInput
+    entregas?: entregasUncheckedCreateNestedManyWithoutEstudiantesInput
+    foroComentarios?: foroComentariosUncheckedCreateNestedManyWithoutEstudiantesInput
+    foroRespuestas?: foroRespuestasUncheckedCreateNestedManyWithoutEstudiantesInput
     usuariosEstudiantes?: usuariosEstudiantesUncheckedCreateNestedOneWithoutEstudiantesInput
   }
 
@@ -58464,6 +66730,7 @@ export namespace Prisma {
     examenes?: examenesUpdateManyWithoutEdicionesCursosNestedInput
     pagosDocentes?: pagosDocentesUpdateOneWithoutEdicionesCursosNestedInput
     preciosCursos?: preciosCursosUpdateManyWithoutEdicionesCursosNestedInput
+    tareas?: tareasUpdateManyWithoutEdicionesCursosNestedInput
   }
 
   export type edicionesCursosUncheckedUpdateWithoutInscripcionesInput = {
@@ -58487,6 +66754,7 @@ export namespace Prisma {
     examenes?: examenesUncheckedUpdateManyWithoutEdicionesCursosNestedInput
     pagosDocentes?: pagosDocentesUncheckedUpdateOneWithoutEdicionesCursosNestedInput
     preciosCursos?: preciosCursosUncheckedUpdateManyWithoutEdicionesCursosNestedInput
+    tareas?: tareasUncheckedUpdateManyWithoutEdicionesCursosNestedInput
   }
 
   export type estudiantesUpsertWithoutInscripcionesInput = {
@@ -58513,6 +66781,9 @@ export namespace Prisma {
     nroUpdates?: IntFieldUpdateOperationsInput | number
     calificaciones?: calificacionesUpdateManyWithoutEstudiantesNestedInput
     certificados?: certificadosUpdateManyWithoutEstudiantesNestedInput
+    entregas?: entregasUpdateManyWithoutEstudiantesNestedInput
+    foroComentarios?: foroComentariosUpdateManyWithoutEstudiantesNestedInput
+    foroRespuestas?: foroRespuestasUpdateManyWithoutEstudiantesNestedInput
     usuariosEstudiantes?: usuariosEstudiantesUpdateOneWithoutEstudiantesNestedInput
   }
 
@@ -58529,6 +66800,9 @@ export namespace Prisma {
     nroUpdates?: IntFieldUpdateOperationsInput | number
     calificaciones?: calificacionesUncheckedUpdateManyWithoutEstudiantesNestedInput
     certificados?: certificadosUncheckedUpdateManyWithoutEstudiantesNestedInput
+    entregas?: entregasUncheckedUpdateManyWithoutEstudiantesNestedInput
+    foroComentarios?: foroComentariosUncheckedUpdateManyWithoutEstudiantesNestedInput
+    foroRespuestas?: foroRespuestasUncheckedUpdateManyWithoutEstudiantesNestedInput
     usuariosEstudiantes?: usuariosEstudiantesUncheckedUpdateOneWithoutEstudiantesNestedInput
   }
 
@@ -58619,6 +66893,7 @@ export namespace Prisma {
     beneficiosCursos?: beneficiosCursosCreateNestedManyWithoutCursosInput
     categoriasCursos?: categoriasCursosCreateNestedManyWithoutCursosInput
     edicionesCursos?: edicionesCursosCreateNestedManyWithoutCursosInput
+    foros?: forosCreateNestedOneWithoutCursosInput
     requisitosCursos?: requisitosCursosCreateNestedManyWithoutCursosInput
     reviewsCursos?: reviewsCursosCreateNestedManyWithoutCursosInput
   }
@@ -58638,6 +66913,7 @@ export namespace Prisma {
     beneficiosCursos?: beneficiosCursosUncheckedCreateNestedManyWithoutCursosInput
     categoriasCursos?: categoriasCursosUncheckedCreateNestedManyWithoutCursosInput
     edicionesCursos?: edicionesCursosUncheckedCreateNestedManyWithoutCursosInput
+    foros?: forosUncheckedCreateNestedOneWithoutCursosInput
     requisitosCursos?: requisitosCursosUncheckedCreateNestedManyWithoutCursosInput
     reviewsCursos?: reviewsCursosUncheckedCreateNestedManyWithoutCursosInput
   }
@@ -58673,6 +66949,7 @@ export namespace Prisma {
     beneficiosCursos?: beneficiosCursosUpdateManyWithoutCursosNestedInput
     categoriasCursos?: categoriasCursosUpdateManyWithoutCursosNestedInput
     edicionesCursos?: edicionesCursosUpdateManyWithoutCursosNestedInput
+    foros?: forosUpdateOneWithoutCursosNestedInput
     requisitosCursos?: requisitosCursosUpdateManyWithoutCursosNestedInput
     reviewsCursos?: reviewsCursosUpdateManyWithoutCursosNestedInput
   }
@@ -58692,6 +66969,7 @@ export namespace Prisma {
     beneficiosCursos?: beneficiosCursosUncheckedUpdateManyWithoutCursosNestedInput
     categoriasCursos?: categoriasCursosUncheckedUpdateManyWithoutCursosNestedInput
     edicionesCursos?: edicionesCursosUncheckedUpdateManyWithoutCursosNestedInput
+    foros?: forosUncheckedUpdateOneWithoutCursosNestedInput
     requisitosCursos?: requisitosCursosUncheckedUpdateManyWithoutCursosNestedInput
     reviewsCursos?: reviewsCursosUncheckedUpdateManyWithoutCursosNestedInput
   }
@@ -58748,6 +67026,7 @@ export namespace Prisma {
     examenes?: examenesCreateNestedManyWithoutEdicionesCursosInput
     inscripciones?: inscripcionesCreateNestedManyWithoutEdicionesCursosInput
     preciosCursos?: preciosCursosCreateNestedManyWithoutEdicionesCursosInput
+    tareas?: tareasCreateNestedManyWithoutEdicionesCursosInput
   }
 
   export type edicionesCursosUncheckedCreateWithoutPagosDocentesInput = {
@@ -58771,6 +67050,7 @@ export namespace Prisma {
     examenes?: examenesUncheckedCreateNestedManyWithoutEdicionesCursosInput
     inscripciones?: inscripcionesUncheckedCreateNestedManyWithoutEdicionesCursosInput
     preciosCursos?: preciosCursosUncheckedCreateNestedManyWithoutEdicionesCursosInput
+    tareas?: tareasUncheckedCreateNestedManyWithoutEdicionesCursosInput
   }
 
   export type edicionesCursosCreateOrConnectWithoutPagosDocentesInput = {
@@ -58847,6 +67127,7 @@ export namespace Prisma {
     examenes?: examenesUpdateManyWithoutEdicionesCursosNestedInput
     inscripciones?: inscripcionesUpdateManyWithoutEdicionesCursosNestedInput
     preciosCursos?: preciosCursosUpdateManyWithoutEdicionesCursosNestedInput
+    tareas?: tareasUpdateManyWithoutEdicionesCursosNestedInput
   }
 
   export type edicionesCursosUncheckedUpdateWithoutPagosDocentesInput = {
@@ -58870,6 +67151,7 @@ export namespace Prisma {
     examenes?: examenesUncheckedUpdateManyWithoutEdicionesCursosNestedInput
     inscripciones?: inscripcionesUncheckedUpdateManyWithoutEdicionesCursosNestedInput
     preciosCursos?: preciosCursosUncheckedUpdateManyWithoutEdicionesCursosNestedInput
+    tareas?: tareasUncheckedUpdateManyWithoutEdicionesCursosNestedInput
   }
 
   export type edicionesCursosCreateWithoutPreciosCursosInput = {
@@ -58893,6 +67175,7 @@ export namespace Prisma {
     examenes?: examenesCreateNestedManyWithoutEdicionesCursosInput
     inscripciones?: inscripcionesCreateNestedManyWithoutEdicionesCursosInput
     pagosDocentes?: pagosDocentesCreateNestedOneWithoutEdicionesCursosInput
+    tareas?: tareasCreateNestedManyWithoutEdicionesCursosInput
   }
 
   export type edicionesCursosUncheckedCreateWithoutPreciosCursosInput = {
@@ -58916,6 +67199,7 @@ export namespace Prisma {
     examenes?: examenesUncheckedCreateNestedManyWithoutEdicionesCursosInput
     inscripciones?: inscripcionesUncheckedCreateNestedManyWithoutEdicionesCursosInput
     pagosDocentes?: pagosDocentesUncheckedCreateNestedOneWithoutEdicionesCursosInput
+    tareas?: tareasUncheckedCreateNestedManyWithoutEdicionesCursosInput
   }
 
   export type edicionesCursosCreateOrConnectWithoutPreciosCursosInput = {
@@ -58955,6 +67239,7 @@ export namespace Prisma {
     examenes?: examenesUpdateManyWithoutEdicionesCursosNestedInput
     inscripciones?: inscripcionesUpdateManyWithoutEdicionesCursosNestedInput
     pagosDocentes?: pagosDocentesUpdateOneWithoutEdicionesCursosNestedInput
+    tareas?: tareasUpdateManyWithoutEdicionesCursosNestedInput
   }
 
   export type edicionesCursosUncheckedUpdateWithoutPreciosCursosInput = {
@@ -58978,6 +67263,7 @@ export namespace Prisma {
     examenes?: examenesUncheckedUpdateManyWithoutEdicionesCursosNestedInput
     inscripciones?: inscripcionesUncheckedUpdateManyWithoutEdicionesCursosNestedInput
     pagosDocentes?: pagosDocentesUncheckedUpdateOneWithoutEdicionesCursosNestedInput
+    tareas?: tareasUncheckedUpdateManyWithoutEdicionesCursosNestedInput
   }
 
   export type reaccionesPreguntasCreateWithoutPreguntaInput = {
@@ -59612,6 +67898,7 @@ export namespace Prisma {
     beneficiosCursos?: beneficiosCursosCreateNestedManyWithoutCursosInput
     categoriasCursos?: categoriasCursosCreateNestedManyWithoutCursosInput
     edicionesCursos?: edicionesCursosCreateNestedManyWithoutCursosInput
+    foros?: forosCreateNestedOneWithoutCursosInput
     objetivosCursos?: objetivosCursosCreateNestedManyWithoutCursosInput
     reviewsCursos?: reviewsCursosCreateNestedManyWithoutCursosInput
   }
@@ -59631,6 +67918,7 @@ export namespace Prisma {
     beneficiosCursos?: beneficiosCursosUncheckedCreateNestedManyWithoutCursosInput
     categoriasCursos?: categoriasCursosUncheckedCreateNestedManyWithoutCursosInput
     edicionesCursos?: edicionesCursosUncheckedCreateNestedManyWithoutCursosInput
+    foros?: forosUncheckedCreateNestedOneWithoutCursosInput
     objetivosCursos?: objetivosCursosUncheckedCreateNestedManyWithoutCursosInput
     reviewsCursos?: reviewsCursosUncheckedCreateNestedManyWithoutCursosInput
   }
@@ -59666,6 +67954,7 @@ export namespace Prisma {
     beneficiosCursos?: beneficiosCursosUpdateManyWithoutCursosNestedInput
     categoriasCursos?: categoriasCursosUpdateManyWithoutCursosNestedInput
     edicionesCursos?: edicionesCursosUpdateManyWithoutCursosNestedInput
+    foros?: forosUpdateOneWithoutCursosNestedInput
     objetivosCursos?: objetivosCursosUpdateManyWithoutCursosNestedInput
     reviewsCursos?: reviewsCursosUpdateManyWithoutCursosNestedInput
   }
@@ -59685,6 +67974,7 @@ export namespace Prisma {
     beneficiosCursos?: beneficiosCursosUncheckedUpdateManyWithoutCursosNestedInput
     categoriasCursos?: categoriasCursosUncheckedUpdateManyWithoutCursosNestedInput
     edicionesCursos?: edicionesCursosUncheckedUpdateManyWithoutCursosNestedInput
+    foros?: forosUncheckedUpdateOneWithoutCursosNestedInput
     objetivosCursos?: objetivosCursosUncheckedUpdateManyWithoutCursosNestedInput
     reviewsCursos?: reviewsCursosUncheckedUpdateManyWithoutCursosNestedInput
   }
@@ -59704,6 +67994,7 @@ export namespace Prisma {
     beneficiosCursos?: beneficiosCursosCreateNestedManyWithoutCursosInput
     categoriasCursos?: categoriasCursosCreateNestedManyWithoutCursosInput
     edicionesCursos?: edicionesCursosCreateNestedManyWithoutCursosInput
+    foros?: forosCreateNestedOneWithoutCursosInput
     objetivosCursos?: objetivosCursosCreateNestedManyWithoutCursosInput
     requisitosCursos?: requisitosCursosCreateNestedManyWithoutCursosInput
   }
@@ -59723,6 +68014,7 @@ export namespace Prisma {
     beneficiosCursos?: beneficiosCursosUncheckedCreateNestedManyWithoutCursosInput
     categoriasCursos?: categoriasCursosUncheckedCreateNestedManyWithoutCursosInput
     edicionesCursos?: edicionesCursosUncheckedCreateNestedManyWithoutCursosInput
+    foros?: forosUncheckedCreateNestedOneWithoutCursosInput
     objetivosCursos?: objetivosCursosUncheckedCreateNestedManyWithoutCursosInput
     requisitosCursos?: requisitosCursosUncheckedCreateNestedManyWithoutCursosInput
   }
@@ -59799,6 +68091,7 @@ export namespace Prisma {
     beneficiosCursos?: beneficiosCursosUpdateManyWithoutCursosNestedInput
     categoriasCursos?: categoriasCursosUpdateManyWithoutCursosNestedInput
     edicionesCursos?: edicionesCursosUpdateManyWithoutCursosNestedInput
+    foros?: forosUpdateOneWithoutCursosNestedInput
     objetivosCursos?: objetivosCursosUpdateManyWithoutCursosNestedInput
     requisitosCursos?: requisitosCursosUpdateManyWithoutCursosNestedInput
   }
@@ -59818,6 +68111,7 @@ export namespace Prisma {
     beneficiosCursos?: beneficiosCursosUncheckedUpdateManyWithoutCursosNestedInput
     categoriasCursos?: categoriasCursosUncheckedUpdateManyWithoutCursosNestedInput
     edicionesCursos?: edicionesCursosUncheckedUpdateManyWithoutCursosNestedInput
+    foros?: forosUncheckedUpdateOneWithoutCursosNestedInput
     objetivosCursos?: objetivosCursosUncheckedUpdateManyWithoutCursosNestedInput
     requisitosCursos?: requisitosCursosUncheckedUpdateManyWithoutCursosNestedInput
   }
@@ -60237,6 +68531,9 @@ export namespace Prisma {
     nroUpdates?: number
     calificaciones?: calificacionesCreateNestedManyWithoutEstudiantesInput
     certificados?: certificadosCreateNestedManyWithoutEstudiantesInput
+    entregas?: entregasCreateNestedManyWithoutEstudiantesInput
+    foroComentarios?: foroComentariosCreateNestedManyWithoutEstudiantesInput
+    foroRespuestas?: foroRespuestasCreateNestedManyWithoutEstudiantesInput
     inscripciones?: inscripcionesCreateNestedManyWithoutEstudiantesInput
   }
 
@@ -60253,6 +68550,9 @@ export namespace Prisma {
     nroUpdates?: number
     calificaciones?: calificacionesUncheckedCreateNestedManyWithoutEstudiantesInput
     certificados?: certificadosUncheckedCreateNestedManyWithoutEstudiantesInput
+    entregas?: entregasUncheckedCreateNestedManyWithoutEstudiantesInput
+    foroComentarios?: foroComentariosUncheckedCreateNestedManyWithoutEstudiantesInput
+    foroRespuestas?: foroRespuestasUncheckedCreateNestedManyWithoutEstudiantesInput
     inscripciones?: inscripcionesUncheckedCreateNestedManyWithoutEstudiantesInput
   }
 
@@ -60410,6 +68710,9 @@ export namespace Prisma {
     nroUpdates?: IntFieldUpdateOperationsInput | number
     calificaciones?: calificacionesUpdateManyWithoutEstudiantesNestedInput
     certificados?: certificadosUpdateManyWithoutEstudiantesNestedInput
+    entregas?: entregasUpdateManyWithoutEstudiantesNestedInput
+    foroComentarios?: foroComentariosUpdateManyWithoutEstudiantesNestedInput
+    foroRespuestas?: foroRespuestasUpdateManyWithoutEstudiantesNestedInput
     inscripciones?: inscripcionesUpdateManyWithoutEstudiantesNestedInput
   }
 
@@ -60426,6 +68729,9 @@ export namespace Prisma {
     nroUpdates?: IntFieldUpdateOperationsInput | number
     calificaciones?: calificacionesUncheckedUpdateManyWithoutEstudiantesNestedInput
     certificados?: certificadosUncheckedUpdateManyWithoutEstudiantesNestedInput
+    entregas?: entregasUncheckedUpdateManyWithoutEstudiantesNestedInput
+    foroComentarios?: foroComentariosUncheckedUpdateManyWithoutEstudiantesNestedInput
+    foroRespuestas?: foroRespuestasUncheckedUpdateManyWithoutEstudiantesNestedInput
     inscripciones?: inscripcionesUncheckedUpdateManyWithoutEstudiantesNestedInput
   }
 
@@ -61672,6 +69978,784 @@ export namespace Prisma {
     reviewsCursos?: reviewsCursosUncheckedUpdateManyWithoutUsuariosEstudiantesNestedInput
   }
 
+  export type estudiantesCreateWithoutEntregasInput = {
+    id?: string
+    apellido?: string | null
+    celular?: string | null
+    pais?: string
+    genero?: $Enums.TipoGenero
+    fechaNacimiento?: Date | string | null
+    nombre: string
+    creadoEn?: Date | string
+    actualizadoEn: Date | string
+    nroUpdates?: number
+    calificaciones?: calificacionesCreateNestedManyWithoutEstudiantesInput
+    certificados?: certificadosCreateNestedManyWithoutEstudiantesInput
+    foroComentarios?: foroComentariosCreateNestedManyWithoutEstudiantesInput
+    foroRespuestas?: foroRespuestasCreateNestedManyWithoutEstudiantesInput
+    inscripciones?: inscripcionesCreateNestedManyWithoutEstudiantesInput
+    usuariosEstudiantes?: usuariosEstudiantesCreateNestedOneWithoutEstudiantesInput
+  }
+
+  export type estudiantesUncheckedCreateWithoutEntregasInput = {
+    id?: string
+    apellido?: string | null
+    celular?: string | null
+    pais?: string
+    genero?: $Enums.TipoGenero
+    fechaNacimiento?: Date | string | null
+    nombre: string
+    creadoEn?: Date | string
+    actualizadoEn: Date | string
+    nroUpdates?: number
+    calificaciones?: calificacionesUncheckedCreateNestedManyWithoutEstudiantesInput
+    certificados?: certificadosUncheckedCreateNestedManyWithoutEstudiantesInput
+    foroComentarios?: foroComentariosUncheckedCreateNestedManyWithoutEstudiantesInput
+    foroRespuestas?: foroRespuestasUncheckedCreateNestedManyWithoutEstudiantesInput
+    inscripciones?: inscripcionesUncheckedCreateNestedManyWithoutEstudiantesInput
+    usuariosEstudiantes?: usuariosEstudiantesUncheckedCreateNestedOneWithoutEstudiantesInput
+  }
+
+  export type estudiantesCreateOrConnectWithoutEntregasInput = {
+    where: estudiantesWhereUniqueInput
+    create: XOR<estudiantesCreateWithoutEntregasInput, estudiantesUncheckedCreateWithoutEntregasInput>
+  }
+
+  export type tareasCreateWithoutEntregasInput = {
+    id: string
+    titulo: string
+    descripcion?: string | null
+    fechaApertura?: Date | string
+    fechaLimite: Date | string
+    notaMaxima?: number
+    estado?: $Enums.TareaEstado
+    creadoEn?: Date | string
+    actualizadoEn: Date | string
+    recurso?: string | null
+    edicionesCursos: edicionesCursosCreateNestedOneWithoutTareasInput
+  }
+
+  export type tareasUncheckedCreateWithoutEntregasInput = {
+    id: string
+    edicionId: string
+    titulo: string
+    descripcion?: string | null
+    fechaApertura?: Date | string
+    fechaLimite: Date | string
+    notaMaxima?: number
+    estado?: $Enums.TareaEstado
+    creadoEn?: Date | string
+    actualizadoEn: Date | string
+    recurso?: string | null
+  }
+
+  export type tareasCreateOrConnectWithoutEntregasInput = {
+    where: tareasWhereUniqueInput
+    create: XOR<tareasCreateWithoutEntregasInput, tareasUncheckedCreateWithoutEntregasInput>
+  }
+
+  export type estudiantesUpsertWithoutEntregasInput = {
+    update: XOR<estudiantesUpdateWithoutEntregasInput, estudiantesUncheckedUpdateWithoutEntregasInput>
+    create: XOR<estudiantesCreateWithoutEntregasInput, estudiantesUncheckedCreateWithoutEntregasInput>
+    where?: estudiantesWhereInput
+  }
+
+  export type estudiantesUpdateToOneWithWhereWithoutEntregasInput = {
+    where?: estudiantesWhereInput
+    data: XOR<estudiantesUpdateWithoutEntregasInput, estudiantesUncheckedUpdateWithoutEntregasInput>
+  }
+
+  export type estudiantesUpdateWithoutEntregasInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    apellido?: NullableStringFieldUpdateOperationsInput | string | null
+    celular?: NullableStringFieldUpdateOperationsInput | string | null
+    pais?: StringFieldUpdateOperationsInput | string
+    genero?: EnumTipoGeneroFieldUpdateOperationsInput | $Enums.TipoGenero
+    fechaNacimiento?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    nombre?: StringFieldUpdateOperationsInput | string
+    creadoEn?: DateTimeFieldUpdateOperationsInput | Date | string
+    actualizadoEn?: DateTimeFieldUpdateOperationsInput | Date | string
+    nroUpdates?: IntFieldUpdateOperationsInput | number
+    calificaciones?: calificacionesUpdateManyWithoutEstudiantesNestedInput
+    certificados?: certificadosUpdateManyWithoutEstudiantesNestedInput
+    foroComentarios?: foroComentariosUpdateManyWithoutEstudiantesNestedInput
+    foroRespuestas?: foroRespuestasUpdateManyWithoutEstudiantesNestedInput
+    inscripciones?: inscripcionesUpdateManyWithoutEstudiantesNestedInput
+    usuariosEstudiantes?: usuariosEstudiantesUpdateOneWithoutEstudiantesNestedInput
+  }
+
+  export type estudiantesUncheckedUpdateWithoutEntregasInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    apellido?: NullableStringFieldUpdateOperationsInput | string | null
+    celular?: NullableStringFieldUpdateOperationsInput | string | null
+    pais?: StringFieldUpdateOperationsInput | string
+    genero?: EnumTipoGeneroFieldUpdateOperationsInput | $Enums.TipoGenero
+    fechaNacimiento?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    nombre?: StringFieldUpdateOperationsInput | string
+    creadoEn?: DateTimeFieldUpdateOperationsInput | Date | string
+    actualizadoEn?: DateTimeFieldUpdateOperationsInput | Date | string
+    nroUpdates?: IntFieldUpdateOperationsInput | number
+    calificaciones?: calificacionesUncheckedUpdateManyWithoutEstudiantesNestedInput
+    certificados?: certificadosUncheckedUpdateManyWithoutEstudiantesNestedInput
+    foroComentarios?: foroComentariosUncheckedUpdateManyWithoutEstudiantesNestedInput
+    foroRespuestas?: foroRespuestasUncheckedUpdateManyWithoutEstudiantesNestedInput
+    inscripciones?: inscripcionesUncheckedUpdateManyWithoutEstudiantesNestedInput
+    usuariosEstudiantes?: usuariosEstudiantesUncheckedUpdateOneWithoutEstudiantesNestedInput
+  }
+
+  export type tareasUpsertWithoutEntregasInput = {
+    update: XOR<tareasUpdateWithoutEntregasInput, tareasUncheckedUpdateWithoutEntregasInput>
+    create: XOR<tareasCreateWithoutEntregasInput, tareasUncheckedCreateWithoutEntregasInput>
+    where?: tareasWhereInput
+  }
+
+  export type tareasUpdateToOneWithWhereWithoutEntregasInput = {
+    where?: tareasWhereInput
+    data: XOR<tareasUpdateWithoutEntregasInput, tareasUncheckedUpdateWithoutEntregasInput>
+  }
+
+  export type tareasUpdateWithoutEntregasInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    titulo?: StringFieldUpdateOperationsInput | string
+    descripcion?: NullableStringFieldUpdateOperationsInput | string | null
+    fechaApertura?: DateTimeFieldUpdateOperationsInput | Date | string
+    fechaLimite?: DateTimeFieldUpdateOperationsInput | Date | string
+    notaMaxima?: FloatFieldUpdateOperationsInput | number
+    estado?: EnumTareaEstadoFieldUpdateOperationsInput | $Enums.TareaEstado
+    creadoEn?: DateTimeFieldUpdateOperationsInput | Date | string
+    actualizadoEn?: DateTimeFieldUpdateOperationsInput | Date | string
+    recurso?: NullableStringFieldUpdateOperationsInput | string | null
+    edicionesCursos?: edicionesCursosUpdateOneRequiredWithoutTareasNestedInput
+  }
+
+  export type tareasUncheckedUpdateWithoutEntregasInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    edicionId?: StringFieldUpdateOperationsInput | string
+    titulo?: StringFieldUpdateOperationsInput | string
+    descripcion?: NullableStringFieldUpdateOperationsInput | string | null
+    fechaApertura?: DateTimeFieldUpdateOperationsInput | Date | string
+    fechaLimite?: DateTimeFieldUpdateOperationsInput | Date | string
+    notaMaxima?: FloatFieldUpdateOperationsInput | number
+    estado?: EnumTareaEstadoFieldUpdateOperationsInput | $Enums.TareaEstado
+    creadoEn?: DateTimeFieldUpdateOperationsInput | Date | string
+    actualizadoEn?: DateTimeFieldUpdateOperationsInput | Date | string
+    recurso?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type estudiantesCreateWithoutForoComentariosInput = {
+    id?: string
+    apellido?: string | null
+    celular?: string | null
+    pais?: string
+    genero?: $Enums.TipoGenero
+    fechaNacimiento?: Date | string | null
+    nombre: string
+    creadoEn?: Date | string
+    actualizadoEn: Date | string
+    nroUpdates?: number
+    calificaciones?: calificacionesCreateNestedManyWithoutEstudiantesInput
+    certificados?: certificadosCreateNestedManyWithoutEstudiantesInput
+    entregas?: entregasCreateNestedManyWithoutEstudiantesInput
+    foroRespuestas?: foroRespuestasCreateNestedManyWithoutEstudiantesInput
+    inscripciones?: inscripcionesCreateNestedManyWithoutEstudiantesInput
+    usuariosEstudiantes?: usuariosEstudiantesCreateNestedOneWithoutEstudiantesInput
+  }
+
+  export type estudiantesUncheckedCreateWithoutForoComentariosInput = {
+    id?: string
+    apellido?: string | null
+    celular?: string | null
+    pais?: string
+    genero?: $Enums.TipoGenero
+    fechaNacimiento?: Date | string | null
+    nombre: string
+    creadoEn?: Date | string
+    actualizadoEn: Date | string
+    nroUpdates?: number
+    calificaciones?: calificacionesUncheckedCreateNestedManyWithoutEstudiantesInput
+    certificados?: certificadosUncheckedCreateNestedManyWithoutEstudiantesInput
+    entregas?: entregasUncheckedCreateNestedManyWithoutEstudiantesInput
+    foroRespuestas?: foroRespuestasUncheckedCreateNestedManyWithoutEstudiantesInput
+    inscripciones?: inscripcionesUncheckedCreateNestedManyWithoutEstudiantesInput
+    usuariosEstudiantes?: usuariosEstudiantesUncheckedCreateNestedOneWithoutEstudiantesInput
+  }
+
+  export type estudiantesCreateOrConnectWithoutForoComentariosInput = {
+    where: estudiantesWhereUniqueInput
+    create: XOR<estudiantesCreateWithoutForoComentariosInput, estudiantesUncheckedCreateWithoutForoComentariosInput>
+  }
+
+  export type forosCreateWithoutForoComentariosInput = {
+    id: string
+    creadoEn?: Date | string
+    cursos: cursosCreateNestedOneWithoutForosInput
+  }
+
+  export type forosUncheckedCreateWithoutForoComentariosInput = {
+    id: string
+    cursoId: string
+    creadoEn?: Date | string
+  }
+
+  export type forosCreateOrConnectWithoutForoComentariosInput = {
+    where: forosWhereUniqueInput
+    create: XOR<forosCreateWithoutForoComentariosInput, forosUncheckedCreateWithoutForoComentariosInput>
+  }
+
+  export type foroRespuestasCreateWithoutForoComentariosInput = {
+    id: string
+    contenido: string
+    creadoEn?: Date | string
+    estudiantes: estudiantesCreateNestedOneWithoutForoRespuestasInput
+  }
+
+  export type foroRespuestasUncheckedCreateWithoutForoComentariosInput = {
+    id: string
+    estudianteId: string
+    contenido: string
+    creadoEn?: Date | string
+  }
+
+  export type foroRespuestasCreateOrConnectWithoutForoComentariosInput = {
+    where: foroRespuestasWhereUniqueInput
+    create: XOR<foroRespuestasCreateWithoutForoComentariosInput, foroRespuestasUncheckedCreateWithoutForoComentariosInput>
+  }
+
+  export type foroRespuestasCreateManyForoComentariosInputEnvelope = {
+    data: foroRespuestasCreateManyForoComentariosInput | foroRespuestasCreateManyForoComentariosInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type estudiantesUpsertWithoutForoComentariosInput = {
+    update: XOR<estudiantesUpdateWithoutForoComentariosInput, estudiantesUncheckedUpdateWithoutForoComentariosInput>
+    create: XOR<estudiantesCreateWithoutForoComentariosInput, estudiantesUncheckedCreateWithoutForoComentariosInput>
+    where?: estudiantesWhereInput
+  }
+
+  export type estudiantesUpdateToOneWithWhereWithoutForoComentariosInput = {
+    where?: estudiantesWhereInput
+    data: XOR<estudiantesUpdateWithoutForoComentariosInput, estudiantesUncheckedUpdateWithoutForoComentariosInput>
+  }
+
+  export type estudiantesUpdateWithoutForoComentariosInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    apellido?: NullableStringFieldUpdateOperationsInput | string | null
+    celular?: NullableStringFieldUpdateOperationsInput | string | null
+    pais?: StringFieldUpdateOperationsInput | string
+    genero?: EnumTipoGeneroFieldUpdateOperationsInput | $Enums.TipoGenero
+    fechaNacimiento?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    nombre?: StringFieldUpdateOperationsInput | string
+    creadoEn?: DateTimeFieldUpdateOperationsInput | Date | string
+    actualizadoEn?: DateTimeFieldUpdateOperationsInput | Date | string
+    nroUpdates?: IntFieldUpdateOperationsInput | number
+    calificaciones?: calificacionesUpdateManyWithoutEstudiantesNestedInput
+    certificados?: certificadosUpdateManyWithoutEstudiantesNestedInput
+    entregas?: entregasUpdateManyWithoutEstudiantesNestedInput
+    foroRespuestas?: foroRespuestasUpdateManyWithoutEstudiantesNestedInput
+    inscripciones?: inscripcionesUpdateManyWithoutEstudiantesNestedInput
+    usuariosEstudiantes?: usuariosEstudiantesUpdateOneWithoutEstudiantesNestedInput
+  }
+
+  export type estudiantesUncheckedUpdateWithoutForoComentariosInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    apellido?: NullableStringFieldUpdateOperationsInput | string | null
+    celular?: NullableStringFieldUpdateOperationsInput | string | null
+    pais?: StringFieldUpdateOperationsInput | string
+    genero?: EnumTipoGeneroFieldUpdateOperationsInput | $Enums.TipoGenero
+    fechaNacimiento?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    nombre?: StringFieldUpdateOperationsInput | string
+    creadoEn?: DateTimeFieldUpdateOperationsInput | Date | string
+    actualizadoEn?: DateTimeFieldUpdateOperationsInput | Date | string
+    nroUpdates?: IntFieldUpdateOperationsInput | number
+    calificaciones?: calificacionesUncheckedUpdateManyWithoutEstudiantesNestedInput
+    certificados?: certificadosUncheckedUpdateManyWithoutEstudiantesNestedInput
+    entregas?: entregasUncheckedUpdateManyWithoutEstudiantesNestedInput
+    foroRespuestas?: foroRespuestasUncheckedUpdateManyWithoutEstudiantesNestedInput
+    inscripciones?: inscripcionesUncheckedUpdateManyWithoutEstudiantesNestedInput
+    usuariosEstudiantes?: usuariosEstudiantesUncheckedUpdateOneWithoutEstudiantesNestedInput
+  }
+
+  export type forosUpsertWithoutForoComentariosInput = {
+    update: XOR<forosUpdateWithoutForoComentariosInput, forosUncheckedUpdateWithoutForoComentariosInput>
+    create: XOR<forosCreateWithoutForoComentariosInput, forosUncheckedCreateWithoutForoComentariosInput>
+    where?: forosWhereInput
+  }
+
+  export type forosUpdateToOneWithWhereWithoutForoComentariosInput = {
+    where?: forosWhereInput
+    data: XOR<forosUpdateWithoutForoComentariosInput, forosUncheckedUpdateWithoutForoComentariosInput>
+  }
+
+  export type forosUpdateWithoutForoComentariosInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    creadoEn?: DateTimeFieldUpdateOperationsInput | Date | string
+    cursos?: cursosUpdateOneRequiredWithoutForosNestedInput
+  }
+
+  export type forosUncheckedUpdateWithoutForoComentariosInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    cursoId?: StringFieldUpdateOperationsInput | string
+    creadoEn?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type foroRespuestasUpsertWithWhereUniqueWithoutForoComentariosInput = {
+    where: foroRespuestasWhereUniqueInput
+    update: XOR<foroRespuestasUpdateWithoutForoComentariosInput, foroRespuestasUncheckedUpdateWithoutForoComentariosInput>
+    create: XOR<foroRespuestasCreateWithoutForoComentariosInput, foroRespuestasUncheckedCreateWithoutForoComentariosInput>
+  }
+
+  export type foroRespuestasUpdateWithWhereUniqueWithoutForoComentariosInput = {
+    where: foroRespuestasWhereUniqueInput
+    data: XOR<foroRespuestasUpdateWithoutForoComentariosInput, foroRespuestasUncheckedUpdateWithoutForoComentariosInput>
+  }
+
+  export type foroRespuestasUpdateManyWithWhereWithoutForoComentariosInput = {
+    where: foroRespuestasScalarWhereInput
+    data: XOR<foroRespuestasUpdateManyMutationInput, foroRespuestasUncheckedUpdateManyWithoutForoComentariosInput>
+  }
+
+  export type foroComentariosCreateWithoutForoRespuestasInput = {
+    id: string
+    contenido: string
+    creadoEn?: Date | string
+    estudiantes: estudiantesCreateNestedOneWithoutForoComentariosInput
+    foros: forosCreateNestedOneWithoutForoComentariosInput
+  }
+
+  export type foroComentariosUncheckedCreateWithoutForoRespuestasInput = {
+    id: string
+    foroId: string
+    estudianteId: string
+    contenido: string
+    creadoEn?: Date | string
+  }
+
+  export type foroComentariosCreateOrConnectWithoutForoRespuestasInput = {
+    where: foroComentariosWhereUniqueInput
+    create: XOR<foroComentariosCreateWithoutForoRespuestasInput, foroComentariosUncheckedCreateWithoutForoRespuestasInput>
+  }
+
+  export type estudiantesCreateWithoutForoRespuestasInput = {
+    id?: string
+    apellido?: string | null
+    celular?: string | null
+    pais?: string
+    genero?: $Enums.TipoGenero
+    fechaNacimiento?: Date | string | null
+    nombre: string
+    creadoEn?: Date | string
+    actualizadoEn: Date | string
+    nroUpdates?: number
+    calificaciones?: calificacionesCreateNestedManyWithoutEstudiantesInput
+    certificados?: certificadosCreateNestedManyWithoutEstudiantesInput
+    entregas?: entregasCreateNestedManyWithoutEstudiantesInput
+    foroComentarios?: foroComentariosCreateNestedManyWithoutEstudiantesInput
+    inscripciones?: inscripcionesCreateNestedManyWithoutEstudiantesInput
+    usuariosEstudiantes?: usuariosEstudiantesCreateNestedOneWithoutEstudiantesInput
+  }
+
+  export type estudiantesUncheckedCreateWithoutForoRespuestasInput = {
+    id?: string
+    apellido?: string | null
+    celular?: string | null
+    pais?: string
+    genero?: $Enums.TipoGenero
+    fechaNacimiento?: Date | string | null
+    nombre: string
+    creadoEn?: Date | string
+    actualizadoEn: Date | string
+    nroUpdates?: number
+    calificaciones?: calificacionesUncheckedCreateNestedManyWithoutEstudiantesInput
+    certificados?: certificadosUncheckedCreateNestedManyWithoutEstudiantesInput
+    entregas?: entregasUncheckedCreateNestedManyWithoutEstudiantesInput
+    foroComentarios?: foroComentariosUncheckedCreateNestedManyWithoutEstudiantesInput
+    inscripciones?: inscripcionesUncheckedCreateNestedManyWithoutEstudiantesInput
+    usuariosEstudiantes?: usuariosEstudiantesUncheckedCreateNestedOneWithoutEstudiantesInput
+  }
+
+  export type estudiantesCreateOrConnectWithoutForoRespuestasInput = {
+    where: estudiantesWhereUniqueInput
+    create: XOR<estudiantesCreateWithoutForoRespuestasInput, estudiantesUncheckedCreateWithoutForoRespuestasInput>
+  }
+
+  export type foroComentariosUpsertWithoutForoRespuestasInput = {
+    update: XOR<foroComentariosUpdateWithoutForoRespuestasInput, foroComentariosUncheckedUpdateWithoutForoRespuestasInput>
+    create: XOR<foroComentariosCreateWithoutForoRespuestasInput, foroComentariosUncheckedCreateWithoutForoRespuestasInput>
+    where?: foroComentariosWhereInput
+  }
+
+  export type foroComentariosUpdateToOneWithWhereWithoutForoRespuestasInput = {
+    where?: foroComentariosWhereInput
+    data: XOR<foroComentariosUpdateWithoutForoRespuestasInput, foroComentariosUncheckedUpdateWithoutForoRespuestasInput>
+  }
+
+  export type foroComentariosUpdateWithoutForoRespuestasInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    contenido?: StringFieldUpdateOperationsInput | string
+    creadoEn?: DateTimeFieldUpdateOperationsInput | Date | string
+    estudiantes?: estudiantesUpdateOneRequiredWithoutForoComentariosNestedInput
+    foros?: forosUpdateOneRequiredWithoutForoComentariosNestedInput
+  }
+
+  export type foroComentariosUncheckedUpdateWithoutForoRespuestasInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    foroId?: StringFieldUpdateOperationsInput | string
+    estudianteId?: StringFieldUpdateOperationsInput | string
+    contenido?: StringFieldUpdateOperationsInput | string
+    creadoEn?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type estudiantesUpsertWithoutForoRespuestasInput = {
+    update: XOR<estudiantesUpdateWithoutForoRespuestasInput, estudiantesUncheckedUpdateWithoutForoRespuestasInput>
+    create: XOR<estudiantesCreateWithoutForoRespuestasInput, estudiantesUncheckedCreateWithoutForoRespuestasInput>
+    where?: estudiantesWhereInput
+  }
+
+  export type estudiantesUpdateToOneWithWhereWithoutForoRespuestasInput = {
+    where?: estudiantesWhereInput
+    data: XOR<estudiantesUpdateWithoutForoRespuestasInput, estudiantesUncheckedUpdateWithoutForoRespuestasInput>
+  }
+
+  export type estudiantesUpdateWithoutForoRespuestasInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    apellido?: NullableStringFieldUpdateOperationsInput | string | null
+    celular?: NullableStringFieldUpdateOperationsInput | string | null
+    pais?: StringFieldUpdateOperationsInput | string
+    genero?: EnumTipoGeneroFieldUpdateOperationsInput | $Enums.TipoGenero
+    fechaNacimiento?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    nombre?: StringFieldUpdateOperationsInput | string
+    creadoEn?: DateTimeFieldUpdateOperationsInput | Date | string
+    actualizadoEn?: DateTimeFieldUpdateOperationsInput | Date | string
+    nroUpdates?: IntFieldUpdateOperationsInput | number
+    calificaciones?: calificacionesUpdateManyWithoutEstudiantesNestedInput
+    certificados?: certificadosUpdateManyWithoutEstudiantesNestedInput
+    entregas?: entregasUpdateManyWithoutEstudiantesNestedInput
+    foroComentarios?: foroComentariosUpdateManyWithoutEstudiantesNestedInput
+    inscripciones?: inscripcionesUpdateManyWithoutEstudiantesNestedInput
+    usuariosEstudiantes?: usuariosEstudiantesUpdateOneWithoutEstudiantesNestedInput
+  }
+
+  export type estudiantesUncheckedUpdateWithoutForoRespuestasInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    apellido?: NullableStringFieldUpdateOperationsInput | string | null
+    celular?: NullableStringFieldUpdateOperationsInput | string | null
+    pais?: StringFieldUpdateOperationsInput | string
+    genero?: EnumTipoGeneroFieldUpdateOperationsInput | $Enums.TipoGenero
+    fechaNacimiento?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    nombre?: StringFieldUpdateOperationsInput | string
+    creadoEn?: DateTimeFieldUpdateOperationsInput | Date | string
+    actualizadoEn?: DateTimeFieldUpdateOperationsInput | Date | string
+    nroUpdates?: IntFieldUpdateOperationsInput | number
+    calificaciones?: calificacionesUncheckedUpdateManyWithoutEstudiantesNestedInput
+    certificados?: certificadosUncheckedUpdateManyWithoutEstudiantesNestedInput
+    entregas?: entregasUncheckedUpdateManyWithoutEstudiantesNestedInput
+    foroComentarios?: foroComentariosUncheckedUpdateManyWithoutEstudiantesNestedInput
+    inscripciones?: inscripcionesUncheckedUpdateManyWithoutEstudiantesNestedInput
+    usuariosEstudiantes?: usuariosEstudiantesUncheckedUpdateOneWithoutEstudiantesNestedInput
+  }
+
+  export type foroComentariosCreateWithoutForosInput = {
+    id: string
+    contenido: string
+    creadoEn?: Date | string
+    estudiantes: estudiantesCreateNestedOneWithoutForoComentariosInput
+    foroRespuestas?: foroRespuestasCreateNestedManyWithoutForoComentariosInput
+  }
+
+  export type foroComentariosUncheckedCreateWithoutForosInput = {
+    id: string
+    estudianteId: string
+    contenido: string
+    creadoEn?: Date | string
+    foroRespuestas?: foroRespuestasUncheckedCreateNestedManyWithoutForoComentariosInput
+  }
+
+  export type foroComentariosCreateOrConnectWithoutForosInput = {
+    where: foroComentariosWhereUniqueInput
+    create: XOR<foroComentariosCreateWithoutForosInput, foroComentariosUncheckedCreateWithoutForosInput>
+  }
+
+  export type foroComentariosCreateManyForosInputEnvelope = {
+    data: foroComentariosCreateManyForosInput | foroComentariosCreateManyForosInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type cursosCreateWithoutForosInput = {
+    id?: string
+    descripcion: string
+    titulo: string
+    urlMiniatura?: string | null
+    creadoEn?: Date | string
+    actualizadoEn: Date | string
+    descripcionCorta?: string | null
+    enVivo?: boolean
+    urlCurso?: string | null
+    cargaHoraria?: number
+    codigo: string
+    beneficiosCursos?: beneficiosCursosCreateNestedManyWithoutCursosInput
+    categoriasCursos?: categoriasCursosCreateNestedManyWithoutCursosInput
+    edicionesCursos?: edicionesCursosCreateNestedManyWithoutCursosInput
+    objetivosCursos?: objetivosCursosCreateNestedManyWithoutCursosInput
+    requisitosCursos?: requisitosCursosCreateNestedManyWithoutCursosInput
+    reviewsCursos?: reviewsCursosCreateNestedManyWithoutCursosInput
+  }
+
+  export type cursosUncheckedCreateWithoutForosInput = {
+    id?: string
+    descripcion: string
+    titulo: string
+    urlMiniatura?: string | null
+    creadoEn?: Date | string
+    actualizadoEn: Date | string
+    descripcionCorta?: string | null
+    enVivo?: boolean
+    urlCurso?: string | null
+    cargaHoraria?: number
+    codigo: string
+    beneficiosCursos?: beneficiosCursosUncheckedCreateNestedManyWithoutCursosInput
+    categoriasCursos?: categoriasCursosUncheckedCreateNestedManyWithoutCursosInput
+    edicionesCursos?: edicionesCursosUncheckedCreateNestedManyWithoutCursosInput
+    objetivosCursos?: objetivosCursosUncheckedCreateNestedManyWithoutCursosInput
+    requisitosCursos?: requisitosCursosUncheckedCreateNestedManyWithoutCursosInput
+    reviewsCursos?: reviewsCursosUncheckedCreateNestedManyWithoutCursosInput
+  }
+
+  export type cursosCreateOrConnectWithoutForosInput = {
+    where: cursosWhereUniqueInput
+    create: XOR<cursosCreateWithoutForosInput, cursosUncheckedCreateWithoutForosInput>
+  }
+
+  export type foroComentariosUpsertWithWhereUniqueWithoutForosInput = {
+    where: foroComentariosWhereUniqueInput
+    update: XOR<foroComentariosUpdateWithoutForosInput, foroComentariosUncheckedUpdateWithoutForosInput>
+    create: XOR<foroComentariosCreateWithoutForosInput, foroComentariosUncheckedCreateWithoutForosInput>
+  }
+
+  export type foroComentariosUpdateWithWhereUniqueWithoutForosInput = {
+    where: foroComentariosWhereUniqueInput
+    data: XOR<foroComentariosUpdateWithoutForosInput, foroComentariosUncheckedUpdateWithoutForosInput>
+  }
+
+  export type foroComentariosUpdateManyWithWhereWithoutForosInput = {
+    where: foroComentariosScalarWhereInput
+    data: XOR<foroComentariosUpdateManyMutationInput, foroComentariosUncheckedUpdateManyWithoutForosInput>
+  }
+
+  export type cursosUpsertWithoutForosInput = {
+    update: XOR<cursosUpdateWithoutForosInput, cursosUncheckedUpdateWithoutForosInput>
+    create: XOR<cursosCreateWithoutForosInput, cursosUncheckedCreateWithoutForosInput>
+    where?: cursosWhereInput
+  }
+
+  export type cursosUpdateToOneWithWhereWithoutForosInput = {
+    where?: cursosWhereInput
+    data: XOR<cursosUpdateWithoutForosInput, cursosUncheckedUpdateWithoutForosInput>
+  }
+
+  export type cursosUpdateWithoutForosInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    descripcion?: StringFieldUpdateOperationsInput | string
+    titulo?: StringFieldUpdateOperationsInput | string
+    urlMiniatura?: NullableStringFieldUpdateOperationsInput | string | null
+    creadoEn?: DateTimeFieldUpdateOperationsInput | Date | string
+    actualizadoEn?: DateTimeFieldUpdateOperationsInput | Date | string
+    descripcionCorta?: NullableStringFieldUpdateOperationsInput | string | null
+    enVivo?: BoolFieldUpdateOperationsInput | boolean
+    urlCurso?: NullableStringFieldUpdateOperationsInput | string | null
+    cargaHoraria?: IntFieldUpdateOperationsInput | number
+    codigo?: StringFieldUpdateOperationsInput | string
+    beneficiosCursos?: beneficiosCursosUpdateManyWithoutCursosNestedInput
+    categoriasCursos?: categoriasCursosUpdateManyWithoutCursosNestedInput
+    edicionesCursos?: edicionesCursosUpdateManyWithoutCursosNestedInput
+    objetivosCursos?: objetivosCursosUpdateManyWithoutCursosNestedInput
+    requisitosCursos?: requisitosCursosUpdateManyWithoutCursosNestedInput
+    reviewsCursos?: reviewsCursosUpdateManyWithoutCursosNestedInput
+  }
+
+  export type cursosUncheckedUpdateWithoutForosInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    descripcion?: StringFieldUpdateOperationsInput | string
+    titulo?: StringFieldUpdateOperationsInput | string
+    urlMiniatura?: NullableStringFieldUpdateOperationsInput | string | null
+    creadoEn?: DateTimeFieldUpdateOperationsInput | Date | string
+    actualizadoEn?: DateTimeFieldUpdateOperationsInput | Date | string
+    descripcionCorta?: NullableStringFieldUpdateOperationsInput | string | null
+    enVivo?: BoolFieldUpdateOperationsInput | boolean
+    urlCurso?: NullableStringFieldUpdateOperationsInput | string | null
+    cargaHoraria?: IntFieldUpdateOperationsInput | number
+    codigo?: StringFieldUpdateOperationsInput | string
+    beneficiosCursos?: beneficiosCursosUncheckedUpdateManyWithoutCursosNestedInput
+    categoriasCursos?: categoriasCursosUncheckedUpdateManyWithoutCursosNestedInput
+    edicionesCursos?: edicionesCursosUncheckedUpdateManyWithoutCursosNestedInput
+    objetivosCursos?: objetivosCursosUncheckedUpdateManyWithoutCursosNestedInput
+    requisitosCursos?: requisitosCursosUncheckedUpdateManyWithoutCursosNestedInput
+    reviewsCursos?: reviewsCursosUncheckedUpdateManyWithoutCursosNestedInput
+  }
+
+  export type entregasCreateWithoutTareasInput = {
+    id: string
+    archivos?: NullableJsonNullValueInput | InputJsonValue
+    comentarioAlumno?: string | null
+    fechaEntrega?: Date | string
+    nota?: number | null
+    retroalimentacion?: string | null
+    estado?: $Enums.EntregaEstado
+    calificadoEn?: Date | string | null
+    calificadoPorId?: string | null
+    estudiantes: estudiantesCreateNestedOneWithoutEntregasInput
+  }
+
+  export type entregasUncheckedCreateWithoutTareasInput = {
+    id: string
+    estudianteId: string
+    archivos?: NullableJsonNullValueInput | InputJsonValue
+    comentarioAlumno?: string | null
+    fechaEntrega?: Date | string
+    nota?: number | null
+    retroalimentacion?: string | null
+    estado?: $Enums.EntregaEstado
+    calificadoEn?: Date | string | null
+    calificadoPorId?: string | null
+  }
+
+  export type entregasCreateOrConnectWithoutTareasInput = {
+    where: entregasWhereUniqueInput
+    create: XOR<entregasCreateWithoutTareasInput, entregasUncheckedCreateWithoutTareasInput>
+  }
+
+  export type entregasCreateManyTareasInputEnvelope = {
+    data: entregasCreateManyTareasInput | entregasCreateManyTareasInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type edicionesCursosCreateWithoutTareasInput = {
+    id?: string
+    codigo: string
+    descripcion?: string | null
+    estado?: $Enums.EdicionEstado
+    fechaFin: Date | string
+    fechaInicio: Date | string
+    notaMaxima?: number
+    notaMinima?: number
+    urlWhatsapp?: string | null
+    vigente?: boolean
+    creadoEn?: Date | string
+    actualizadoEn: Date | string
+    certificados?: certificadosCreateNestedManyWithoutEdicionesCursosInput
+    clases?: clasesCreateNestedManyWithoutEdicionesCursosInput
+    compras?: comprasCreateNestedManyWithoutEdicionesCursosInput
+    cursos: cursosCreateNestedOneWithoutEdicionesCursosInput
+    docente?: docenteCreateNestedOneWithoutEdicionesCursosInput
+    examenes?: examenesCreateNestedManyWithoutEdicionesCursosInput
+    inscripciones?: inscripcionesCreateNestedManyWithoutEdicionesCursosInput
+    pagosDocentes?: pagosDocentesCreateNestedOneWithoutEdicionesCursosInput
+    preciosCursos?: preciosCursosCreateNestedManyWithoutEdicionesCursosInput
+  }
+
+  export type edicionesCursosUncheckedCreateWithoutTareasInput = {
+    id?: string
+    codigo: string
+    cursoId: string
+    descripcion?: string | null
+    estado?: $Enums.EdicionEstado
+    fechaFin: Date | string
+    fechaInicio: Date | string
+    notaMaxima?: number
+    notaMinima?: number
+    urlWhatsapp?: string | null
+    vigente?: boolean
+    creadoEn?: Date | string
+    actualizadoEn: Date | string
+    docenteId?: string | null
+    certificados?: certificadosUncheckedCreateNestedManyWithoutEdicionesCursosInput
+    clases?: clasesUncheckedCreateNestedManyWithoutEdicionesCursosInput
+    compras?: comprasUncheckedCreateNestedManyWithoutEdicionesCursosInput
+    examenes?: examenesUncheckedCreateNestedManyWithoutEdicionesCursosInput
+    inscripciones?: inscripcionesUncheckedCreateNestedManyWithoutEdicionesCursosInput
+    pagosDocentes?: pagosDocentesUncheckedCreateNestedOneWithoutEdicionesCursosInput
+    preciosCursos?: preciosCursosUncheckedCreateNestedManyWithoutEdicionesCursosInput
+  }
+
+  export type edicionesCursosCreateOrConnectWithoutTareasInput = {
+    where: edicionesCursosWhereUniqueInput
+    create: XOR<edicionesCursosCreateWithoutTareasInput, edicionesCursosUncheckedCreateWithoutTareasInput>
+  }
+
+  export type entregasUpsertWithWhereUniqueWithoutTareasInput = {
+    where: entregasWhereUniqueInput
+    update: XOR<entregasUpdateWithoutTareasInput, entregasUncheckedUpdateWithoutTareasInput>
+    create: XOR<entregasCreateWithoutTareasInput, entregasUncheckedCreateWithoutTareasInput>
+  }
+
+  export type entregasUpdateWithWhereUniqueWithoutTareasInput = {
+    where: entregasWhereUniqueInput
+    data: XOR<entregasUpdateWithoutTareasInput, entregasUncheckedUpdateWithoutTareasInput>
+  }
+
+  export type entregasUpdateManyWithWhereWithoutTareasInput = {
+    where: entregasScalarWhereInput
+    data: XOR<entregasUpdateManyMutationInput, entregasUncheckedUpdateManyWithoutTareasInput>
+  }
+
+  export type edicionesCursosUpsertWithoutTareasInput = {
+    update: XOR<edicionesCursosUpdateWithoutTareasInput, edicionesCursosUncheckedUpdateWithoutTareasInput>
+    create: XOR<edicionesCursosCreateWithoutTareasInput, edicionesCursosUncheckedCreateWithoutTareasInput>
+    where?: edicionesCursosWhereInput
+  }
+
+  export type edicionesCursosUpdateToOneWithWhereWithoutTareasInput = {
+    where?: edicionesCursosWhereInput
+    data: XOR<edicionesCursosUpdateWithoutTareasInput, edicionesCursosUncheckedUpdateWithoutTareasInput>
+  }
+
+  export type edicionesCursosUpdateWithoutTareasInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    codigo?: StringFieldUpdateOperationsInput | string
+    descripcion?: NullableStringFieldUpdateOperationsInput | string | null
+    estado?: EnumEdicionEstadoFieldUpdateOperationsInput | $Enums.EdicionEstado
+    fechaFin?: DateTimeFieldUpdateOperationsInput | Date | string
+    fechaInicio?: DateTimeFieldUpdateOperationsInput | Date | string
+    notaMaxima?: FloatFieldUpdateOperationsInput | number
+    notaMinima?: FloatFieldUpdateOperationsInput | number
+    urlWhatsapp?: NullableStringFieldUpdateOperationsInput | string | null
+    vigente?: BoolFieldUpdateOperationsInput | boolean
+    creadoEn?: DateTimeFieldUpdateOperationsInput | Date | string
+    actualizadoEn?: DateTimeFieldUpdateOperationsInput | Date | string
+    certificados?: certificadosUpdateManyWithoutEdicionesCursosNestedInput
+    clases?: clasesUpdateManyWithoutEdicionesCursosNestedInput
+    compras?: comprasUpdateManyWithoutEdicionesCursosNestedInput
+    cursos?: cursosUpdateOneRequiredWithoutEdicionesCursosNestedInput
+    docente?: docenteUpdateOneWithoutEdicionesCursosNestedInput
+    examenes?: examenesUpdateManyWithoutEdicionesCursosNestedInput
+    inscripciones?: inscripcionesUpdateManyWithoutEdicionesCursosNestedInput
+    pagosDocentes?: pagosDocentesUpdateOneWithoutEdicionesCursosNestedInput
+    preciosCursos?: preciosCursosUpdateManyWithoutEdicionesCursosNestedInput
+  }
+
+  export type edicionesCursosUncheckedUpdateWithoutTareasInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    codigo?: StringFieldUpdateOperationsInput | string
+    cursoId?: StringFieldUpdateOperationsInput | string
+    descripcion?: NullableStringFieldUpdateOperationsInput | string | null
+    estado?: EnumEdicionEstadoFieldUpdateOperationsInput | $Enums.EdicionEstado
+    fechaFin?: DateTimeFieldUpdateOperationsInput | Date | string
+    fechaInicio?: DateTimeFieldUpdateOperationsInput | Date | string
+    notaMaxima?: FloatFieldUpdateOperationsInput | number
+    notaMinima?: FloatFieldUpdateOperationsInput | number
+    urlWhatsapp?: NullableStringFieldUpdateOperationsInput | string | null
+    vigente?: BoolFieldUpdateOperationsInput | boolean
+    creadoEn?: DateTimeFieldUpdateOperationsInput | Date | string
+    actualizadoEn?: DateTimeFieldUpdateOperationsInput | Date | string
+    docenteId?: NullableStringFieldUpdateOperationsInput | string | null
+    certificados?: certificadosUncheckedUpdateManyWithoutEdicionesCursosNestedInput
+    clases?: clasesUncheckedUpdateManyWithoutEdicionesCursosNestedInput
+    compras?: comprasUncheckedUpdateManyWithoutEdicionesCursosNestedInput
+    examenes?: examenesUncheckedUpdateManyWithoutEdicionesCursosNestedInput
+    inscripciones?: inscripcionesUncheckedUpdateManyWithoutEdicionesCursosNestedInput
+    pagosDocentes?: pagosDocentesUncheckedUpdateOneWithoutEdicionesCursosNestedInput
+    preciosCursos?: preciosCursosUncheckedUpdateManyWithoutEdicionesCursosNestedInput
+  }
+
   export type categoriasCursosCreateManyCategoriasInput = {
     id?: string
     cursoId: string
@@ -61868,6 +70952,7 @@ export namespace Prisma {
     inscripciones?: inscripcionesUpdateManyWithoutEdicionesCursosNestedInput
     pagosDocentes?: pagosDocentesUpdateOneWithoutEdicionesCursosNestedInput
     preciosCursos?: preciosCursosUpdateManyWithoutEdicionesCursosNestedInput
+    tareas?: tareasUpdateManyWithoutEdicionesCursosNestedInput
   }
 
   export type edicionesCursosUncheckedUpdateWithoutCursosInput = {
@@ -61891,6 +70976,7 @@ export namespace Prisma {
     inscripciones?: inscripcionesUncheckedUpdateManyWithoutEdicionesCursosNestedInput
     pagosDocentes?: pagosDocentesUncheckedUpdateOneWithoutEdicionesCursosNestedInput
     preciosCursos?: preciosCursosUncheckedUpdateManyWithoutEdicionesCursosNestedInput
+    tareas?: tareasUncheckedUpdateManyWithoutEdicionesCursosNestedInput
   }
 
   export type edicionesCursosUncheckedUpdateManyWithoutCursosInput = {
@@ -62026,6 +71112,7 @@ export namespace Prisma {
     inscripciones?: inscripcionesUpdateManyWithoutEdicionesCursosNestedInput
     pagosDocentes?: pagosDocentesUpdateOneWithoutEdicionesCursosNestedInput
     preciosCursos?: preciosCursosUpdateManyWithoutEdicionesCursosNestedInput
+    tareas?: tareasUpdateManyWithoutEdicionesCursosNestedInput
   }
 
   export type edicionesCursosUncheckedUpdateWithoutDocenteInput = {
@@ -62049,6 +71136,7 @@ export namespace Prisma {
     inscripciones?: inscripcionesUncheckedUpdateManyWithoutEdicionesCursosNestedInput
     pagosDocentes?: pagosDocentesUncheckedUpdateOneWithoutEdicionesCursosNestedInput
     preciosCursos?: preciosCursosUncheckedUpdateManyWithoutEdicionesCursosNestedInput
+    tareas?: tareasUncheckedUpdateManyWithoutEdicionesCursosNestedInput
   }
 
   export type edicionesCursosUncheckedUpdateManyWithoutDocenteInput = {
@@ -62170,6 +71258,19 @@ export namespace Prisma {
     precioOriginal?: number | null
     creadoEn?: Date | string
     actualizadoEn: Date | string
+  }
+
+  export type tareasCreateManyEdicionesCursosInput = {
+    id: string
+    titulo: string
+    descripcion?: string | null
+    fechaApertura?: Date | string
+    fechaLimite: Date | string
+    notaMaxima?: number
+    estado?: $Enums.TareaEstado
+    creadoEn?: Date | string
+    actualizadoEn: Date | string
+    recurso?: string | null
   }
 
   export type certificadosUpdateWithoutEdicionesCursosInput = {
@@ -62396,6 +71497,47 @@ export namespace Prisma {
     actualizadoEn?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type tareasUpdateWithoutEdicionesCursosInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    titulo?: StringFieldUpdateOperationsInput | string
+    descripcion?: NullableStringFieldUpdateOperationsInput | string | null
+    fechaApertura?: DateTimeFieldUpdateOperationsInput | Date | string
+    fechaLimite?: DateTimeFieldUpdateOperationsInput | Date | string
+    notaMaxima?: FloatFieldUpdateOperationsInput | number
+    estado?: EnumTareaEstadoFieldUpdateOperationsInput | $Enums.TareaEstado
+    creadoEn?: DateTimeFieldUpdateOperationsInput | Date | string
+    actualizadoEn?: DateTimeFieldUpdateOperationsInput | Date | string
+    recurso?: NullableStringFieldUpdateOperationsInput | string | null
+    entregas?: entregasUpdateManyWithoutTareasNestedInput
+  }
+
+  export type tareasUncheckedUpdateWithoutEdicionesCursosInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    titulo?: StringFieldUpdateOperationsInput | string
+    descripcion?: NullableStringFieldUpdateOperationsInput | string | null
+    fechaApertura?: DateTimeFieldUpdateOperationsInput | Date | string
+    fechaLimite?: DateTimeFieldUpdateOperationsInput | Date | string
+    notaMaxima?: FloatFieldUpdateOperationsInput | number
+    estado?: EnumTareaEstadoFieldUpdateOperationsInput | $Enums.TareaEstado
+    creadoEn?: DateTimeFieldUpdateOperationsInput | Date | string
+    actualizadoEn?: DateTimeFieldUpdateOperationsInput | Date | string
+    recurso?: NullableStringFieldUpdateOperationsInput | string | null
+    entregas?: entregasUncheckedUpdateManyWithoutTareasNestedInput
+  }
+
+  export type tareasUncheckedUpdateManyWithoutEdicionesCursosInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    titulo?: StringFieldUpdateOperationsInput | string
+    descripcion?: NullableStringFieldUpdateOperationsInput | string | null
+    fechaApertura?: DateTimeFieldUpdateOperationsInput | Date | string
+    fechaLimite?: DateTimeFieldUpdateOperationsInput | Date | string
+    notaMaxima?: FloatFieldUpdateOperationsInput | number
+    estado?: EnumTareaEstadoFieldUpdateOperationsInput | $Enums.TareaEstado
+    creadoEn?: DateTimeFieldUpdateOperationsInput | Date | string
+    actualizadoEn?: DateTimeFieldUpdateOperationsInput | Date | string
+    recurso?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
   export type calificacionesCreateManyEstudiantesInput = {
     id?: string
     aprobado?: boolean
@@ -62413,6 +71555,33 @@ export namespace Prisma {
     tipo?: $Enums.TipoCertificado
     notaFinal?: number | null
     urlCertificado?: string | null
+    creadoEn?: Date | string
+  }
+
+  export type entregasCreateManyEstudiantesInput = {
+    id: string
+    tareaId: string
+    archivos?: NullableJsonNullValueInput | InputJsonValue
+    comentarioAlumno?: string | null
+    fechaEntrega?: Date | string
+    nota?: number | null
+    retroalimentacion?: string | null
+    estado?: $Enums.EntregaEstado
+    calificadoEn?: Date | string | null
+    calificadoPorId?: string | null
+  }
+
+  export type foroComentariosCreateManyEstudiantesInput = {
+    id: string
+    foroId: string
+    contenido: string
+    creadoEn?: Date | string
+  }
+
+  export type foroRespuestasCreateManyEstudiantesInput = {
+    id: string
+    comentarioId: string
+    contenido: string
     creadoEn?: Date | string
   }
 
@@ -62481,6 +71650,89 @@ export namespace Prisma {
     tipo?: EnumTipoCertificadoFieldUpdateOperationsInput | $Enums.TipoCertificado
     notaFinal?: NullableFloatFieldUpdateOperationsInput | number | null
     urlCertificado?: NullableStringFieldUpdateOperationsInput | string | null
+    creadoEn?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type entregasUpdateWithoutEstudiantesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    archivos?: NullableJsonNullValueInput | InputJsonValue
+    comentarioAlumno?: NullableStringFieldUpdateOperationsInput | string | null
+    fechaEntrega?: DateTimeFieldUpdateOperationsInput | Date | string
+    nota?: NullableFloatFieldUpdateOperationsInput | number | null
+    retroalimentacion?: NullableStringFieldUpdateOperationsInput | string | null
+    estado?: EnumEntregaEstadoFieldUpdateOperationsInput | $Enums.EntregaEstado
+    calificadoEn?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    calificadoPorId?: NullableStringFieldUpdateOperationsInput | string | null
+    tareas?: tareasUpdateOneRequiredWithoutEntregasNestedInput
+  }
+
+  export type entregasUncheckedUpdateWithoutEstudiantesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    tareaId?: StringFieldUpdateOperationsInput | string
+    archivos?: NullableJsonNullValueInput | InputJsonValue
+    comentarioAlumno?: NullableStringFieldUpdateOperationsInput | string | null
+    fechaEntrega?: DateTimeFieldUpdateOperationsInput | Date | string
+    nota?: NullableFloatFieldUpdateOperationsInput | number | null
+    retroalimentacion?: NullableStringFieldUpdateOperationsInput | string | null
+    estado?: EnumEntregaEstadoFieldUpdateOperationsInput | $Enums.EntregaEstado
+    calificadoEn?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    calificadoPorId?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type entregasUncheckedUpdateManyWithoutEstudiantesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    tareaId?: StringFieldUpdateOperationsInput | string
+    archivos?: NullableJsonNullValueInput | InputJsonValue
+    comentarioAlumno?: NullableStringFieldUpdateOperationsInput | string | null
+    fechaEntrega?: DateTimeFieldUpdateOperationsInput | Date | string
+    nota?: NullableFloatFieldUpdateOperationsInput | number | null
+    retroalimentacion?: NullableStringFieldUpdateOperationsInput | string | null
+    estado?: EnumEntregaEstadoFieldUpdateOperationsInput | $Enums.EntregaEstado
+    calificadoEn?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    calificadoPorId?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type foroComentariosUpdateWithoutEstudiantesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    contenido?: StringFieldUpdateOperationsInput | string
+    creadoEn?: DateTimeFieldUpdateOperationsInput | Date | string
+    foros?: forosUpdateOneRequiredWithoutForoComentariosNestedInput
+    foroRespuestas?: foroRespuestasUpdateManyWithoutForoComentariosNestedInput
+  }
+
+  export type foroComentariosUncheckedUpdateWithoutEstudiantesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    foroId?: StringFieldUpdateOperationsInput | string
+    contenido?: StringFieldUpdateOperationsInput | string
+    creadoEn?: DateTimeFieldUpdateOperationsInput | Date | string
+    foroRespuestas?: foroRespuestasUncheckedUpdateManyWithoutForoComentariosNestedInput
+  }
+
+  export type foroComentariosUncheckedUpdateManyWithoutEstudiantesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    foroId?: StringFieldUpdateOperationsInput | string
+    contenido?: StringFieldUpdateOperationsInput | string
+    creadoEn?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type foroRespuestasUpdateWithoutEstudiantesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    contenido?: StringFieldUpdateOperationsInput | string
+    creadoEn?: DateTimeFieldUpdateOperationsInput | Date | string
+    foroComentarios?: foroComentariosUpdateOneRequiredWithoutForoRespuestasNestedInput
+  }
+
+  export type foroRespuestasUncheckedUpdateWithoutEstudiantesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    comentarioId?: StringFieldUpdateOperationsInput | string
+    contenido?: StringFieldUpdateOperationsInput | string
+    creadoEn?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type foroRespuestasUncheckedUpdateManyWithoutEstudiantesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    comentarioId?: StringFieldUpdateOperationsInput | string
+    contenido?: StringFieldUpdateOperationsInput | string
     creadoEn?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -63633,6 +72885,116 @@ export namespace Prisma {
     respondidaEn?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     creadoEn?: DateTimeFieldUpdateOperationsInput | Date | string
     actualizadoEn?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type foroRespuestasCreateManyForoComentariosInput = {
+    id: string
+    estudianteId: string
+    contenido: string
+    creadoEn?: Date | string
+  }
+
+  export type foroRespuestasUpdateWithoutForoComentariosInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    contenido?: StringFieldUpdateOperationsInput | string
+    creadoEn?: DateTimeFieldUpdateOperationsInput | Date | string
+    estudiantes?: estudiantesUpdateOneRequiredWithoutForoRespuestasNestedInput
+  }
+
+  export type foroRespuestasUncheckedUpdateWithoutForoComentariosInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    estudianteId?: StringFieldUpdateOperationsInput | string
+    contenido?: StringFieldUpdateOperationsInput | string
+    creadoEn?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type foroRespuestasUncheckedUpdateManyWithoutForoComentariosInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    estudianteId?: StringFieldUpdateOperationsInput | string
+    contenido?: StringFieldUpdateOperationsInput | string
+    creadoEn?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type foroComentariosCreateManyForosInput = {
+    id: string
+    estudianteId: string
+    contenido: string
+    creadoEn?: Date | string
+  }
+
+  export type foroComentariosUpdateWithoutForosInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    contenido?: StringFieldUpdateOperationsInput | string
+    creadoEn?: DateTimeFieldUpdateOperationsInput | Date | string
+    estudiantes?: estudiantesUpdateOneRequiredWithoutForoComentariosNestedInput
+    foroRespuestas?: foroRespuestasUpdateManyWithoutForoComentariosNestedInput
+  }
+
+  export type foroComentariosUncheckedUpdateWithoutForosInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    estudianteId?: StringFieldUpdateOperationsInput | string
+    contenido?: StringFieldUpdateOperationsInput | string
+    creadoEn?: DateTimeFieldUpdateOperationsInput | Date | string
+    foroRespuestas?: foroRespuestasUncheckedUpdateManyWithoutForoComentariosNestedInput
+  }
+
+  export type foroComentariosUncheckedUpdateManyWithoutForosInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    estudianteId?: StringFieldUpdateOperationsInput | string
+    contenido?: StringFieldUpdateOperationsInput | string
+    creadoEn?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type entregasCreateManyTareasInput = {
+    id: string
+    estudianteId: string
+    archivos?: NullableJsonNullValueInput | InputJsonValue
+    comentarioAlumno?: string | null
+    fechaEntrega?: Date | string
+    nota?: number | null
+    retroalimentacion?: string | null
+    estado?: $Enums.EntregaEstado
+    calificadoEn?: Date | string | null
+    calificadoPorId?: string | null
+  }
+
+  export type entregasUpdateWithoutTareasInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    archivos?: NullableJsonNullValueInput | InputJsonValue
+    comentarioAlumno?: NullableStringFieldUpdateOperationsInput | string | null
+    fechaEntrega?: DateTimeFieldUpdateOperationsInput | Date | string
+    nota?: NullableFloatFieldUpdateOperationsInput | number | null
+    retroalimentacion?: NullableStringFieldUpdateOperationsInput | string | null
+    estado?: EnumEntregaEstadoFieldUpdateOperationsInput | $Enums.EntregaEstado
+    calificadoEn?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    calificadoPorId?: NullableStringFieldUpdateOperationsInput | string | null
+    estudiantes?: estudiantesUpdateOneRequiredWithoutEntregasNestedInput
+  }
+
+  export type entregasUncheckedUpdateWithoutTareasInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    estudianteId?: StringFieldUpdateOperationsInput | string
+    archivos?: NullableJsonNullValueInput | InputJsonValue
+    comentarioAlumno?: NullableStringFieldUpdateOperationsInput | string | null
+    fechaEntrega?: DateTimeFieldUpdateOperationsInput | Date | string
+    nota?: NullableFloatFieldUpdateOperationsInput | number | null
+    retroalimentacion?: NullableStringFieldUpdateOperationsInput | string | null
+    estado?: EnumEntregaEstadoFieldUpdateOperationsInput | $Enums.EntregaEstado
+    calificadoEn?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    calificadoPorId?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type entregasUncheckedUpdateManyWithoutTareasInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    estudianteId?: StringFieldUpdateOperationsInput | string
+    archivos?: NullableJsonNullValueInput | InputJsonValue
+    comentarioAlumno?: NullableStringFieldUpdateOperationsInput | string | null
+    fechaEntrega?: DateTimeFieldUpdateOperationsInput | Date | string
+    nota?: NullableFloatFieldUpdateOperationsInput | number | null
+    retroalimentacion?: NullableStringFieldUpdateOperationsInput | string | null
+    estado?: EnumEntregaEstadoFieldUpdateOperationsInput | $Enums.EntregaEstado
+    calificadoEn?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    calificadoPorId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
 
