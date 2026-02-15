@@ -23,7 +23,7 @@ type NavbarProps = {
 export function Navbar({ title, user }: NavbarProps) {
   const mainProjectUrl =
     process.env.NEXT_PUBLIC_MAIN_PROJECT_URL ??
-    "https://nexus.posgrado.cicap.test";
+    "https://nexus.posgrado.cicap.tech";
   const plan = user?.plan ?? "FREE";
   const PlanIcon = plan === "PRO" ? SparklesIcon : CircleIcon;
   const planLabel = plan === "PRO" ? "PRO" : "BASIC";

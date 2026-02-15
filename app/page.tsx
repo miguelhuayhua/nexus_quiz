@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 export default async function Home() {
   const session = await getServerAuthSession();
   const mainProjectUrl =
-    process.env.MAIN_PROJECT_URL ?? "https://nexus.posgrado.cicap.test";
+    process.env.MAIN_PROJECT_URL ?? "https://nexus.posgrado.cicap.tech";
   const normalizedMainProjectUrl = mainProjectUrl.endsWith("/")
     ? mainProjectUrl.slice(0, -1)
     : mainProjectUrl;

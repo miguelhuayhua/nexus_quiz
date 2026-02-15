@@ -6,7 +6,7 @@ export default withAuth(
     async function proxy(request: NextRequestWithAuth) {
         const token = await getToken({ req: request, secret: process.env.NEXTAUTH_SECRET });
         if (!token) {
-            const mainProjectUrl = process.env.MAIN_PROJECT_URL ?? "https://nexus.posgrado.cicap.test";
+            const mainProjectUrl = process.env.MAIN_PROJECT_URL ?? "https://nexus.posgrado.cicap.tech";
             return NextResponse.redirect(new URL("/login", mainProjectUrl));
         }
 

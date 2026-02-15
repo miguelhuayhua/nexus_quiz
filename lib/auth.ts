@@ -3,7 +3,7 @@ import { getServerSession } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 
 const isProduction = process.env.NODE_ENV === "production";
-const cookieDomain = isProduction ? ".cicap.tech" : ".cicap.test";
+const cookieDomain = isProduction ? ".cicap.tech" : ".cicap.tech";
 
 export const authOptions: NextAuthOptions = {
   providers: [

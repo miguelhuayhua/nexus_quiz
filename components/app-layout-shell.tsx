@@ -203,7 +203,7 @@ function AppSidebar({
                 email={userEmail}
                 image={user?.image}
                 mainProjectUrl={
-                  process.env.NEXT_PUBLIC_MAIN_PROJECT_URL ?? "https://nexus.posgrado.cicap.test"
+                  process.env.NEXT_PUBLIC_MAIN_PROJECT_URL ?? "https://nexus.posgrado.cicap.tech"
                 }
                 name={userName}
                 plan={userPlan}
