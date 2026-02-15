@@ -27,7 +27,7 @@ import { AreaRadarChart, ActivityLineChart } from "./charts";
 
 export const metadata: Metadata = {
     title: "Inicio",
-    description: "Pagina de inicio con resumen de actividad.",
+    description: "Página de inicio con resumen de actividad.",
 };
 
 export const dynamic = "force-dynamic";
@@ -61,7 +61,26 @@ export default async function InicioPage() {
     });
     const hasPro = await hasActiveProSubscription(usuarioEstudianteId);
 
-    const userName = session?.user?.name?.trim() || "Estudiante";
+    let userName = session?.user?.name?.trim() || "Estudiante";
+
+    if (usuarioEstudianteId) {
+        const usuarioEstudiante = await prisma.usuariosEstudiantes.findUnique({
+            where: { id: usuarioEstudianteId },
+            select: {
+                estudiantes: {
+                    select: {
+                        nombre: true,
+                        apellido: true,
+                    },
+                },
+            },
+        });
+
+        if (usuarioEstudiante?.estudiantes) {
+            const { nombre, apellido } = usuarioEstudiante.estudiantes;
+            userName = `${nombre} ${apellido || ""}`.trim();
+        }
+    }
     const planLabel = hasPro ? "PRO" : "BASIC";
     const PlanIcon = hasPro ? SparklesIcon : CircleIcon;
 
@@ -395,7 +414,7 @@ export default async function InicioPage() {
                                 Racha actual
                             </p>
                             <p className="font-bold text-xl tabular-nums">
-                                {rachaActual} {rachaActual === 1 ? "dia" : "dias"}
+                                {rachaActual} {rachaActual === 1 ? "día" : "días"}
                             </p>
                         </div>
                     </CardContent>
@@ -463,7 +482,7 @@ export default async function InicioPage() {
                 <Card>
                     <CardHeader className="pb-3">
                         <CardTitle className="text-sm font-medium">
-                            Tu suscripcion
+                            Tu suscripción
                         </CardTitle>
                     </CardHeader>
                     <CardContent className="pb-4">
@@ -497,7 +516,7 @@ export default async function InicioPage() {
                                 <p className="text-muted-foreground text-xs">
                                     {hasPro
                                         ? "Acceso completo a todos los banqueos."
-                                        : "Acceso limitado. Mejora a PRO para mas contenido."}
+                                        : "Acceso limitado. Mejora a PRO para más contenido."}
                                 </p>
                             </div>
                         </div>

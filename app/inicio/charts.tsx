@@ -49,15 +49,15 @@ export function AreaRadarChart({ data }: AreaRadarChartProps) {
         return (
             <Card>
                 <CardHeader>
-                    <CardTitle>Progreso por Area</CardTitle>
+                    <CardTitle>Progreso por Área</CardTitle>
                     <CardDescription>
-                        Tu rendimiento en cada area del banco de preguntas.
+                        Tu rendimiento en cada área del banco de preguntas.
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
                     <div className="flex h-[300px] items-center justify-center">
                         <p className="text-muted-foreground text-sm">
-                            Aun no hay datos para mostrar. ¡Empieza un banqueo!
+                            Aún no hay datos para mostrar. ¡Empieza un banqueo!
                         </p>
                     </div>
                 </CardContent>
@@ -68,9 +68,9 @@ export function AreaRadarChart({ data }: AreaRadarChartProps) {
     return (
         <Card>
             <CardHeader>
-                <CardTitle>Progreso por Area</CardTitle>
+                <CardTitle>Progreso por Área</CardTitle>
                 <CardDescription>
-                    Tu rendimiento en cada area del banco de preguntas.
+                    Tu rendimiento en cada área del banco de preguntas.
                 </CardDescription>
             </CardHeader>
             <CardContent>
@@ -151,13 +151,13 @@ export function ActivityLineChart({ data }: ActivityLineChartProps) {
                 <CardHeader>
                     <CardTitle>Actividad Reciente</CardTitle>
                     <CardDescription>
-                        Tu actividad en los ultimos 30 dias.
+                        Tu actividad en los últimos 30 días.
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
                     <div className="flex h-[250px] items-center justify-center">
                         <p className="text-muted-foreground text-sm">
-                            Aun no hay actividad registrada.
+                            Aún no hay actividad registrada.
                         </p>
                     </div>
                 </CardContent>
@@ -171,7 +171,7 @@ export function ActivityLineChart({ data }: ActivityLineChartProps) {
                 <div className="flex flex-1 flex-col justify-center gap-1 px-6 pb-3 sm:pb-0">
                     <CardTitle>Actividad Reciente</CardTitle>
                     <CardDescription>
-                        Respuestas en los ultimos 30 dias
+                        Respuestas en los últimos 30 días
                     </CardDescription>
                 </div>
                 <div className="flex">
