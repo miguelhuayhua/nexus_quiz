@@ -49,7 +49,7 @@ export function Loader({
             }}
           >
             <img
-              src="/x.png"
+              src="/X.png"
               alt="Loading..."
               className="h-full w-full object-contain drop-shadow-[0_0_8px_rgba(255,255,255,0.5)] dark:drop-shadow-[0_0_8px_rgba(255,255,255,0.5)]"
             />
