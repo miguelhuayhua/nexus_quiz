@@ -120,6 +120,9 @@ export default async function SolucionarioPage({ params, searchParams }: Props) 
     where: {
       intentos: {
         banqueoId: banco.id,
+        usuarioEstudianteId: {
+          not: usuarioEstudianteId,
+        },
       },
     },
     select: {
@@ -231,7 +234,7 @@ export default async function SolucionarioPage({ params, searchParams }: Props) 
       const avatar = userData?.avatar ?? null;
 
       const currentUsers = stat.optionRecentResponders.get(value) ?? [];
-      if (!currentUsers.some((item) => item.id === userId)) {
+      if (currentUsers.length < 5 && !currentUsers.some((item) => item.id === userId)) {
         currentUsers.push({
           id: userId,
           avatar,

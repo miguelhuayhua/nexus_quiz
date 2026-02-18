@@ -469,7 +469,7 @@ export default function EvaluacionTake({ evaluacion }: { evaluacion: EvaluacionF
   };
 
   return (
-    <div className="min-h-screen bg-background flex flex-col gap-4 items-center   overflow-hidden relative">
+    <div className="min-h-screen bg-background flex flex-col gap-4 items-center pb-32 overflow-hidden relative">
       <AnimatePresence>
         {(isSaving || finalizado) && (
           <motion.div
@@ -607,7 +607,7 @@ export default function EvaluacionTake({ evaluacion }: { evaluacion: EvaluacionF
             </div>
 
             {/* Pagination Container (Numbers + Ellipsis) */}
-            <nav className="flex items-center justify-center gap-1.5 pt-2">
+            <nav className="flex items-center justify-center gap-1.5 pt-4 pb-4">
               {/* Previous group ellipsis */}
               {hasPrevGroup && (
                 <Button
@@ -648,7 +648,7 @@ export default function EvaluacionTake({ evaluacion }: { evaluacion: EvaluacionF
               )}
             </nav>
 
-            <div className="flex items-center justify-between pt-2">
+            <div className="flex items-center justify-between pt-6 pb-10">
               <Button
                 variant="ghost"
                 onClick={goPrev}
