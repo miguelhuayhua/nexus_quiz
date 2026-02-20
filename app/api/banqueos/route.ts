@@ -4,6 +4,7 @@ import { NextResponse } from "next/server";
 import {
   BanqueoTipo,
   BanqueoTipoCreado,
+  EstadoIntento,
   PreguntaEstado,
 } from "@/prisma/generated";
 import { getServerAuthSession } from "@/lib/auth";
@@ -115,6 +116,25 @@ export async function POST(request: Request) {
         actualizadoEn: now,
         preguntas: {
           connect: uniquePreguntaIds.map((id) => ({ id })),
+        },
+        intentos: {
+          create: {
+            id: randomUUID(),
+            usuarioEstudianteId,
+            tiempoDuracion: 0,
+            estado: EstadoIntento.EN_PROGRESO,
+            creadoEn: now,
+            actualizadoEn: now,
+            respuestasIntentos: {
+              create: uniquePreguntaIds.map((id, index) => ({
+                id: randomUUID(),
+                preguntaId: id,
+                orden: index,
+                creadoEn: now,
+                actualizadoEn: now,
+              })),
+            },
+          },
         },
       },
       select: {

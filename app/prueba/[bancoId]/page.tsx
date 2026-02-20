@@ -2,7 +2,7 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 
-import { BanqueoTipo, EstadoIntento, PreguntaEstado } from "@/prisma/generated";
+import { BanqueoTipo, BanqueoTipoCreado, EstadoIntento, PreguntaEstado } from "@/prisma/generated";
 import { getServerAuthSession } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import {
@@ -134,6 +134,16 @@ export default async function EvaluacionPage({ params, searchParams }: Props) {
   const banco = await prisma.banqueo.findFirst({
     where: {
       id: resolvedParams.bancoId,
+      OR: [
+        { tipoCreado: BanqueoTipoCreado.ADMIN },
+        {
+          intentos: {
+            some: {
+              usuarioEstudianteId,
+            },
+          },
+        },
+      ],
     },
     select: {
       id: true,

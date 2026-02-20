@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import { BanqueoTipoCreado } from "@/prisma/generated";
 import { getServerAuthSession } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { resolveUsuarioEstudianteIdFromSession } from "@/lib/subscription-access";
 
 export async function DELETE(
   _request: Request,
@@ -20,8 +21,25 @@ export async function DELETE(
       return NextResponse.json({ message: "ID invalido." }, { status: 400 });
     }
 
-    const existing = await prisma.banqueo.findUnique({
-      where: { id: banqueoId },
+    const usuarioEstudianteId = await resolveUsuarioEstudianteIdFromSession({
+      userId: session.user.id,
+      email: session.user.email ?? null,
+    });
+
+    const existing = await prisma.banqueo.findFirst({
+      where: {
+        id: banqueoId,
+        OR: [
+          { tipoCreado: BanqueoTipoCreado.ADMIN },
+          {
+            intentos: {
+              some: {
+                usuarioEstudianteId,
+              },
+            },
+          },
+        ],
+      },
       select: { id: true, tipoCreado: true },
     });
 

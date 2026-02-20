@@ -64,6 +64,11 @@ export default async function MisBanqueoDetailPage({
     where: {
       id: bancoId,
       tipoCreado: BanqueoTipoCreado.ESTUDIANTE,
+      intentos: {
+        some: {
+          usuarioEstudianteId,
+        },
+      },
     },
     select: {
       id: true,

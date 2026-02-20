@@ -30,6 +30,11 @@ export default async function MisBanqueosPage() {
   const banqueos = await prisma.banqueo.findMany({
     where: {
       tipoCreado: BanqueoTipoCreado.ESTUDIANTE,
+      intentos: {
+        some: {
+          usuarioEstudianteId,
+        },
+      },
     },
     select: {
       id: true,
