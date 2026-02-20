@@ -54,9 +54,9 @@ export default function MisBanqueosClient({
   const [banqueoToDeleteId, setBanqueoToDeleteId] = React.useState<string | null>(null);
   const [isDeleting, setIsDeleting] = React.useState(false);
 
-  const whatsappNumber = process.env.NEXT_PUBLIC_MARKET_WHATSAPP ?? "51999999999";
+  const whatsappNumber = "59174085867";
   const whatsappHref = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(
-    "Hola, quiero solicitar una cuenta Pro para crear banqueos.",
+    "¡Hola quiero solicitar mi cuenta PRO!, para los banqueos de Residencia Médica.",
   )}`;
 
   const onDeleteBanqueo = React.useCallback(async () => {
@@ -124,7 +124,7 @@ export default function MisBanqueosClient({
             variant="outline"
           >
             <MessageCircleIcon className="size-4" />
-            Solicitar cuenta Pro
+            Consulta y compra de bancos
           </Button>
         </div>
       )}
@@ -143,7 +143,7 @@ export default function MisBanqueosClient({
           <EmptyContent>
             {!hasPro ? (
               <p className="text-muted-foreground text-sm">
-                Usa el boton superior para solicitar tu cuenta Pro.
+                Usa el botón superior para realizar tu consulta y compra de bancos.
               </p>
             ) : null}
           </EmptyContent>
