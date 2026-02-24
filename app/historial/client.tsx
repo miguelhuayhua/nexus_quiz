@@ -131,7 +131,11 @@ export default function HistorialClient({
   cohortPuntajesPorcentaje: number[];
 }) {
   const totalRespuestasGlobales = React.useMemo(
-    () => intentos.reduce((acc, item) => acc + item.correctas + item.incorrectas, 0),
+    () =>
+      intentos.reduce((acc, item) => {
+        if (item.estado === "EN_PROGRESO") return acc;
+        return acc + item.correctas + item.incorrectas;
+      }, 0),
     [intentos],
   );
 
@@ -205,7 +209,7 @@ export default function HistorialClient({
         header: ({ column }) => <DataTableColumnHeader column={column} label="Correctas" />,
         cell: ({ row }) => (
           <span className="font-medium text-emerald-600 dark:text-emerald-400">
-            {row.original.correctas}
+            {row.original.estado === "EN_PROGRESO" ? "-" : row.original.correctas}
           </span>
         ),
       },
@@ -214,20 +218,24 @@ export default function HistorialClient({
         accessorFn: (row) => row.incorrectas,
         header: ({ column }) => <DataTableColumnHeader column={column} label="Incorrectas" />,
         cell: ({ row }) => (
-          <span className="font-medium text-destructive">{row.original.incorrectas}</span>
+          <span className="font-medium text-destructive">
+            {row.original.estado === "EN_PROGRESO" ? "-" : row.original.incorrectas}
+          </span>
         ),
       },
       {
         id: "precision",
         accessorFn: (row) => row.precision,
         header: ({ column }) => <DataTableColumnHeader column={column} label="Precision" />,
-        cell: ({ row }) => `${row.original.precision}%`,
+        cell: ({ row }) =>
+          row.original.estado === "EN_PROGRESO" ? "-" : `${row.original.precision}%`,
       },
       {
         id: "puntaje",
         accessorFn: (row) => row.puntajePorcentaje,
         header: ({ column }) => <DataTableColumnHeader column={column} label="Puntaje" />,
-        cell: ({ row }) => `${row.original.puntajePorcentaje}%`,
+        cell: ({ row }) =>
+          row.original.estado === "EN_PROGRESO" ? "-" : `${row.original.puntajePorcentaje}%`,
       },
       {
         id: "accion",
@@ -281,6 +289,7 @@ export default function HistorialClient({
   const precisionByIntento = React.useMemo(
     () =>
       intentos
+        .filter((item) => item.estado !== "EN_PROGRESO")
         .slice()
         .reverse()
         .map((item, index) => ({
@@ -291,8 +300,9 @@ export default function HistorialClient({
   );
 
   const respuestasPieData = React.useMemo(() => {
-    const totalCorrectas = intentos.reduce((acc, item) => acc + item.correctas, 0);
-    const totalIncorrectas = intentos.reduce((acc, item) => acc + item.incorrectas, 0);
+    const intentosFinalizados = intentos.filter((item) => item.estado !== "EN_PROGRESO");
+    const totalCorrectas = intentosFinalizados.reduce((acc, item) => acc + item.correctas, 0);
+    const totalIncorrectas = intentosFinalizados.reduce((acc, item) => acc + item.incorrectas, 0);
     return [
       { name: "correctas", value: totalCorrectas, fill: "var(--color-correctas)" },
       { name: "incorrectas", value: totalIncorrectas, fill: "var(--color-incorrectas)" },
@@ -300,7 +310,7 @@ export default function HistorialClient({
   }, [intentos]);
 
   const personalPuntajesPorcentaje = React.useMemo(
-    () => intentos.map((row) => row.puntajePorcentaje),
+    () => intentos.filter((row) => row.estado !== "EN_PROGRESO").map((row) => row.puntajePorcentaje),
     [intentos],
   );
 

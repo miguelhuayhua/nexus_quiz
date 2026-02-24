@@ -39,6 +39,7 @@ type PreguntaRender = {
   assets?: Asset[] | null;
   solucionKind?: string | null;
   dificultad?: "SENCILLO" | "MEDIO" | "DIFICIL";
+  originalIndex?: number;
 };
 
 export type EvaluacionForClient = {
@@ -108,7 +109,15 @@ export default function EvaluacionTake({ evaluacion }: { evaluacion: EvaluacionF
   }, [evaluacion.id, intentoId]);
 
   const baseTimeLeft = evaluacion.initialTimeLeft ?? evaluacion.tiempoSegundos;
+
+  const preguntasBase = React.useMemo(() => {
+    return evaluacion.preguntas.map((p, i) => ({ ...p, originalIndex: i + 1 }));
+  }, [evaluacion.preguntas]);
+
+  const [preguntas, setPreguntas] = React.useState<PreguntaRender[]>(preguntasBase);
+
   const [currentIndex, setCurrentIndex] = React.useState(evaluacion.initialCurrentIndex ?? 0);
+
   const [responses, setResponses] = React.useState<Record<string, string>>(evaluacion.savedResponses ?? {});
   const [finalizado, setFinalizado] = React.useState(false);
   const [timeLeft, setTimeLeft] = React.useState(baseTimeLeft);
@@ -157,12 +166,19 @@ export default function EvaluacionTake({ evaluacion }: { evaluacion: EvaluacionF
 
       if (parsed.responses) {
         setResponses(parsed.responses);
-      }
-      if (typeof parsed.currentIndex === "number") {
-        setCurrentIndex(Math.max(0, Math.min(questionCount - 1, parsed.currentIndex)));
+        const combinedResponses = { ...evaluacion.savedResponses, ...parsed.responses };
+        const firstUnanswered = evaluacion.preguntas.findIndex((p) => !combinedResponses[p.id]);
+        if (firstUnanswered !== -1) {
+          setCurrentIndex(firstUnanswered);
+        } else {
+          setCurrentIndex(0);
+        }
+      } else {
+        const firstUnanswered = evaluacion.preguntas.findIndex((p) => !(evaluacion.savedResponses ?? {})[p.id]);
+        setCurrentIndex(firstUnanswered !== -1 ? firstUnanswered : 0);
       }
       setTimeLeft(nextTimeLeft);
-      setIsPaused(parsed.isPaused ?? false);
+      setIsPaused(false);
     } catch {
       // ignore invalid cache
     }
@@ -434,8 +450,20 @@ export default function EvaluacionTake({ evaluacion }: { evaluacion: EvaluacionF
 
   if (!currentQuestion) return null;
 
+  // Compute set of answered question IDs from the same `responses` state the RadioGroup uses
+  const answeredIds = React.useMemo(() => {
+    const set = new Set<string>();
+    for (const q of evaluacion.preguntas) {
+      const val = responses[q.id];
+      if (val && val.trim().length > 0) {
+        set.add(q.id);
+      }
+    }
+    return set;
+  }, [responses, evaluacion.preguntas]);
+
   // Pagination Logic – grouped with lateral ellipsis buttons
-  const PAGE_GROUP_SIZE = 5;
+  const PAGE_GROUP_SIZE = 10;
   const totalGroups = Math.ceil(questionCount / PAGE_GROUP_SIZE);
   const activeGroup = Math.floor(currentIndex / PAGE_GROUP_SIZE);
   const [pageGroup, setPageGroup] = React.useState(activeGroup);
@@ -606,26 +634,35 @@ export default function EvaluacionTake({ evaluacion }: { evaluacion: EvaluacionF
               )}
             </div>
 
-            {/* Pagination Container (Numbers + Ellipsis) */}
-            <nav className="flex items-center justify-center gap-1.5 pt-4 pb-4">
-              {/* Previous group ellipsis */}
-              {hasPrevGroup && (
-                <Button
-                  size="icon-sm"
-                  variant="ghost"
-                  onClick={() => setPageGroup((g) => Math.max(0, g - 1))}
-                  title="Grupo anterior"
-                >
-                  <MoreHorizontal className="size-4" />
-                </Button>
-              )}
+          </motion.div>
+        </AnimatePresence>
 
-              {/* Page numbers */}
-              {visiblePages.map((page) => (
+        {/* Pagination Container – OUTSIDE AnimatePresence so it re-renders on responses change */}
+        <nav className="flex items-center justify-center gap-1.5 pt-4 pb-4">
+          {/* Previous group ellipsis */}
+          {hasPrevGroup && (
+            <Button
+              size="icon-sm"
+              variant="ghost"
+              onClick={() => setPageGroup((g) => Math.max(0, g - 1))}
+              title="Grupo anterior"
+            >
+              <MoreHorizontal className="size-4" />
+            </Button>
+          )}
+
+          {/* Page numbers */}
+          {visiblePages.map((page) => {
+            const p = evaluacion.preguntas[page];
+            const isAnswered = answeredIds.has(p.id);
+            const isCurrent = currentIndex === page;
+
+            if (isCurrent) {
+              return (
                 <Button
                   key={page}
                   size="icon-sm"
-                  variant={currentIndex === page ? "default" : "outline"}
+                  variant="default"
                   onClick={() => {
                     setDirection(page > currentIndex ? 1 : -1);
                     setCurrentIndex(page);
@@ -633,53 +670,78 @@ export default function EvaluacionTake({ evaluacion }: { evaluacion: EvaluacionF
                 >
                   {page + 1}
                 </Button>
-              ))}
+              );
+            }
 
-              {/* Next group ellipsis */}
-              {hasNextGroup && (
-                <Button
-                  size="icon-sm"
-                  variant="ghost"
-                  onClick={() => setPageGroup((g) => Math.min(totalGroups - 1, g + 1))}
-                  title="Grupo siguiente"
-                >
-                  <MoreHorizontal className="size-4" />
-                </Button>
-              )}
-            </nav>
-
-            <div className="flex items-center justify-between pt-6 pb-10">
-              <Button
-                variant="ghost"
-                onClick={goPrev}
-                disabled={currentIndex === 0}
-                className="font-bold"
+            return (
+              <button
+                key={page}
+                type="button"
+                onClick={() => {
+                  setDirection(page > currentIndex ? 1 : -1);
+                  setCurrentIndex(page);
+                }}
+                style={
+                  isAnswered
+                    ? {
+                      backgroundColor: "rgba(100, 100, 120, 0.4)",
+                      color: "rgba(160, 160, 180, 0.65)",
+                      border: "none",
+                    }
+                    : {
+                      backgroundColor: "transparent",
+                      color: "inherit",
+                      border: "1px solid rgba(140, 140, 160, 0.5)",
+                    }
+                }
+                className="flex size-8 sm:size-7 items-center justify-center rounded-lg text-sm font-medium transition-colors cursor-pointer"
               >
-                <ChevronLeft />
-                Atrás
-              </Button>
-              {currentIndex < questionCount - 1 ? (
-                <Button
-                  variant="ghost"
-                  onClick={goNext}
-                  className="font-bold"
-                >
-                  Siguiente
-                  <ChevronRight />
-                </Button>
-              ) : (
-                <Button
-                  onClick={() => setIsFinalizeDialogOpen(true)}
-                  className="font-bold"
-                >
-                  Finalizar
-                </Button>
-              )}
-            </div>
+                {page + 1}
+              </button>
+            );
+          })}
 
+          {/* Next group ellipsis */}
+          {hasNextGroup && (
+            <Button
+              size="icon-sm"
+              variant="ghost"
+              onClick={() => setPageGroup((g) => Math.min(totalGroups - 1, g + 1))}
+              title="Grupo siguiente"
+            >
+              <MoreHorizontal className="size-4" />
+            </Button>
+          )}
+        </nav>
 
-          </motion.div>
-        </AnimatePresence>
+        <div className="flex items-center justify-between pt-6 pb-10">
+          <Button
+            variant="ghost"
+            onClick={goPrev}
+            disabled={currentIndex === 0}
+            className="font-bold"
+          >
+            <ChevronLeft />
+            Atrás
+          </Button>
+          {currentIndex < questionCount - 1 ? (
+            <Button
+              variant="ghost"
+              onClick={goNext}
+              className="font-bold"
+            >
+              Siguiente
+              <ChevronRight />
+            </Button>
+          ) : (
+            <Button
+              onClick={() => setIsFinalizeDialogOpen(true)}
+              className="font-bold"
+            >
+              Finalizar
+            </Button>
+          )}
+        </div>
       </div>
 
       {/* Fixed Bottom Bar */}

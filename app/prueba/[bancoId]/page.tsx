@@ -154,6 +154,9 @@ export default async function EvaluacionPage({ params, searchParams }: Props) {
         where: {
           estado: PreguntaEstado.DISPONIBLE,
         },
+        orderBy: {
+          id: "asc",
+        },
         select: {
           id: true,
           codigo: true,
@@ -295,6 +298,9 @@ export default async function EvaluacionPage({ params, searchParams }: Props) {
       .filter((entry) => entry[1].trim().length > 0),
   );
 
+  const initialCurrentIndexTemp = banco.preguntas.findIndex((pregunta) => !savedResponses[pregunta.id]);
+  const initialCurrentIndex = initialCurrentIndexTemp !== -1 ? initialCurrentIndexTemp : 0;
+
   const gestiones = banco.preguntas.map((pregunta) => pregunta.gestion);
   const areas = Array.from(
     new Set(banco.preguntas.flatMap((pregunta) => pregunta.areas.map((area) => area.titulo))),
@@ -314,8 +320,8 @@ export default async function EvaluacionPage({ params, searchParams }: Props) {
     gestion: gestiones.length > 0 ? Math.max(...gestiones) : new Date().getFullYear(),
     tiempoSegundos: banco.duracion * 60,
     initialTimeLeft: Math.max(0, (banco.duracion * 60) - Math.max(0, intentoActivo.tiempoDuracion)),
-    initialCurrentIndex: 0,
-    initialIsPaused: isResumed,
+    initialCurrentIndex,
+    initialIsPaused: false,
     savedResponses,
     intentoId: intentoActivo.id,
     areas,
