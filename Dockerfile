@@ -39,7 +39,7 @@ COPY --from=builder /app/.next/static ./.next/static
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/prisma ./prisma
 
-# Usar usuario 'node' para seguridad
+# Usar usuario 'node' para seguridad  
 USER node
 
 EXPOSE 3002

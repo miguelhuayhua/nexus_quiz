@@ -17,7 +17,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Empty,
   EmptyContent,
@@ -173,7 +173,7 @@ export default function MisBanqueosClient({
                       : new Date(item.actualizadoEn).getFullYear()}
                   </Badge>
                 </div>
-                <div className="mb-3 space-y-1 text-xs">
+                <div className="space-y-1 text-xs">
                   <p className="text-muted-foreground">
                     Temas: {item.temas.slice(0, 3).join(", ") || "Sin temas"}
                   </p>
@@ -184,6 +184,8 @@ export default function MisBanqueosClient({
                     Capítulos: {item.capitulos.slice(0, 3).join(", ") || "Sin capítulos"}
                   </p>
                 </div>
+              </CardContent>
+              <CardFooter>
                 <div className="flex w-full items-center gap-2">
                   <Button className="flex-1" render={<Link href={`/mis-banqueos/${item.id}`} />} size="sm" variant="outline">
                     Detalles
@@ -212,7 +214,7 @@ export default function MisBanqueosClient({
                     <Trash2Icon className="size-4" />
                   </Button>
                 </div>
-              </CardContent>
+              </CardFooter>
             </Card>
           ))}
         </div>

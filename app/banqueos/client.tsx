@@ -5,7 +5,7 @@ import { LockIcon, PlayIcon, SparklesIcon } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Empty,
   EmptyContent,
@@ -92,7 +92,7 @@ function BanqueoList({
               {!canAccess && <Badge variant="secondary">Pro</Badge>}
             </div>
             <CardDescription>
-              Tiempo: {Math.max(1, Math.ceil(item.duracion / 60))} min
+              Tiempo: {item.duracion} min
             </CardDescription>
           </CardHeader>
           <CardContent className="pt-0">
@@ -107,7 +107,7 @@ function BanqueoList({
                   : new Date(item.actualizadoEn).getFullYear()}
               </Badge>
             </div>
-            <div className="mb-3 space-y-1 text-xs">
+            <div className="space-y-1 text-xs">
               <p className="text-muted-foreground">
                 Temas: {item.temas.slice(0, 3).join(", ") || "Sin temas"}
               </p>
@@ -118,8 +118,10 @@ function BanqueoList({
                 Capítulos: {item.capitulos.slice(0, 3).join(", ") || "Sin capítulos"}
               </p>
             </div>
+          </CardContent>
+          <CardFooter>
             {canAccess ? (
-              <div className="flex gap-2">
+              <div className="flex w-full gap-2">
                 <Button className="flex-1" render={<Link href={`/banqueos/${item.id}`} />} size="sm" variant="outline">
                   Detalles
                 </Button>
@@ -145,7 +147,7 @@ function BanqueoList({
                 Bloqueado
               </Button>
             )}
-          </CardContent>
+          </CardFooter>
         </Card>
       ))}
     </div>

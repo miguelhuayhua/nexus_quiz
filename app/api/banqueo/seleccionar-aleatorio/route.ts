@@ -153,7 +153,7 @@ export async function POST(request: Request) {
       )
       : [];
 
-    const where: Prisma.preguntasWhereInput = {
+    const baseWhere: Prisma.preguntasWhereInput = {
       estado: PreguntaEstado.DISPONIBLE,
       ...(gestiones.length ? { gestion: { in: gestiones } } : {}),
       ...(temas.length ? { temas: { some: { id: { in: temas } } } } : {}),
@@ -161,29 +161,56 @@ export async function POST(request: Request) {
         ? { capitulos: { some: { id: { in: capitulos } } } }
         : {}),
       ...(areas.length ? { areas: { some: { id: { in: areas } } } } : {}),
+    };
+
+    const whereWithDifficulty: Prisma.preguntasWhereInput = {
+      ...baseWhere,
       ...(dificultades.length ? { dificultad: { in: dificultades } } : {}),
     };
 
-    const preguntas = await prisma.preguntas.findMany({
-      where,
-      select: {
-        id: true,
-        codigo: true,
-        enunciado: true,
-        dificultad: true,
-        gestion: true,
-        temas: { select: { titulo: true } },
-        capitulos: { select: { titulo: true } },
-        areas: { select: { titulo: true } },
-      },
+    const select = {
+      id: true,
+      codigo: true,
+      enunciado: true,
+      dificultad: true,
+      gestion: true,
+      temas: { select: { titulo: true } },
+      capitulos: { select: { titulo: true } },
+      areas: { select: { titulo: true } },
+    };
+
+    const primaryPreguntas = await prisma.preguntas.findMany({
+      where: whereWithDifficulty,
+      select,
     });
 
-    if (preguntas.length === 0) {
+    // Shuffle and take from the primary pool (matching selected difficulty)
+    let selectedPool = shuffleArray(primaryPreguntas);
+    let finalPreguntas = selectedPool.slice(0, count);
+
+    // Fallback: if we don't have enough questions with the specific difficulty,
+    // fetch more from the same filters but ignoring difficulty to fill the 'count'
+    if (finalPreguntas.length < count && dificultades.length > 0) {
+      const remainingCount = count - finalPreguntas.length;
+      const fallbackPreguntas = await prisma.preguntas.findMany({
+        where: {
+          ...baseWhere,
+          id: { notIn: primaryPreguntas.map((p) => p.id) },
+        },
+        select,
+      });
+
+      const shuffledFallback = shuffleArray(fallbackPreguntas);
+      finalPreguntas = [...finalPreguntas, ...shuffledFallback.slice(0, remainingCount)];
+    }
+
+    if (finalPreguntas.length === 0) {
       return NextResponse.json({ preguntas: [] });
     }
 
-    const selected = shuffleArray(preguntas).slice(0, count).map(mapPreguntaItem);
-    return NextResponse.json({ preguntas: selected });
+    return NextResponse.json({
+      preguntas: finalPreguntas.map(mapPreguntaItem),
+    });
   } catch {
     return NextResponse.json(
       { message: "No se pudo generar el banqueo aleatorio." },

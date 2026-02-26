@@ -220,7 +220,7 @@ export default async function BanqueoDetailPage({
             <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3">
               <div className="rounded-md border p-2">
                 <p className="font-semibold text-sm">Duracion</p>
-                <p className="text-sm text-muted-foreground">{Math.max(1, Math.ceil(banqueo.duracion / 60))} min</p>
+                <p className="text-sm text-muted-foreground">{banqueo.duracion} min</p>
               </div>
               <div className="rounded-md border p-2">
                 <p className="font-semibold text-sm">Preguntas</p>
