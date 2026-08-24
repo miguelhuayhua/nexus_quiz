@@ -20,6 +20,10 @@
     "hooks": "@/hooks"
   },
   "registries": {
-    "@coss": "https://coss.com/ui/r/{name}.json"
+    "@coss": "https://coss.com/ui/r/{name}.json",
+    "@diceui": "https://diceui.com/r/{style}/{name}.json",
+    "@smoothui": "https://smoothui.dev/r/{name}.json",
+    "@magicui": "https://magicui.design/r/{name}",
+    "@shadcn-space": "https://shadcnspace.com/r/{name}.json"
   }
 }

@@ -16,6 +16,7 @@ import { Badge } from "@/components/ui/badge";
 import { compareRespuesta, normalizeSolucion, parseRespuesta } from "@/lib/evaluacion-eval";
 import { toast } from "sonner";
 import { Loader } from "@/components/ui/loader";
+import CountingNumber from "@/components/ui/counting-number";
 
 type Asset = { kind: string; url: string; alt?: string; title?: string; orden?: number };
 type PreguntaTipo = "ABIERTA" | "CERRADA";
@@ -295,49 +296,36 @@ export default function RepasoTakeClient({
 
     if ((isFinished || !currentQuestion) && !isPreview) {
         return (
-            <div className="min-h-screen bg-background flex flex-col items-center justify-center p-6 gap-6 max-w-sm mx-auto text-center font-sans">
+            <div className="space-y-6 max-w-5xl mx-auto text-center ">
                 {loadingOverlay}
-                <CheckCircle2 className="w-12 h-12 text-emerald-500" />
-                <div className="space-y-1">
-                    <h1 className="text-xl font-bold">Repaso completado</h1>
-                    <p className="text-sm text-muted-foreground">Terminaste el repaso. Estos son tus resultados:</p>
-                </div>
-                <div className="w-full grid gap-2 text-left text-sm">
-                    <div className="flex items-center justify-between rounded-lg border px-3 py-2">
+                <h1 className="text-3xl">Repaso completado</h1>
+                <p className="text-muted-foreground">Terminaste el repaso. Estos son tus resultados:</p>
+                <div className=" grid grid-cols-4 gap-2 ">
+                    <div className="flex flex-col items-center gap-1">
                         <span>Total</span>
-                        <span className="font-semibold">{totalQuestions}</span>
+                        <CountingNumber number={totalQuestions} className="text-4xl" />
                     </div>
-                    <div className="flex items-center justify-between rounded-lg border px-3 py-2">
+                    <div className="flex flex-col items-center gap-1">
                         <span>Aciertos</span>
-                        <span className="font-semibold text-emerald-600">{correctCount}</span>
+                        <CountingNumber number={correctCount} className="text-4xl text-emerald-600" />
                     </div>
-                    <div className="flex items-center justify-between rounded-lg border px-3 py-2">
+                    <div className="flex flex-col items-center gap-1">
                         <span>Fallos</span>
-                        <span className="font-semibold text-destructive">{incorrectCount}</span>
+                        <CountingNumber number={incorrectCount} className="text-4xl text-destructive" />
                     </div>
-                    <div className="flex items-center justify-between rounded-lg border px-3 py-2">
-                        <span>Fallos históricos revisados</span>
-                        <span className="font-semibold">{fallosHistoricos}</span>
+                    <div className="flex flex-col items-center gap-1">
+                        <span>Fallos históricos</span>
+                        <CountingNumber number={fallosHistoricos} className="text-4xl" />
                     </div>
-                    <div className="rounded-lg border px-3 py-2 space-y-1">
-                        <div className="flex items-center justify-between">
-                            <span>Mejora histórica</span>
-                            <span className={`font-semibold ${deltaRate >= 0 ? "text-emerald-600" : "text-destructive"}`}>
-                                {deltaRate >= 0 ? "+" : ""}{deltaRate}%
-                            </span>
-                        </div>
-                        <p className="text-xs text-muted-foreground leading-tight">
-                            Cambio en tu precisión acumulada de repaso. Compara tu tasa de aciertos antes ({Math.round(prevRate)}%) vs después ({Math.round(newRate)}%) de esta sesión.
-                        </p>
-                    </div>
+
                 </div>
-                <div className="flex flex-col gap-2 w-full">
+                <div className="space-x-2">
                     <Button onClick={handleFinalize} disabled={isMarking}>
                         Terminar y Borrar Repaso
                     </Button>
                     <Button onClick={() => {
                         router.replace('/repaso')
-                    }} variant="outline" >
+                    }} variant="destructive-outline" >
                         Salir sin Guardar
                     </Button>
                 </div>
@@ -348,239 +336,207 @@ export default function RepasoTakeClient({
     const isMulti = currentQuestion.solucionKind === "CHOICE_MULTI" || currentQuestion.solucion?.kind === "CHOICE_MULTI";
 
     return (
-        <div className="min-h-screen bg-background flex flex-col items-center px-4 py-8 gap-6 w-full max-w-xl mx-auto font-sans">
+        <div className="flex flex-col items-center gap-6 w-full max-w-3xl mx-auto">
             {loadingOverlay}
             <header className="text-center space-y-2">
                 <div className="flex flex-col items-center gap-1">
-                    <h1 className="text-xl font-bold">{banqueo.titulo}</h1>
-                    <Badge variant="outline" className="font-semibold">
+                    <h1 className="text-2xl">{banqueo.titulo}</h1>
+                    <Badge variant="outline" >
                         MODO REPASO
                     </Badge>
                 </div>
-                <p className="text-sm text-muted-foreground">
-                    {activeQuestions.length} preguntas restantes
+                <p className=" text-muted-foreground">
+                    {activeQuestions.length} preguntas
                 </p>
             </header>
 
-            <div className="w-full flex-1 space-y-4">
-                <motion.div key={currentQuestion.id} initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="w-full space-y-6">
-                    <div className="space-y-3">
-                        {(currentQuestion.temaNombre || currentQuestion.temaDescripcion) && (
-                            <div >
-                                {currentQuestion.temaNombre && (
-                                    <p className="text-xs font-semibold text-center uppercase tracking-wide text-primary">
-                                        {currentQuestion.temaNombre}
-                                    </p>
-                                )}
-                                {currentQuestion.temaDescripcion && (
-                                    <p className="text-sm text-center text-muted-foreground">
-                                        {currentQuestion.temaDescripcion}
-                                    </p>
-                                )}
-                            </div>
-                        )}
-                        {currentQuestion.codigo && (
-                            <Badge variant="outline">{currentQuestion.codigo}</Badge>
-                        )}
-                        <h2 className="text-sm font-medium space-x-2">
+            <motion.div key={currentQuestion.id} initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="w-full space-y-6">
+                <div className="space-y-3">
 
-                            <span className="font-bold text-primary shrink-0">Pregunta.-</span>
-                            <span className="text-foreground">{currentQuestion.enunciado}</span>
-                        </h2>
-                        <p className="text-xs text-muted-foreground">
-                            Fallada anteriormente: {currentQuestion.failCount ?? 1} vez/veces
-                        </p>
-                        <div className="flex flex-wrap items-center gap-2">
-                            <Badge variant="outline" className={getDificultadClass(currentQuestion.dificultad)}>
-                                Dificultad: {getDificultadLabel(currentQuestion.dificultad)}
-                            </Badge>
-                            <span className="text-muted-foreground text-xs">
-                                Histórica: {currentQuestion.tasaAciertoHistorica ?? 0}% de acierto
-                            </span>
+                    <h2 className="text-md space-x-2">
+
+                        <span className=" text-primary">Pregunta.-</span>
+                        <span className="text-foreground">{currentQuestion.enunciado}</span>
+                    </h2>
+                    <Badge variant="outline" className={getDificultadClass(currentQuestion.dificultad)}>
+                        Dificultad: {getDificultadLabel(currentQuestion.dificultad)}
+                    </Badge>
+                    {showFeedback && currentQuestion.explicacion?.trim() && (
+                        <div className="rounded-lg border border-emerald-500 p-3">
+                            <p className="text-xs font-medium text-emerald-500">
+                                Explicación
+                            </p>
+                            <p className="text-xs text-muted-foreground">
+                                {currentQuestion.explicacion}
+                            </p>
                         </div>
-                        {showFeedback && currentQuestion.explicacion?.trim() && (
-                            <div className="rounded-lg border border-emerald-500/50 bg-emerald-500/10 p-3">
-                                <p className="text-xs font-medium text-emerald-500">
-                                    Explicación
-                                </p>
-                                <p className="mt-1 text-sm text-emerald-500">
-                                    {currentQuestion.explicacion}
-                                </p>
-                            </div>
-                        )}
-                        {currentQuestion.assets?.map((asset, i) => (
-                            <div key={i} className="flex justify-center py-1">
-                                <Image src={asset.url} alt="recurso" width={500} height={300} className="rounded-lg border w-full max-h-60 object-contain" />
-                            </div>
-                        ))}
-                    </div>
+                    )}
 
-                    <div className="grid gap-2">
-                        {currentQuestion.tipo === "CERRADA" ? (
-                            normalizeOptions(currentQuestion.opciones).map((opt: any, idx: number) => {
-                                const val = String(opt.value).trim().toLowerCase();
-                                const isSelected = isMulti
-                                    ? responses[currentQuestion.id]?.toLowerCase().includes(val)
-                                    : responses[currentQuestion.id] === val;
-                                const effectiveShowFeedback = isPreview ? true : showFeedback;
+                </div>
 
-                                // Comparison logic for UI feedback
-                                const kind = currentQuestion.solucionKind || currentQuestion.solucion?.kind || undefined;
-                                const solValue = normalizeSolucion(currentQuestion.solucion?.value, kind);
-                                const optionCandidates = getOptionCandidateValues(opt);
-                                const solvedValues = Array.isArray(solValue) ? solValue : [solValue];
-                                const isOptionCorrect = solValue !== null && optionCandidates.some((candidate) =>
-                                    solvedValues.some((solved) => compareRespuesta(candidate, solved))
-                                );
-                                const correctAlt = Array.isArray(solValue)
-                                    ? (solValue as any[]).find(sv => getVal(sv) === val)?.alt
-                                    : (getVal(solValue) === val ? (solValue as any)?.alt : undefined);
+                <div className="grid gap-2">
+                    {currentQuestion.tipo === "CERRADA" ? (
+                        normalizeOptions(currentQuestion.opciones).map((opt: any, idx: number) => {
+                            const val = String(opt.value).trim().toLowerCase();
+                            const isSelected = isMulti
+                                ? responses[currentQuestion.id]?.toLowerCase().includes(val)
+                                : responses[currentQuestion.id] === val;
+                            const effectiveShowFeedback = isPreview ? true : showFeedback;
 
-                                let bgClass = isSelected ? "bg-primary/5 border-primary shadow-sm" : "border-border/60 hover:bg-muted/30";
-                                let icon = null;
+                            // Comparison logic for UI feedback
+                            const kind = currentQuestion.solucionKind || currentQuestion.solucion?.kind || undefined;
+                            const solValue = normalizeSolucion(currentQuestion.solucion?.value, kind);
+                            const optionCandidates = getOptionCandidateValues(opt);
+                            const solvedValues = Array.isArray(solValue) ? solValue : [solValue];
+                            const isOptionCorrect = solValue !== null && optionCandidates.some((candidate) =>
+                                solvedValues.some((solved) => compareRespuesta(candidate, solved))
+                            );
+                            const correctAlt = Array.isArray(solValue)
+                                ? (solValue as any[]).find(sv => getVal(sv) === val)?.alt
+                                : (getVal(solValue) === val ? (solValue as any)?.alt : undefined);
 
-                                if (effectiveShowFeedback) {
-                                    if (isSelected) {
-                                        bgClass = isOptionCorrect ? "bg-emerald-500/10 border-emerald-500" : "bg-destructive/10 border-destructive";
-                                        icon = isOptionCorrect ? <CheckCircle2 className="w-5 h-5 text-emerald-600" /> : <XCircle className="w-5 h-5 text-destructive" />;
-                                    } else if (isOptionCorrect) {
-                                        bgClass = "border-emerald-500 bg-emerald-500/10";
-                                        icon = <CheckCircle2 className="w-5 h-5 text-emerald-600" />;
-                                    }
-                                } else {
-                                    if (isMulti) {
-                                        icon = <Checkbox checked={isSelected} className={cn("pointer-events-none", isSelected && "border-primary")} />;
-                                    } else {
-                                        icon = isSelected ? <div className="w-2 h-2 bg-primary rounded-full transition-all" /> : null;
-                                    }
+                            let bgClass = isSelected ? "bg-primary/5 border-primary " : "border-border/60 hover:bg-muted/30";
+                            let icon = null;
+
+                            if (effectiveShowFeedback) {
+                                if (isSelected) {
+                                    bgClass = isOptionCorrect ? "bg-emerald-500/10 border-emerald-500" : "bg-destructive/10 border-destructive";
+                                    icon = isOptionCorrect ? <CheckCircle2 className="w-5 h-5 text-emerald-600" /> : <XCircle className="w-5 h-5 text-destructive" />;
+                                } else if (isOptionCorrect) {
+                                    bgClass = "border-emerald-500 bg-emerald-500/10";
+                                    icon = <CheckCircle2 className="w-5 h-5 text-emerald-600" />;
                                 }
+                            } else {
+                                if (isMulti) {
+                                    icon = <Checkbox checked={isSelected} className={cn("pointer-events-none", isSelected && "border-primary")} />;
+                                } else {
+                                    icon = isSelected ? <div className="w-2 h-2 bg-primary rounded-full transition-all" /> : null;
+                                }
+                            }
 
-                                return (
-                                    <div
-                                        key={idx}
-                                        onClick={() => {
-                                            if (isPreview || showFeedback) return;
-                                            if (isMulti) {
-                                                const current = JSON.parse(responses[currentQuestion.id] || "[]").map((v: string) => v.toLowerCase().trim());
-                                                const next = isSelected
-                                                    ? current.filter((v: any) => v !== val)
-                                                    : [...current, val];
-                                                handleChange(currentQuestion.id, JSON.stringify(next));
-                                            } else {
-                                                handleChange(currentQuestion.id, val);
-                                            }
-                                        }}
-                                        className={cn(
-                                            "flex items-center gap-3 p-4 rounded-xl border-2 transition-all cursor-pointer relative min-h-[4rem]",
-                                            bgClass,
-                                            isPreview && "cursor-default"
-                                        )}
-                                    >
-                                        <div className={cn(
-                                            "w-5 h-5 flex items-center justify-center shrink-0 transition-all",
-                                            !effectiveShowFeedback && !isMulti && "rounded-full border border-muted-foreground/40",
-                                            !effectiveShowFeedback && !isMulti && isSelected && "border-primary"
-                                        )}>
-                                            {icon}
-                                        </div>
-                                        <div className="text-sm flex-1">
-                                            {opt.kind === "IMAGEN" || (typeof opt.value === 'string' && (opt.value.startsWith('http') || /\.(jpg|jpeg|png|gif|webp|svg)$/i.test(opt.value))) ? (
-                                                <div className="space-y-1">
-                                                    <Image src={opt.value} alt={opt.alt || "Opcion"} width={400} height={200} className="rounded-lg border shadow-sm aspect-auto h-auto w-fit max-h-40 bg-zinc-50" />
-                                                    {opt.alt && (
-                                                        <p className={cn(
-                                                            "text-sm font-medium leading-tight",
-                                                            effectiveShowFeedback && isOptionCorrect ? "text-emerald-600" : "text-muted-foreground/60"
-                                                        )}>
-                                                            {opt.alt}
-                                                        </p>
-                                                    )}
-                                                    {!opt.alt && effectiveShowFeedback && isOptionCorrect && correctAlt && (
-                                                        <p className="text-sm font-medium leading-tight text-emerald-600">
-                                                            {correctAlt}
-                                                        </p>
-                                                    )}
-                                                </div>
-                                            ) : (
-                                                <span className={cn(
-                                                    "font-medium",
-                                                    showFeedback && isOptionCorrect && "text-emerald-700 dark:text-emerald-300",
-                                                    showFeedback && isSelected && !isOptionCorrect && "text-destructive"
-                                                )}>
-                                                    {opt.label || opt.text || opt.value}
-                                                </span>
-                                            )}
-                                        </div>
-                                        {((effectiveShowFeedback && isOptionCorrect) || (isPreview && isOptionCorrect)) && (
-                                            <Badge variant="secondary" className="ml-auto">
-                                                Correcta
-                                            </Badge>
+                            return (
+                                <div
+                                    key={idx}
+                                    onClick={() => {
+                                        if (isPreview || showFeedback) return;
+                                        if (isMulti) {
+                                            const current = JSON.parse(responses[currentQuestion.id] || "[]").map((v: string) => v.toLowerCase().trim());
+                                            const next = isSelected
+                                                ? current.filter((v: any) => v !== val)
+                                                : [...current, val];
+                                            handleChange(currentQuestion.id, JSON.stringify(next));
+                                        } else {
+                                            handleChange(currentQuestion.id, val);
+                                        }
+                                    }}
+                                    className={cn(
+                                        "flex items-center gap-3 p-3  border transition-all cursor-pointer relative ",
+                                        bgClass,
+                                        isPreview && "cursor-default"
+                                    )}
+                                >
+                                    <div className={cn(
+                                        "w-5 h-5 flex items-center justify-center shrink-0 transition-all",
+                                        !effectiveShowFeedback && !isMulti && "rounded-full border border-muted-foreground/40",
+                                        !effectiveShowFeedback && !isMulti && isSelected && "border-primary"
+                                    )}>
+                                        {icon}
+                                    </div>
+                                    <div className="text-sm flex-1">
+                                        {opt.kind === "IMAGEN" || (typeof opt.value === 'string' && (opt.value.startsWith('http') || /\.(jpg|jpeg|png|gif|webp|svg)$/i.test(opt.value))) ? (
+                                            <div className="space-y-1">
+                                                <Image src={opt.value} alt={opt.alt || "Opcion"} width={400} height={200} className="rounded-lg border shadow-sm aspect-auto h-auto w-fit max-h-40 bg-zinc-50" />
+                                                {opt.alt && (
+                                                    <p className={cn(
+                                                        "text-sm font-medium leading-tight",
+                                                        effectiveShowFeedback && isOptionCorrect ? "text-emerald-600" : "text-muted-foreground/60"
+                                                    )}>
+                                                        {opt.alt}
+                                                    </p>
+                                                )}
+                                                {!opt.alt && effectiveShowFeedback && isOptionCorrect && correctAlt && (
+                                                    <p className="text-sm font-medium leading-tight text-emerald-600">
+                                                        {correctAlt}
+                                                    </p>
+                                                )}
+                                            </div>
+                                        ) : (
+                                            <span className={cn(
+                                                showFeedback && isOptionCorrect && "text-emerald-700 dark:text-emerald-300",
+                                                showFeedback && isSelected && !isOptionCorrect && "text-destructive"
+                                            )}>
+                                                {opt.label || opt.text || opt.value}
+                                            </span>
                                         )}
                                     </div>
-                                );
-                            })
-                        ) : (
-                            <Input
-                                placeholder="Introduzca su respuesta..."
-                                value={responses[currentQuestion.id] ?? ""}
-                                onChange={(e) => handleChange(currentQuestion.id, e.target.value)}
-                                className="h-11 text-sm rounded-xl border-border bg-transparent"
-                                disabled={isPreview || showFeedback}
-                            />
-                        )}
-                    </div>
-
-
-                    <div className="flex flex-col gap-4">
-                        <Button
-                            onClick={() => {
-                                if (isPreview) {
-                                    setPreviewQuestionId(null);
-                                } else if (showFeedback) {
-                                    if (activeQuestions.length === 1 && isCorrect) {
-                                        setIsFinished(true);
-                                        setActiveQuestions([]);
-                                        setCurrentIndex(0);
-                                        setResponses({});
-                                        setShowFeedback(false);
-                                        setIsCorrect(false);
-                                    } else {
-                                        handleNext();
-                                    }
-                                } else {
-                                    validateResponse();
-                                }
-                            }}
-                            className="w-full font-bold"
-                            disabled={!isPreview && !responses[currentQuestion.id] && !showFeedback || isValidating}
-                            variant={isPreview ? "secondary" : "default"}
-                        >
-                            {isPreview ? "Volver al repaso" : (showFeedback ? (activeQuestions.length === 1 && isCorrect ? "Finalizar" : "Siguiente") : "Validar")}
-                        </Button>
-
-                        {sessionResolvedIds.size > 0 && (
-                            <div className="pt-6 ">
-                                <p className="text-sm font-medium text-muted-foreground mb-3 text-center">
-                                    Aciertos ({sessionResolvedIds.size})
-                                </p>
-                                <div className="flex flex-wrap justify-center gap-2">
-                                    {initialPreguntas.filter(p => sessionResolvedIds.has(p.bancoId)).map((p, idx) => (
-                                        <Button
-                                            key={p.id}
-                                            variant="outline"
-                                            size="icon"
-                                            className={cn("h-8 w-8 text-xs border-2", previewQuestionId === p.id && "border-primary bg-primary/5 text-primary")}
-                                            onClick={() => setPreviewQuestionId(p.id)}
-                                        >
-                                            {initialPreguntas.indexOf(p) + 1}
-                                        </Button>
-                                    ))}
+                                    {((effectiveShowFeedback && isOptionCorrect) || (isPreview && isOptionCorrect)) && (
+                                        <Badge variant="secondary" className="ml-auto">
+                                            Correcta
+                                        </Badge>
+                                    )}
                                 </div>
+                            );
+                        })
+                    ) : (
+                        <Input
+                            placeholder="Introduzca su respuesta..."
+                            value={responses[currentQuestion.id] ?? ""}
+                            onChange={(e) => handleChange(currentQuestion.id, e.target.value)}
+                            className="h-11 text-sm rounded-xl border-border bg-transparent"
+                            disabled={isPreview || showFeedback}
+                        />
+                    )}
+                </div>
+
+
+                <div className="flex flex-col gap-4">
+                    <Button
+                        onClick={() => {
+                            if (isPreview) {
+                                setPreviewQuestionId(null);
+                            } else if (showFeedback) {
+                                if (activeQuestions.length === 1 && isCorrect) {
+                                    setIsFinished(true);
+                                    setActiveQuestions([]);
+                                    setCurrentIndex(0);
+                                    setResponses({});
+                                    setShowFeedback(false);
+                                    setIsCorrect(false);
+                                } else {
+                                    handleNext();
+                                }
+                            } else {
+                                validateResponse();
+                            }
+                        }}
+                        disabled={!isPreview && !responses[currentQuestion.id] && !showFeedback || isValidating}
+                        variant={isPreview ? "secondary" : "default"}
+                    >
+                        {isPreview ? "Volver al repaso" : (showFeedback ? (activeQuestions.length === 1 && isCorrect ? "Finalizar" : "Siguiente") : "Validar")}
+                    </Button>
+
+                    {sessionResolvedIds.size > 0 && (
+                        <div className="pt-6 ">
+                            <p className="text-sm font-medium text-muted-foreground mb-3 text-center">
+                                Aciertos
+                            </p>
+                            <div className="flex flex-wrap justify-center gap-2">
+                                {initialPreguntas.filter(p => sessionResolvedIds.has(p.bancoId)).map((p, idx) => (
+                                    <Button
+                                        key={p.id}
+                                        variant="outline"
+                                        size="icon"
+                                        className={cn("", previewQuestionId === p.id && "border-primary bg-primary/5 text-primary")}
+                                        onClick={() => setPreviewQuestionId(p.id)}
+                                    >
+                                        {initialPreguntas.indexOf(p) + 1}
+                                    </Button>
+                                ))}
                             </div>
-                        )}
-                    </div>
-                </motion.div>
-            </div >
+                        </div>
+                    )}
+                </div>
+            </motion.div>
         </div >
     );
 }

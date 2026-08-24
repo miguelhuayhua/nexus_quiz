@@ -1,12 +1,13 @@
 @import "tailwindcss";
 @import "tw-animate-css";
+@import "shadcn/tailwind.css";
 
-@custom-variant dark (&:is(.dark *));
 
 @theme inline {
     --color-background: var(--background);
     --color-foreground: var(--foreground);
     --font-sans: var(--font-poppins);
+    --font-serif: var(--font-serif);
     --font-mono: var(--font-geist-mono);
     --font-alex-brush: var(--font-alex-brush);
     --font-questrial: var(--font-questrial);
@@ -31,7 +32,6 @@
     --color-border: var(--border);
     --color-destructive: var(--destructive);
     --color-warning: var(--warning);
-    --color-success: var(--success);
     --color-accent-foreground: var(--accent-foreground);
     --color-accent: var(--accent);
     --color-muted-foreground: var(--muted-foreground);
@@ -42,13 +42,15 @@
     --color-primary: var(--primary);
     --color-popover-foreground: var(--popover-foreground);
     --color-popover: var(--popover);
+    --color-destructive-foreground: var(--destructive-foreground);
     --color-card-foreground: var(--card-foreground);
+    --color-success: var(--success);
     --color-card: var(--card);
     --radius-sm: calc(var(--radius) - 4px);
     --radius-md: calc(var(--radius) - 2px);
     --radius-lg: var(--radius);
-    --text-sm: 0.9rem;
-    --text-xs: 0.8rem;
+    --text-sm: 0.95rem;
+    --text-xs: 0.88rem;
     --radius-xl: calc(var(--radius) + 4px);
     --radius-2xl: calc(var(--radius) + 8px);
     --radius-3xl: calc(var(--radius) + 12px);
@@ -62,7 +64,6 @@
     --animate-aurora: aurora 8s ease-in-out infinite alternate;
     --animate-marquee: marquee var(--duration) infinite linear;
     --animate-marquee-vertical: marquee-vertical var(--duration) linear infinite;
-    --color-destructive-foreground: var(--destructive-foreground);
 
     @keyframes marquee {
         from {
@@ -83,6 +84,8 @@
             transform: translateY(calc(-100% - var(--gap)));
         }
     }
+
+    --font-heading: var(--font-sans)
 }
 
 @keyframes wave {
@@ -137,116 +140,122 @@
 }
 
 :root {
-    --radius: 0.625rem;
-    --background: #ffffff;
-    --foreground: #020617;
-    --card: #ffffff;
-    --card-foreground: #020617;
-    --popover: #ffffff;
-    --popover-foreground: #020617;
-    --primary: #6a00ff;
-    --primary-foreground: #f8fafc;
-    --secondary: #00b86e;
-    --secondary-foreground: #ffffff;
-    --muted: #f1f5f9;
-    --muted-foreground: #64748b;
-    --accent: #f1f5f9;
-    --accent-foreground: #0f172a;
-    --destructive: #ef4444;
-    --warning: #f59e0b;
-    --success: #10b981;
-    --border: #c3d0e2;
-    --input: #e2e2e2;
-    --ring: #8f00ff;
-    --chart-1: #e76e50;
-    --chart-2: #2a9d90;
-    --chart-3: #274754;
-    --chart-4: #e8c468;
-    --chart-5: #f4a462;
-    --chart-6: #d9d9d9;
-    --chart-7: #7a7a7a;
-    --sidebar: #f8fafc;
-    --sidebar-foreground: #020617;
-    --sidebar-primary: #0f172a;
-    --sidebar-primary-foreground: #f8fafc;
-    --sidebar-accent: #f1f5f9;
-    --sidebar-accent-foreground: #0f172a;
-    --sidebar-border: #e2e8f0;
-    --sidebar-ring: #cbd5e1;
+    --font-geist-sans: "Poppins", "Questrial", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    --font-geist-mono: "SFMono-Regular", Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    --font-poppins: "Poppins", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    --font-questrial: "Questrial", "Poppins", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    --font-alex-brush: "Alex Brush", "Brush Script MT", cursive;
+    --radius: 0.2em;
+    /* Slate 950 */
+    --background: #0f0d16;
+    /* Slate 950 */
+    --foreground: #fbfbf9;
+    /* Slate 50 */
+    --card: #0f151e;
+    /* Slate 900 - Approx OKLCH(19%) */
+    --card-foreground: #fbfbf9;
+    /* Slate 50 */
+    --popover: #16171d;
+    /* Slate 900 */
+    --popover-foreground: #fbfbf9;
+    --destructive-foreground: #ff6363;
+    /* Slate 50 */
+    --primary: #c110d8;
+    --success: #10b483;
+    --primary-foreground: #faf5ff;
+    --secondary: #714acc;
+    --secondary-foreground: #fafafa;
+    --muted: #22232b;
+    /* Slate 800 */
+    --muted-foreground: #abab9c;
+    /* Slate 400 */
+    --accent: #2b2b22;
+    /* Slate 800 */
+    --accent-foreground: #fbfbf9;
+    /* Slate 50 */
+    --destructive: #ff6467;
+    /* Red 400 */
+    --border: #ffffff1a;
+    /* Slate 800 */
+    --input: #c1c2ff26;
+    /* Slate 800 */
+    --ring: #7874cc9f;
+    --sidebar: #0F172A;
+    /* Slate 900 */
+    --sidebar-foreground: #fbfbf9;
+    /* Slate 50 */
+    --sidebar-primary: #ad46ff;
+    /* Slate 700 - Approx lighter than bg */
+    --sidebar-primary-foreground: #faf5ff;
+    /* Slate 50 */
+    --sidebar-accent: #2b2b22;
+    /* Slate 800 */
+    --sidebar-accent-foreground: #fbfbf9;
+    /* Slate 50 */
+    --sidebar-border: #ffffff1a;
+    /* Slate 800 */
+    --sidebar-ring: #7c7c67;
+    /* Slate 800 */
     --color-1: #ac3242;
     --color-2: #a55eea;
     --color-3: #755eea;
     --color-4: #4b7bec;
     --color-5: #26de81;
-    --destructive-foreground: var(--color-red-700);
-}
-
-.dark {
-    --background: #020617;
-    --foreground: #f8fafc;
-    --card: #0f172a;
-    --card-foreground: #f8fafc;
-    --popover: #0f172a;
-    --popover-foreground: #f8fafc;
-    --primary: #9149f5;
-    --primary-foreground: #ffffff;
-    --secondary: #00ac4a;
-    --secondary-foreground: #ffffff;
-    --muted: #1e293b;
-    --muted-foreground: #94a3b8;
-    --accent: #1e293b;
-    --accent-foreground: #f8fafc;
-    --destructive: #f87171;
-    --warning: #f59e0b;
-    --success: #10b981;
-    --border: #1e293b;
-    --input: #1e293b;
-    --ring: #e1b9ff;
-    --sidebar: #0f172a;
-    --sidebar-foreground: #f8fafc;
-    --sidebar-primary: #334155;
-    --sidebar-primary-foreground: #f8fafc;
-    --sidebar-accent: #1e293b;
-    --sidebar-accent-foreground: #f8fafc;
-    --sidebar-border: #1e293b;
-    --sidebar-ring: #1e293b;
-    --color-1: #ac3242;
-    --color-2: #a55eea;
-    --color-3: #755eea;
-    --color-4: #4b7bec;
-    --color-5: #26de81;
-    --destructive-foreground: var(--color-red-400);
+    --chart-1: #7bf1a8;
+    --chart-2: #00c950;
+    --chart-3: #00a63e;
+    --chart-4: #008236;
+    --chart-5: #016630;
 }
 
 @layer base {
     * {
-        @apply border-border outline-ring/50;
+        @apply border-border;
+        outline-color: #abab9c80;
     }
 
     body {
         @apply bg-background text-foreground;
     }
+
+    button:not(:disabled),
+    [role="button"]:not(:disabled) {
+        cursor: pointer;
+    }
+
+    html {
+        @apply font-sans;
+    }
 }
 
+/* Scrollbar delgado y discreto */
+
+/* Para navegadores WebKit (Chrome, Safari, Edge) */
 ::-webkit-scrollbar {
     width: 6px;
+    /* Ancho del scrollbar vertical */
     height: 6px;
+    /* Alto del scrollbar horizontal */
 }
 
 ::-webkit-scrollbar-track {
     background: transparent;
+    /* Fondo transparente */
 }
 
 ::-webkit-scrollbar-thumb {
     background: rgba(0, 0, 0, 0.2);
+    /* Color del thumb en modo claro */
     border-radius: 3px;
     transition: background 0.2s ease;
 }
 
 ::-webkit-scrollbar-thumb:hover {
     background: rgba(0, 0, 0, 0.4);
+    /* Color al hacer hover */
 }
 
+/* Para modo oscuro */
 .dark ::-webkit-scrollbar-thumb {
     background: rgba(255, 255, 255, 0.2);
 }
@@ -255,9 +264,12 @@
     background: rgba(255, 255, 255, 0.3);
 }
 
+/* Para Firefox */
 * {
     scrollbar-width: thin;
+    /* Hace el scrollbar delgado */
     scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
+    /* thumb y track */
 }
 
 .dark * {

@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { Loader2Icon, MessageCircleIcon, PlayIcon, SparklesIcon, Trash2Icon } from "lucide-react";
+import { Loader2Icon, MessageCircleIcon, PlayIcon, Plus, SparklesIcon, Trash2Icon } from "lucide-react";
 import { toast } from "sonner";
 
 import {
@@ -54,10 +54,6 @@ export default function MisBanqueosClient({
   const [banqueoToDeleteId, setBanqueoToDeleteId] = React.useState<string | null>(null);
   const [isDeleting, setIsDeleting] = React.useState(false);
 
-  const whatsappNumber = "59174085867";
-  const whatsappHref = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(
-    "¡Hola quiero solicitar mi cuenta PRO!, para los banqueos de Residencia Médica.",
-  )}`;
 
   const onDeleteBanqueo = React.useCallback(async () => {
     if (!banqueoToDeleteId) return;
@@ -87,7 +83,7 @@ export default function MisBanqueosClient({
   }, [banqueoToDeleteId]);
 
   return (
-    <main className="mx-auto w-full max-w-5xl space-y-4 p-6">
+    <main className="mx-auto  container space-y-4 ">
       {isDeleting && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-background/70 backdrop-blur-sm">
           <div className="flex flex-col items-center gap-3">
@@ -98,35 +94,42 @@ export default function MisBanqueosClient({
       )}
 
       <header className="flex flex-wrap items-center justify-between gap-2">
-        <div className="space-y-1">
-          <h1 className="font-semibold text-2xl tracking-tight">Mis banqueos</h1>
-          <p className="text-muted-foreground text-sm">Administra y elimina tus banqueos.</p>
-        </div>
+        <h1 className="text-3xl">Mis banqueos</h1>
         <Button
           disabled={!hasPro}
           render={hasPro ? <Link href="/mis-banqueos/crear" /> : undefined}
         >
+          <Plus />
           Crear banqueo
         </Button>
       </header>
 
       {!hasPro && (
-        <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-amber-300 bg-amber-50 p-3 dark:border-amber-500/40 dark:bg-amber-500/10">
-          <div className="flex items-center gap-2">
-            <SparklesIcon className="size-4 text-amber-600" />
-            <p className="text-amber-800 text-sm dark:text-amber-300">
-              Necesitas suscripcion Pro para crear banqueos.
-            </p>
-          </div>
-          <Button
-            render={<a href={whatsappHref} rel="noreferrer" target="_blank" />}
-            size="sm"
-            variant="outline"
-          >
-            <MessageCircleIcon className="size-4" />
-            Consulta y compra de bancos
-          </Button>
-        </div>
+        <Card className="bg-gradient-to-br from-green-600  to-green-900">
+
+          <CardContent >
+            <div className="flex items-center lg:gap-30 gap-4">
+
+              <div className="space-y-1" >
+                <CardTitle >
+                  Sube a premium y desbloqueda todo el contenido
+                </CardTitle>
+                <CardDescription className="text-white/70">
+                  Modo pro, acceso a banqueos ilimitados, simulacros semanales a nivel nacional, ranking en vivo, activación en menos de 10 minutos por Whatsapp.
+                </CardDescription>
+              </div>
+              <Button
+                variant={'outline'}
+                className="bg-white text-foreground"
+                render={<Link href="https://wa.me/573227529005" target="_blank" />}
+              >
+                Hablar por Whatsapp
+              </Button>
+            </div>
+
+
+          </CardContent>
+        </Card>
       )}
 
       {items.length === 0 ? (
@@ -149,71 +152,56 @@ export default function MisBanqueosClient({
           </EmptyContent>
         </Empty>
       ) : (
-        <div className="grid gap-3 md:grid-cols-2">
+        <div className="space-y-4">
           {items.map((item) => (
             <Card key={item.id}>
-              <CardHeader className="pb-3">
-                <div className="flex items-center justify-between gap-2">
-                  <CardTitle className="text-base">{item.titulo}</CardTitle>
-                  <Badge variant="outline">PERSONAL</Badge>
-                </div>
-                <CardDescription>
-                  Tiempo: {item.duracion} min
-                </CardDescription>
+              <CardHeader >
+
+                <CardTitle >{item.titulo}</CardTitle>
+
               </CardHeader>
-              <CardContent className="pt-0">
-                <div className="mb-3 flex flex-wrap gap-1.5">
+              <CardContent >
+                <div className="space-x-2">
                   <Badge variant="outline">{item.preguntasCount} preguntas</Badge>
-                  <Badge variant="outline">
-                    Año:{" "}
-                    {item.minGestion !== null && item.maxGestion !== null
-                      ? item.minGestion === item.maxGestion
-                        ? item.minGestion
-                        : `${item.minGestion}-${item.maxGestion}`
-                      : new Date(item.actualizadoEn).getFullYear()}
+                  <Badge variant={'secondary'}>
+                    {item.duracion} min
                   </Badge>
                 </div>
                 <div className="space-y-1 text-xs">
                   <p className="text-muted-foreground">
-                    Temas: {item.temas.slice(0, 3).join(", ") || "Sin temas"}
+                    <span className="text-foreground">Temas:</span> {item.temas.slice(0, 3).join(", ") || "Sin temas"}
                   </p>
                   <p className="text-muted-foreground">
-                    Áreas: {item.areas.slice(0, 3).join(", ") || "Sin áreas"}
+                    <span className="text-foreground">Áreas:</span> {item.areas.slice(0, 3).join(", ") || "Sin áreas"}
                   </p>
                   <p className="text-muted-foreground">
-                    Capítulos: {item.capitulos.slice(0, 3).join(", ") || "Sin capítulos"}
+                    <span className="text-foreground">Capítulos:</span> {item.capitulos.slice(0, 3).join(", ") || "Sin capítulos"}
                   </p>
                 </div>
               </CardContent>
-              <CardFooter>
-                <div className="flex w-full items-center gap-2">
-                  <Button className="flex-1" render={<Link href={`/mis-banqueos/${item.id}`} />} size="sm" variant="outline">
-                    Detalles
-                  </Button>
-                  {item.activeIntentoId ? (
-                    <Button
-                      className="flex-1"
-                      render={<Link href={`/prueba/${item.id}?intentoId=${item.activeIntentoId}`} />}
-                      size="sm"
-                      variant="secondary"
-                    >
-                      <PlayIcon className="mr-2 size-4" />
-                      Reanudar
-                    </Button>
-                  ) : (
-                    <Button className="flex-1" render={<Link href={`/prueba/${item.id}`} />} size="sm">
-                      Intentar ahora
-                    </Button>
-                  )}
+              <CardFooter className="flex justify-end">
+
+                {item.activeIntentoId ? (
                   <Button
-                    onClick={() => setBanqueoToDeleteId(item.id)}
-                    size="icon-sm"
-                    variant="ghost"
-                    className="text-destructive hover:bg-destructive/10"
+                    render={<Link href={`/prueba/${item.id}?intentoId=${item.activeIntentoId}`} />}
+                    size="sm"
+                    variant="secondary"
                   >
-                    <Trash2Icon className="size-4" />
+                    <PlayIcon />
+                    Reanudar
                   </Button>
-                </div>
+                ) : (
+                  <Button variant={'secondary'} render={<Link href={`/prueba/${item.id}`} />} size="sm">
+                    Intentar ahora
+                  </Button>
+                )}
+                <Button
+                  onClick={() => setBanqueoToDeleteId(item.id)}
+                  size="icon-sm"
+                  variant="destructive-outline"
+                >
+                  <Trash2Icon />
+                </Button>
               </CardFooter>
             </Card>
           ))}
@@ -240,7 +228,7 @@ export default function MisBanqueosClient({
               </Button>
             </AlertDialogCancel>
             <AlertDialogAction asChild>
-              <Button disabled={isDeleting} onClick={onDeleteBanqueo} type="button" variant="destructive">
+              <Button disabled={isDeleting} onClick={onDeleteBanqueo} type="button" variant="destructive-outline">
                 {isDeleting ? <Loader2Icon className="size-4 animate-spin" /> : null}
                 Eliminar
               </Button>

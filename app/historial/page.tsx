@@ -1,9 +1,8 @@
 ﻿import type { Metadata } from "next";
-import { redirect } from "next/navigation";
+import { notFound } from "next/navigation";
 
 import { getServerAuthSession } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { resolveUsuarioEstudianteIdFromSession } from "@/lib/subscription-access";
 import HistorialClient, { type HistorialIntentoRow } from "./client";
 
 export const metadata: Metadata = {
@@ -11,32 +10,15 @@ export const metadata: Metadata = {
   description: "Historial de intentos y resultados del estudiante.",
 };
 
-export default async function HistorialPage() {
-  const session = await getServerAuthSession();
-  if (!session?.user?.id && !session?.user?.email) {
-    redirect("/");
-  }
-  const usuarioEstudianteId = await resolveUsuarioEstudianteIdFromSession({
-    userId: session?.user?.id,
-    email: session?.user?.email ?? null,
-  });
-  if (!usuarioEstudianteId) {
-    redirect("/");
-  }
-
-  const intentosRaw = await prisma.intentos.findMany({
+const getMisIntentos = async (correo: string) => {
+  return await prisma.intentos.findMany({
     where: {
-      usuarioEstudianteId,
+      usuariosEstudiantes: {
+        correo,
+      }
     },
-    select: {
-      id: true,
-      banqueoId: true,
-      correctas: true,
-      incorrectas: true,
-      tiempoDuracion: true,
-      estado: true,
-      creadoEn: true,
-      actualizadoEn: true,
+    include: {
+
       banqueo: {
         select: {
           titulo: true,
@@ -60,17 +42,23 @@ export default async function HistorialPage() {
     orderBy: {
       actualizadoEn: "desc",
     },
-    take: 300,
   });
+}
+export type MisIntentos = Awaited<ReturnType<typeof getMisIntentos>>;
+export default async function HistorialPage() {
+  const session = await getServerAuthSession();
+  if (!session) return notFound();
 
-  const cohortPuntajesPorcentaje = intentosRaw
+  const misIntentos = await getMisIntentos(session.user?.email ?? "")
+
+  const cohortPuntajesPorcentaje = misIntentos
     .map((item) => {
       const total = item.banqueo.preguntas.length;
       return total > 0 ? Math.round((item.correctas / total) * 100) : 0;
     })
     .filter((item) => Number.isFinite(item));
 
-  const intentos: HistorialIntentoRow[] = intentosRaw.map((item, index) => {
+  const intentos: HistorialIntentoRow[] = misIntentos.map((item, index) => {
     const totalPreguntas = item.banqueo.preguntas.length;
     const respondidas = item.respuestasIntentos.filter((resp) => resp.respondida).length;
     const precision = respondidas > 0 ? Math.round((item.correctas / respondidas) * 100) : 0;
@@ -98,9 +86,9 @@ export default async function HistorialPage() {
   });
 
   return (
-    <main className="mx-auto w-full max-w-6xl space-y-4 p-6">
+    <main className="mx-auto container space-y-4">
       <header className="space-y-1">
-        <h1 className="font-semibold text-2xl tracking-tight">Historial</h1>
+        <h1 className=" text-3xl">Historial</h1>
         <p className="text-muted-foreground text-sm">
           Historial de intentos en banqueos y sus resultados.
         </p>

@@ -11,8 +11,6 @@ import {
 } from "@/lib/subscription-access";
 import EvaluacionTake, { type EvaluacionForClient } from "./client";
 
-export const dynamic = "force-dynamic";
-export const revalidate = 0;
 
 type Params = {
   bancoId: string;
@@ -24,7 +22,7 @@ type SearchParams = {
 
 type Props = {
   params: Params | Promise<Params>;
-  searchParams?: SearchParams | Promise<SearchParams>;
+  searchParams?: Promise<SearchParams>;
 };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -108,32 +106,26 @@ function coerceRespuestaToString(value: unknown) {
 
 export default async function EvaluacionPage({ params, searchParams }: Props) {
   const session = await getServerAuthSession();
-
-  if (!session?.user?.id && !session?.user?.email) {
+  const { bancoId } = await params;
+  if (!session || !bancoId) {
     return notFound();
   }
-
-  const resolvedParams = await Promise.resolve(params);
-  if (!resolvedParams?.bancoId) {
-    return notFound();
-  }
-
-  const resolvedSearch = await Promise.resolve(searchParams ?? {});
-  const intentoIdQuery =
-    typeof resolvedSearch.intentoId === "string" ? resolvedSearch.intentoId.trim() : "";
+  const search = await searchParams
+  console.log(bancoId, session, search)
 
   const usuarioEstudianteId = await resolveUsuarioEstudianteIdFromSession({
     userId: session?.user?.id,
     email: session?.user?.email ?? null,
   });
+  console.log(usuarioEstudianteId, "usuario id")
   if (!usuarioEstudianteId) {
     return notFound();
   }
   const hasPro = await hasActiveProSubscription(usuarioEstudianteId);
-
+  console.log(hasPro, "has pro")
   const banco = await prisma.banqueo.findFirst({
     where: {
-      id: resolvedParams.bancoId,
+      id: bancoId,
       OR: [
         { tipoCreado: BanqueoTipoCreado.ADMIN },
         {
@@ -145,50 +137,12 @@ export default async function EvaluacionPage({ params, searchParams }: Props) {
         },
       ],
     },
-    select: {
-      id: true,
-      titulo: true,
-      tipo: true,
-      duracion: true,
-      preguntas: {
-        where: {
-          estado: PreguntaEstado.DISPONIBLE,
-        },
-        orderBy: {
-          id: "asc",
-        },
-        select: {
-          id: true,
-          codigo: true,
-          enunciado: true,
-          explicacion: true,
-          opciones: true,
-          solucion: true,
-          gestion: true,
-          temas: {
-            select: {
-              titulo: true,
-              descripcion: true,
-            },
-            orderBy: {
-              titulo: "asc",
-            },
-          },
-          capitulos: {
-            select: {
-              titulo: true,
-            },
-          },
-          areas: {
-            select: {
-              titulo: true,
-            },
-          },
-        },
-      },
-    },
-  });
+    include: {
+      intentos: true,
+      preguntas: { include: { areas: true, capitulos: true, temas: true } },
 
+    }
+  });
   if (!banco) {
     return notFound();
   }
@@ -196,7 +150,7 @@ export default async function EvaluacionPage({ params, searchParams }: Props) {
   if (banco.tipo === BanqueoTipo.PRO && !hasPro) {
     return notFound();
   }
-
+  console.log('entra hasta acá ')
   const now = new Date();
   const intentosCount = await prisma.intentos.count({
     where: {
@@ -204,10 +158,10 @@ export default async function EvaluacionPage({ params, searchParams }: Props) {
       usuarioEstudianteId,
     },
   });
-  let intentoActivo = intentoIdQuery
+  let intentoActivo = search?.intentoId
     ? await prisma.intentos.findFirst({
       where: {
-        id: intentoIdQuery,
+        id: search.intentoId,
         banqueoId: banco.id,
         usuarioEstudianteId,
       },
@@ -216,6 +170,7 @@ export default async function EvaluacionPage({ params, searchParams }: Props) {
           select: {
             preguntaId: true,
             respuesta: true,
+
           },
         },
       },
@@ -236,7 +191,6 @@ export default async function EvaluacionPage({ params, searchParams }: Props) {
       },
     });
 
-  let isResumed = !!intentoActivo;
 
   if (!intentoActivo) {
     if (intentosCount >= 3) {
@@ -272,7 +226,6 @@ export default async function EvaluacionPage({ params, searchParams }: Props) {
       },
     });
 
-    isResumed = false;
 
     if (banco.preguntas.length > 0) {
       await prisma.respuestasIntentos.createMany({

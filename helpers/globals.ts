@@ -1,0 +1,1 @@
+export const NEXUS_HOST = process.env.NEXT_PUBLIC_NEXUS_HOST || "http://localhost:3000";

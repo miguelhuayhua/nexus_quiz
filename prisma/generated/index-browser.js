@@ -24,12 +24,12 @@ exports.Prisma = Prisma
 exports.$Enums = {}
 
 /**
- * Prisma Client JS version: 7.3.0
- * Query Engine version: 9d6ad21cbbceab97458517b147a6a09ff43aa735
+ * Prisma Client JS version: 7.9.1
+ * Query Engine version: e922089b7d7502aff4249d5da3420f6fa55fc6ad
  */
 Prisma.prismaVersion = {
-  client: "7.3.0",
-  engine: "9d6ad21cbbceab97458517b147a6a09ff43aa735"
+  client: "7.9.1",
+  engine: "e922089b7d7502aff4249d5da3420f6fa55fc6ad"
 }
 
 Prisma.PrismaClientKnownRequestError = () => {
@@ -130,14 +130,6 @@ exports.Prisma.AuditoriaScalarFieldEnum = {
   creadoEn: 'creadoEn'
 };
 
-exports.Prisma.BeneficiosCursosScalarFieldEnum = {
-  id: 'id',
-  cursoId: 'cursoId',
-  descripcion: 'descripcion',
-  orden: 'orden',
-  creadoEn: 'creadoEn'
-};
-
 exports.Prisma.CalificacionesScalarFieldEnum = {
   id: 'id',
   aprobado: 'aprobado',
@@ -145,7 +137,8 @@ exports.Prisma.CalificacionesScalarFieldEnum = {
   estudianteId: 'estudianteId',
   examenId: 'examenId',
   nota: 'nota',
-  creadoEn: 'creadoEn'
+  creadoEn: 'creadoEn',
+  entregado: 'entregado'
 };
 
 exports.Prisma.CategoriasScalarFieldEnum = {
@@ -200,7 +193,12 @@ exports.Prisma.ComprasScalarFieldEnum = {
   usuariosEstudiantesId: 'usuariosEstudiantesId',
   estadoPago: 'estadoPago',
   updatedAt: 'updatedAt',
-  conDescuento: 'conDescuento'
+  conDescuento: 'conDescuento',
+  esEspecial: 'esEspecial',
+  comprobante: 'comprobante',
+  celular: 'celular',
+  comentario: 'comentario',
+  referencia: 'referencia'
 };
 
 exports.Prisma.CursosScalarFieldEnum = {
@@ -214,7 +212,8 @@ exports.Prisma.CursosScalarFieldEnum = {
   enVivo: 'enVivo',
   urlCurso: 'urlCurso',
   cargaHoraria: 'cargaHoraria',
-  codigo: 'codigo'
+  codigo: 'codigo',
+  videoUrl: 'videoUrl'
 };
 
 exports.Prisma.DocenteScalarFieldEnum = {
@@ -226,7 +225,8 @@ exports.Prisma.DocenteScalarFieldEnum = {
   creadoEn: 'creadoEn',
   actualizadoEn: 'actualizadoEn',
   usuarioId: 'usuarioId',
-  pais: 'pais'
+  pais: 'pais',
+  fotografia: 'fotografia'
 };
 
 exports.Prisma.EdicionesCursosScalarFieldEnum = {
@@ -243,7 +243,17 @@ exports.Prisma.EdicionesCursosScalarFieldEnum = {
   vigente: 'vigente',
   creadoEn: 'creadoEn',
   actualizadoEn: 'actualizadoEn',
-  docenteId: 'docenteId'
+  docenteId: 'docenteId',
+  descuento: 'descuento',
+  portada: 'portada',
+  precioBob: 'precioBob',
+  precioMex: 'precioMex',
+  precioPen: 'precioPen',
+  precioUsd: 'precioUsd',
+  codigoQr: 'codigoQr',
+  tipo: 'tipo',
+  dificultad: 'dificultad',
+  precioCop: 'precioCop'
 };
 
 exports.Prisma.EstudiantesScalarFieldEnum = {
@@ -256,7 +266,8 @@ exports.Prisma.EstudiantesScalarFieldEnum = {
   nombre: 'nombre',
   creadoEn: 'creadoEn',
   actualizadoEn: 'actualizadoEn',
-  nroUpdates: 'nroUpdates'
+  nroUpdates: 'nroUpdates',
+  puntos: 'puntos'
 };
 
 exports.Prisma.TemasScalarFieldEnum = {
@@ -277,7 +288,8 @@ exports.Prisma.ExamenesScalarFieldEnum = {
   notaMaxima: 'notaMaxima',
   notaMinima: 'notaMinima',
   titulo: 'titulo',
-  creadoEn: 'creadoEn'
+  creadoEn: 'creadoEn',
+  urlDrive: 'urlDrive'
 };
 
 exports.Prisma.GrabacionesScalarFieldEnum = {
@@ -305,14 +317,6 @@ exports.Prisma.MaterialesScalarFieldEnum = {
   tipo: 'tipo',
   titulo: 'titulo',
   url: 'url',
-  creadoEn: 'creadoEn'
-};
-
-exports.Prisma.ObjetivosCursosScalarFieldEnum = {
-  id: 'id',
-  cursoId: 'cursoId',
-  descripcion: 'descripcion',
-  orden: 'orden',
   creadoEn: 'creadoEn'
 };
 
@@ -375,14 +379,6 @@ exports.Prisma.ReaccionesPreguntasScalarFieldEnum = {
   actualizadoEn: 'actualizadoEn'
 };
 
-exports.Prisma.RequisitosCursosScalarFieldEnum = {
-  id: 'id',
-  cursoId: 'cursoId',
-  descripcion: 'descripcion',
-  orden: 'orden',
-  creadoEn: 'creadoEn'
-};
-
 exports.Prisma.ReviewsCursosScalarFieldEnum = {
   id: 'id',
   cursoId: 'cursoId',
@@ -414,7 +410,8 @@ exports.Prisma.UsuariosEstudiantesScalarFieldEnum = {
   actualizadoEn: 'actualizadoEn',
   avatar: 'avatar',
   estudianteId: 'estudianteId',
-  registrado: 'registrado'
+  registrado: 'registrado',
+  tipo: 'tipo'
 };
 
 exports.Prisma.AreasScalarFieldEnum = {
@@ -491,21 +488,20 @@ exports.Prisma.SuscripcionesScalarFieldEnum = {
   fechaFin: 'fechaFin',
   estado: 'estado',
   creadoEn: 'creadoEn',
-  actualizadoEn: 'actualizadoEn'
+  actualizadoEn: 'actualizadoEn',
+  estudiantesId: 'estudiantesId'
 };
 
 exports.Prisma.EntregasScalarFieldEnum = {
   id: 'id',
   tareaId: 'tareaId',
   estudianteId: 'estudianteId',
-  archivos: 'archivos',
   comentarioAlumno: 'comentarioAlumno',
-  fechaEntrega: 'fechaEntrega',
   nota: 'nota',
   retroalimentacion: 'retroalimentacion',
   estado: 'estado',
   calificadoEn: 'calificadoEn',
-  calificadoPorId: 'calificadoPorId'
+  enlace: 'enlace'
 };
 
 exports.Prisma.ForoComentariosScalarFieldEnum = {
@@ -542,6 +538,51 @@ exports.Prisma.TareasScalarFieldEnum = {
   creadoEn: 'creadoEn',
   actualizadoEn: 'actualizadoEn',
   recurso: 'recurso'
+};
+
+exports.Prisma.EdicionesSuscripcionesCursosScalarFieldEnum = {
+  id: 'id',
+  edicionId: 'edicionId',
+  fechaAcceso: 'fechaAcceso',
+  suscripcionCursoId: 'suscripcionCursoId'
+};
+
+exports.Prisma.EncuestasCursosScalarFieldEnum = {
+  id: 'id',
+  inscripcionId: 'inscripcionId',
+  cursoCalificacion: 'cursoCalificacion',
+  docenteCalificacion: 'docenteCalificacion',
+  plataformaCalificacion: 'plataformaCalificacion',
+  origen: 'origen',
+  otroOrigen: 'otroOrigen',
+  gusto: 'gusto',
+  mejora: 'mejora',
+  creadoEn: 'creadoEn',
+  suscripcionId: 'suscripcionId'
+};
+
+exports.Prisma.RutasScalarFieldEnum = {
+  id: 'id',
+  nombre: 'nombre',
+  creadoEn: 'creadoEn',
+  actualizadoEn: 'actualizadoEn',
+  descripcion: 'descripcion',
+  portada: 'portada',
+  slug: 'slug'
+};
+
+exports.Prisma.SuscripcionesCursosScalarFieldEnum = {
+  id: 'id',
+  estudianteId: 'estudianteId',
+  estado: 'estado',
+  fechaInicio: 'fechaInicio',
+  fechaFin: 'fechaFin',
+  creadoEn: 'creadoEn',
+  actualizadoEn: 'actualizadoEn',
+  codigo: 'codigo',
+  moneda: 'moneda',
+  monto: 'monto',
+  rutaId: 'rutaId'
 };
 
 exports.Prisma.SortOrder = {
@@ -604,7 +645,9 @@ exports.Tabla = exports.$Enums.Tabla = {
   SUSCRIPCION: 'SUSCRIPCION',
   PAGOS_DOCENTE: 'PAGOS_DOCENTE',
   TAREAS: 'TAREAS',
-  ENTREGAS: 'ENTREGAS'
+  ENTREGAS: 'ENTREGAS',
+  RUTAS: 'RUTAS',
+  SUSCRIPCIONES_CURSOS: 'SUSCRIPCIONES_CURSOS'
 };
 
 exports.AccionAuditoria = exports.$Enums.AccionAuditoria = {
@@ -620,14 +663,16 @@ exports.TipoCertificado = exports.$Enums.TipoCertificado = {
 };
 
 exports.MetodoPago = exports.$Enums.MetodoPago = {
+  PAYPAL: 'PAYPAL',
+  QR: 'QR',
+  CARD: 'CARD',
+  EFECTIVO: 'EFECTIVO',
+  TRANSFERENCIA: 'TRANSFERENCIA',
   YAPE: 'YAPE',
   PLIN: 'PLIN',
-  PAYPAL: 'PAYPAL',
+  TRANSFERENCIA_DOLARES: 'TRANSFERENCIA_DOLARES',
   BINANCE: 'BINANCE',
   WESTER_UNION: 'WESTER_UNION',
-  TRANSFERENCIA: 'TRANSFERENCIA',
-  TRANSFERENCIA_DOLARES: 'TRANSFERENCIA_DOLARES',
-  EFECTIVO: 'EFECTIVO',
   OTRO: 'OTRO'
 };
 
@@ -635,13 +680,25 @@ exports.EstadoPago = exports.$Enums.EstadoPago = {
   PENDIENTE: 'PENDIENTE',
   COMPLETADO: 'COMPLETADO',
   RECHAZADO: 'RECHAZADO',
-  REEMBOLSADO: 'REEMBOLSADO'
+  REEMBOLSADO: 'REEMBOLSADO',
+  REVISION: 'REVISION'
 };
 
 exports.EdicionEstado = exports.$Enums.EdicionEstado = {
   ESPERA: 'ESPERA',
   ACTIVA: 'ACTIVA',
   FINALIZADA: 'FINALIZADA'
+};
+
+exports.TipoEdicion = exports.$Enums.TipoEdicion = {
+  VIVO: 'VIVO',
+  GRABADO: 'GRABADO'
+};
+
+exports.EdicionDificultad = exports.$Enums.EdicionDificultad = {
+  PRINCIPANTE: 'PRINCIPANTE',
+  INTERMEDIO: 'INTERMEDIO',
+  AVANZADO: 'AVANZADO'
 };
 
 exports.TipoGenero = exports.$Enums.TipoGenero = {
@@ -737,9 +794,19 @@ exports.TareaEstado = exports.$Enums.TareaEstado = {
   CERRADA: 'CERRADA'
 };
 
+exports.CanalAdquisicion = exports.$Enums.CanalAdquisicion = {
+  TIKTOK: 'TIKTOK',
+  FACEBOOK: 'FACEBOOK',
+  INSTAGRAM: 'INSTAGRAM',
+  WHATSAPP: 'WHATSAPP',
+  AMIGO: 'AMIGO',
+  DOCENTE: 'DOCENTE',
+  GOOGLE: 'GOOGLE',
+  OTRO: 'OTRO'
+};
+
 exports.Prisma.ModelName = {
   auditoria: 'auditoria',
-  beneficiosCursos: 'beneficiosCursos',
   calificaciones: 'calificaciones',
   categorias: 'categorias',
   categoriasCursos: 'categoriasCursos',
@@ -755,12 +822,10 @@ exports.Prisma.ModelName = {
   grabaciones: 'grabaciones',
   inscripciones: 'inscripciones',
   materiales: 'materiales',
-  objetivosCursos: 'objetivosCursos',
   pagosDocentes: 'pagosDocentes',
   preciosCursos: 'preciosCursos',
   preguntas: 'preguntas',
   reaccionesPreguntas: 'reaccionesPreguntas',
-  requisitosCursos: 'requisitosCursos',
   reviewsCursos: 'reviewsCursos',
   usuariosAdministradores: 'usuariosAdministradores',
   usuariosEstudiantes: 'usuariosEstudiantes',
@@ -775,7 +840,11 @@ exports.Prisma.ModelName = {
   foroComentarios: 'foroComentarios',
   foroRespuestas: 'foroRespuestas',
   foros: 'foros',
-  tareas: 'tareas'
+  tareas: 'tareas',
+  edicionesSuscripcionesCursos: 'edicionesSuscripcionesCursos',
+  encuestasCursos: 'encuestasCursos',
+  rutas: 'rutas',
+  suscripcionesCursos: 'suscripcionesCursos'
 };
 
 /**

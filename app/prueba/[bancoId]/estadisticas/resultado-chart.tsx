@@ -76,7 +76,7 @@ export function ResultadoPie({ porcentaje, puntos, total }: { porcentaje: number
                       <tspan
                         x={viewBox.cx}
                         y={(viewBox.cy || 0) - 10}
-                        className="fill-foreground text-4xl font-bold"
+                        className="fill-foreground text-4xl "
                       >
                         {safe}%
                       </tspan>

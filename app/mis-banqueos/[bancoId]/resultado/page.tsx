@@ -10,8 +10,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { ModeToggle } from "@/components/ui/mode-toggle";
-import { ResultadoInsights } from "@/app/prueba/[bancoId]/resultado/resultado-insights";
-import { ResultadoPie } from "@/app/prueba/[bancoId]/resultado/resultado-chart";
+import { ResultadoInsights } from "@/app/prueba/[bancoId]/estadisticas/resultado-insights";
+import { ResultadoPie } from "@/app/prueba/[bancoId]/estadisticas/resultado-chart";
 import {
   hasActiveProSubscription,
   resolveUsuarioEstudianteIdFromSession,

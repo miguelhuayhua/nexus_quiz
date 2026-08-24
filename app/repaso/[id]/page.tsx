@@ -30,8 +30,10 @@ export async function generateMetadata({
 
 export default async function RepasoDetailPage({
   params,
+  searchParams,
 }: {
   params: Promise<Params>;
+  searchParams: Promise<{ mode?: "all" | "errors" }>;
 }) {
   const session = await getServerAuthSession();
   if (!session?.user?.id && !session?.user?.email) {
@@ -47,6 +49,7 @@ export default async function RepasoDetailPage({
   }
 
   const { id } = await params;
+  const { mode } = await searchParams;
   const banqueo = await prisma.banqueo.findFirst({
     where: { id },
     select: {
@@ -61,7 +64,7 @@ export default async function RepasoDetailPage({
 
   const fallosHistoricos = await prisma.respuestasIntentos.findMany({
     where: {
-      resultado: ResultadoRespuesta.MAL,
+      resultado: mode === "all" ? undefined : ResultadoRespuesta.MAL,
       intentos: {
         usuarioEstudianteId,
         banqueoId: banqueo.id,

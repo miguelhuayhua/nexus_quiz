@@ -24,29 +24,18 @@ model auditoria {
   @@index([usuarioId])
 }
 
-model beneficiosCursos {
-  id          String   @id @default(uuid())
-  cursoId     String
-  descripcion String
-  orden       Int
-  creadoEn    DateTime @default(now())
-  cursos      cursos   @relation(fields: [cursoId], references: [id], onDelete: Cascade)
-
-  @@index([cursoId, orden])
-}
-
 model calificaciones {
   id           String      @id @default(uuid())
   aprobado     Boolean     @default(false)
   comentarios  String?
   estudianteId String
   examenId     String
-  nota         Float
+  nota         Float       @default(0)
   creadoEn     DateTime    @default(now())
+  entregado    Boolean     @default(false)
   estudiantes  estudiantes @relation(fields: [estudianteId], references: [id], onDelete: Cascade)
   examenes     examenes    @relation(fields: [examenId], references: [id], onDelete: Cascade)
 
-  @@unique([estudianteId, examenId])
   @@index([aprobado])
 }
 
@@ -112,7 +101,7 @@ model compras {
   monto                 Float
   moneda                String               @default("USD")
   comprobado            Boolean              @default(true)
-  providerId            String
+  providerId            String               @unique
   fechaCompra           DateTime             @default(now())
   metodo                MetodoPago           @default(TRANSFERENCIA)
   deuda                 Float                @default(0)
@@ -120,6 +109,11 @@ model compras {
   estadoPago            EstadoPago           @default(PENDIENTE)
   updatedAt             DateTime
   conDescuento          Boolean              @default(false)
+  esEspecial            Boolean              @default(false)
+  comprobante           String?
+  celular               String?
+  comentario            String?
+  referencia            String?
   edicionesCursos       edicionesCursos      @relation(fields: [edicionId], references: [id], onDelete: Cascade)
   usuariosEstudiantes   usuariosEstudiantes? @relation(fields: [usuariosEstudiantesId], references: [id])
   inscripciones         inscripciones?
@@ -139,13 +133,12 @@ model cursos {
   urlCurso         String?
   cargaHoraria     Int                @default(0)
   codigo           String             @unique
-  beneficiosCursos beneficiosCursos[]
+  videoUrl         String?
   categoriasCursos categoriasCursos[]
   edicionesCursos  edicionesCursos[]
   foros            foros?
-  objetivosCursos  objetivosCursos[]
-  requisitosCursos requisitosCursos[]
   reviewsCursos    reviewsCursos[]
+  rutas            rutas[]
 
   @@index([codigo])
 }
@@ -160,6 +153,7 @@ model docente {
   actualizadoEn           DateTime
   usuarioId               String                  @unique
   pais                    String                  @default("PE")
+  fotografia              String?
   usuariosAdministradores usuariosAdministradores @relation(fields: [usuarioId], references: [id])
   edicionesCursos         edicionesCursos[]
   pagosDocentes           pagosDocentes[]
@@ -168,32 +162,43 @@ model docente {
 }
 
 model edicionesCursos {
-  id            String          @id @default(uuid())
-  codigo        String
-  cursoId       String
-  descripcion   String?
-  estado        EdicionEstado   @default(ESPERA)
-  fechaFin      DateTime
-  fechaInicio   DateTime
-  notaMaxima    Float           @default(100.0)
-  notaMinima    Float           @default(51.0)
-  urlWhatsapp   String?
-  vigente       Boolean         @default(false)
-  creadoEn      DateTime        @default(now())
-  actualizadoEn DateTime
-  docenteId     String?
-  certificados  certificados[]
-  clases        clases[]
-  compras       compras[]
-  cursos        cursos          @relation(fields: [cursoId], references: [id], onDelete: Cascade)
-  docente       docente?        @relation(fields: [docenteId], references: [id], onDelete: Cascade)
-  examenes      examenes[]
-  inscripciones inscripciones[]
-  pagosDocentes pagosDocentes?
-  preciosCursos preciosCursos[]
-  tareas        tareas[]
+  id                           String                         @id @default(uuid())
+  codigo                       String
+  cursoId                      String
+  descripcion                  String?
+  estado                       EdicionEstado                  @default(ESPERA)
+  fechaFin                     DateTime
+  fechaInicio                  DateTime
+  notaMaxima                   Float                          @default(100.0)
+  notaMinima                   Float                          @default(51.0)
+  urlWhatsapp                  String?
+  vigente                      Boolean                        @default(false)
+  creadoEn                     DateTime                       @default(now())
+  actualizadoEn                DateTime
+  docenteId                    String?
+  descuento                    Float                          @default(0)
+  portada                      String?
+  precioBob                    Float                          @default(0)
+  precioMex                    Float                          @default(0)
+  precioPen                    Float                          @default(0)
+  precioUsd                    Float                          @default(0)
+  codigoQr                     String?
+  tipo                         TipoEdicion                    @default(VIVO)
+  dificultad                   EdicionDificultad              @default(PRINCIPANTE)
+  precioCop                    Float                          @default(0)
+  certificados                 certificados[]
+  clases                       clases[]
+  compras                      compras[]
+  cursos                       cursos                         @relation(fields: [cursoId], references: [id], onDelete: Cascade)
+  docente                      docente?                       @relation(fields: [docenteId], references: [id], onDelete: Cascade)
+  edicionesSuscripcionesCursos edicionesSuscripcionesCursos[]
+  examenes                     examenes[]
+  inscripciones                inscripciones[]
+  pagosDocentes                pagosDocentes?
+  preciosCursos                preciosCursos[]
+  tareas                       tareas[]
 
-  @@unique([cursoId, codigo, docenteId])
+  @@unique([codigo, docenteId])
   @@index([codigo])
   @@index([estado])
   @@index([fechaInicio, fechaFin])
@@ -201,22 +206,25 @@ model edicionesCursos {
 }
 
 model estudiantes {
-  id                  String               @id @default(uuid())
+  id                  String                @id @default(uuid())
   apellido            String?
   celular             String?
-  pais                String               @default("")
-  genero              TipoGenero           @default(HOMBRE)
+  pais                String                @default("")
+  genero              TipoGenero            @default(HOMBRE)
   fechaNacimiento     DateTime?
   nombre              String
-  creadoEn            DateTime             @default(now())
+  creadoEn            DateTime              @default(now())
   actualizadoEn       DateTime
-  nroUpdates          Int                  @default(0)
+  nroUpdates          Int                   @default(0)
+  puntos              Int                   @default(0)
   calificaciones      calificaciones[]
   certificados        certificados[]
   entregas            entregas[]
   foroComentarios     foroComentarios[]
   foroRespuestas      foroRespuestas[]
   inscripciones       inscripciones[]
+  suscripciones       suscripciones[]
+  suscripcionesCursos suscripcionesCursos[]
   usuariosEstudiantes usuariosEstudiantes?
 
   @@index([nombre, apellido])
@@ -241,11 +249,12 @@ model examenes {
   edicionId       String
   descripcion     String?
   fechaDisponible DateTime
-  fechaLimite     DateTime
+  fechaLimite     DateTime?
   notaMaxima      Float
   notaMinima      Float
   titulo          String
   creadoEn        DateTime         @default(now())
+  urlDrive        String?
   calificaciones  calificaciones[]
   edicionesCursos edicionesCursos  @relation(fields: [edicionId], references: [id], onDelete: Cascade)
 
@@ -271,17 +280,17 @@ model grabaciones {
 }
 
 model inscripciones {
-  id              String          @id @default(uuid())
+  id              String           @id @default(uuid())
   edicionId       String
-  estado          Boolean         @default(true)
+  estado          Boolean          @default(true)
   estudianteId    String
-  inscritoEn      DateTime        @default(now())
-  compraId        String          @unique
-  compras         compras         @relation(fields: [compraId], references: [id], onDelete: Cascade)
-  edicionesCursos edicionesCursos @relation(fields: [edicionId], references: [id], onDelete: Cascade)
-  estudiantes     estudiantes     @relation(fields: [estudianteId], references: [id], onDelete: Cascade)
+  inscritoEn      DateTime         @default(now())
+  compraId        String           @unique
+  encuestasCursos encuestasCursos?
+  compras         compras          @relation(fields: [compraId], references: [id], onDelete: Cascade)
+  edicionesCursos edicionesCursos  @relation(fields: [edicionId], references: [id], onDelete: Cascade)
+  estudiantes     estudiantes      @relation(fields: [estudianteId], references: [id], onDelete: Cascade)
 
-  @@unique([estudianteId, edicionId])
   @@index([estado])
   @@index([inscritoEn])
 }
@@ -297,17 +306,6 @@ model materiales {
 
   @@index([claseId])
   @@index([tipo])
-}
-
-model objetivosCursos {
-  id          String   @id @default(uuid())
-  cursoId     String
-  descripcion String
-  orden       Int
-  creadoEn    DateTime @default(now())
-  cursos      cursos   @relation(fields: [cursoId], references: [id], onDelete: Cascade)
-
-  @@index([cursoId, orden])
 }
 
 model pagosDocentes {
@@ -398,17 +396,6 @@ model reaccionesPreguntas {
   @@index([usuarioEstudianteId])
 }
 
-model requisitosCursos {
-  id          String   @id @default(uuid())
-  cursoId     String
-  descripcion String
-  orden       Int
-  creadoEn    DateTime @default(now())
-  cursos      cursos   @relation(fields: [cursoId], references: [id], onDelete: Cascade)
-
-  @@index([cursoId, orden])
-}
-
 model reviewsCursos {
   id                    String               @id @default(uuid())
   cursoId               String
@@ -453,6 +440,7 @@ model usuariosEstudiantes {
   avatar              String?
   estudianteId        String?               @unique
   registrado          Boolean               @default(false)
+  tipo                String                @default("normal")
   compras             compras[]
   intentos            intentos[]
   reaccionesPreguntas reaccionesPreguntas[]
@@ -575,6 +563,8 @@ model suscripciones {
   estado              EstadoSuscripcion   @default(ACTIVA)
   creadoEn            DateTime            @default(now())
   actualizadoEn       DateTime
+  estudiantesId       String?
+  estudiantes         estudiantes?        @relation(fields: [estudiantesId], references: [id])
   usuariosEstudiantes usuariosEstudiantes @relation(fields: [usuarioEstudianteId], references: [id], onDelete: Cascade)
 
   @@index([estado])
@@ -586,14 +576,12 @@ model entregas {
   id                String        @id
   tareaId           String
   estudianteId      String
-  archivos          Json?
   comentarioAlumno  String?
-  fechaEntrega      DateTime      @default(now())
   nota              Float?
   retroalimentacion String?
   estado            EntregaEstado @default(ENVIADO)
   calificadoEn      DateTime?
-  calificadoPorId   String?
+  enlace            String?
   estudiantes       estudiantes   @relation(fields: [estudianteId], references: [id], onDelete: Cascade)
   tareas            tareas        @relation(fields: [tareaId], references: [id], onDelete: Cascade)
 
@@ -656,6 +644,67 @@ model tareas {
   @@index([fechaLimite])
 }
 
+model edicionesSuscripcionesCursos {
+  id                  String              @id
+  edicionId           String
+  fechaAcceso         DateTime?
+  suscripcionCursoId  String
+  edicionesCursos     edicionesCursos     @relation(fields: [edicionId], references: [id], onDelete: Cascade)
+  suscripcionesCursos suscripcionesCursos @relation(fields: [suscripcionCursoId], references: [id], onDelete: Cascade)
+  encuestasCursos     encuestasCursos?
+}
+
+model encuestasCursos {
+  id                           String                        @id
+  inscripcionId                String?                       @unique
+  cursoCalificacion            Int
+  docenteCalificacion          Int
+  plataformaCalificacion       Int
+  origen                       CanalAdquisicion
+  otroOrigen                   String?
+  gusto                        String?
+  mejora                       String?
+  creadoEn                     DateTime                      @default(now())
+  suscripcionId                String?                       @unique
+  inscripciones                inscripciones?                @relation(fields: [inscripcionId], references: [id])
+  edicionesSuscripcionesCursos edicionesSuscripcionesCursos? @relation(fields: [suscripcionId], references: [id])
+
+  @@index([creadoEn])
+  @@index([origen])
+}
+
+model rutas {
+  id                  String                @id
+  nombre              String
+  creadoEn            DateTime              @default(now())
+  actualizadoEn       DateTime
+  descripcion         String?
+  portada             String                @default("")
+  slug                String                @default("")
+  suscripcionesCursos suscripcionesCursos[]
+  cursos              cursos[]
+}
+
+model suscripcionesCursos {
+  id                           String                         @id
+  estudianteId                 String
+  estado                       EstadoSuscripcion              @default(ACTIVA)
+  fechaInicio                  DateTime                       @default(now())
+  fechaFin                     DateTime
+  creadoEn                     DateTime                       @default(now())
+  actualizadoEn                DateTime
+  codigo                       String                         @unique
+  moneda                       String                         @default("USD")
+  monto                        Float                          @default(0)
+  rutaId                       String?
+  edicionesSuscripcionesCursos edicionesSuscripcionesCursos[]
+  estudiantes                  estudiantes                    @relation(fields: [estudianteId], references: [id], onDelete: Cascade)
+  rutas                        rutas?                         @relation(fields: [rutaId], references: [id])
+
+  @@index([estado])
+  @@index([estudianteId])
+}
+
 enum AccionAuditoria {
   CREAR
   ACTUALIZAR
@@ -674,17 +723,20 @@ enum EstadoPago {
   COMPLETADO
   RECHAZADO
   REEMBOLSADO
+  REVISION
 }
 
 enum MetodoPago {
+  PAYPAL
+  QR
+  CARD
+  EFECTIVO
+  TRANSFERENCIA
   YAPE
   PLIN
-  PAYPAL
+  TRANSFERENCIA_DOLARES
   BINANCE
   WESTER_UNION
-  TRANSFERENCIA
-  TRANSFERENCIA_DOLARES
-  EFECTIVO
   OTRO
 }
 
@@ -739,6 +791,8 @@ enum Tabla {
   PAGOS_DOCENTE
   TAREAS
   ENTREGAS
+  RUTAS
+  SUSCRIPCIONES_CURSOS
 }
 
 enum TipoCertificado {
@@ -831,4 +885,26 @@ enum TareaEstado {
   BORRADOR
   PUBLICADA
   CERRADA
+}
+
+enum CanalAdquisicion {
+  TIKTOK
+  FACEBOOK
+  INSTAGRAM
+  WHATSAPP
+  AMIGO
+  DOCENTE
+  GOOGLE
+  OTRO
+}
+
+enum EdicionDificultad {
+  PRINCIPANTE
+  INTERMEDIO
+  AVANZADO
+}
+
+enum TipoEdicion {
+  VIVO
+  GRABADO
 }

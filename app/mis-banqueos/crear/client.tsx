@@ -138,9 +138,6 @@ export default function CrearBanqueoClient({ hasPro }: { hasPro: boolean }) {
   }, [hierarchy, capitulos]);
 
   // Auto-select all capítulos when áreas change
-  React.useEffect(() => {
-    setCapitulos(visibleCapitulos.map((c) => c.value));
-  }, [visibleCapitulos]);
 
   // Auto-select all temas when capítulos change
   React.useEffect(() => {
@@ -166,15 +163,15 @@ export default function CrearBanqueoClient({ hasPro }: { hasPro: boolean }) {
 
   const onCreateBanqueo = async (event: React.FormEvent) => {
     event.preventDefault();
-    if (!hasPro) return;
-
     const duracionNum = duracion ?? Number.NaN;
     const maxNum = maxPreguntas ?? Number.NaN;
 
     if (!titulo.trim()) {
-      setError("El titulo es obligatorio.");
+      console.log('malo')
+      toast.error("El titulo es obligatorio.");
       return;
     }
+
     if (!Number.isInteger(duracionNum) || duracionNum <= 0) {
       setError("Duracion invalida.");
       return;
@@ -252,7 +249,7 @@ export default function CrearBanqueoClient({ hasPro }: { hasPro: boolean }) {
   };
 
   return (
-    <main className="mx-auto w-full max-w-5xl space-y-4 p-6">
+    <main className="mx-auto  max-w-5xl space-y-4">
       {isSubmitting && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-background/70 backdrop-blur-sm">
           <div className="flex flex-col items-center gap-3">
@@ -261,23 +258,17 @@ export default function CrearBanqueoClient({ hasPro }: { hasPro: boolean }) {
           </div>
         </div>
       )}
-
-      <header className="flex flex-wrap items-center justify-between gap-2">
-        <div className="space-y-1">
-          <h1 className="font-semibold text-2xl tracking-tight">Crear banqueo</h1>
-        </div>
-      </header>
+      <h1 className="text-3xl">Crear banqueo</h1>
 
       <form className="space-y-4" onSubmit={onCreateBanqueo} ref={formRef}>
         <div className="space-y-4">
-          <h2 className="text-base font-semibold">Parámetros del banqueo</h2>
-          <div className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3">
+          <div className="grid grid-cols-1 gap-3  md:grid-cols-2 xl:grid-cols-3">
             <div className="space-y-2">
               <Label>Título</Label>
               <Input
                 className={CONTROL_HEIGHT_CLASS}
                 onChange={(event) => setTitulo(event.target.value)}
-                placeholder="Ej. Banqueo semanal"
+                placeholder="Ej. Mi banqueo personalizado"
                 value={titulo}
               />
             </div>
@@ -312,7 +303,6 @@ export default function CrearBanqueoClient({ hasPro }: { hasPro: boolean }) {
                   <NumberFieldIncrement />
                 </NumberFieldGroup>
               </NumberField>
-              <p className="text-muted-foreground text-xs">Máximo permitido para estudiantes: 100 preguntas.</p>
             </div>
           </div>
         </div>
@@ -320,9 +310,9 @@ export default function CrearBanqueoClient({ hasPro }: { hasPro: boolean }) {
         <div className="flex flex-col gap-8">
           {/* Áreas */}
           <div className="space-y-4">
-            <Label className="text-sm font-semibold uppercase tracking-wider text-muted-foreground/70">Áreas</Label>
+            <Label className="!text-2xl">Áreas</Label>
             {allAreas.length > 0 ? (
-              <div className="flex flex-wrap gap-x-8 gap-y-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
                 {allAreas.map((item) => (
                   <label key={item.value} className="flex items-center gap-2 text-sm cursor-pointer hover:text-primary transition-colors">
                     <Checkbox
@@ -332,6 +322,28 @@ export default function CrearBanqueoClient({ hasPro }: { hasPro: boolean }) {
                     <span>{item.label}</span>
                   </label>
                 ))}
+                {
+                  areas.length < allAreas.length && (
+                    <Button
+                      size={'xs'}
+                      variant={'secondary'}
+                      onClick={() => setAreas(allAreas.map((item) => item.value))}
+                    >
+                      Seleccionar todas
+                    </Button>
+                  )
+                }
+                {
+                  areas.length > 0 && (
+                    <Button
+                      size={'xs'}
+                      variant={'secondary'}
+                      onClick={() => setAreas([])}
+                    >
+                      Limpiar selección
+                    </Button>
+                  )
+                }
               </div>
             ) : (
               <p className="text-sm text-muted-foreground">Sin áreas registradas</p>
@@ -340,10 +352,10 @@ export default function CrearBanqueoClient({ hasPro }: { hasPro: boolean }) {
 
           {/* Capítulos — only when áreas selected */}
           {areas.length > 0 && (
-            <div className="space-y-4 border-t pt-6">
-              <Label className="text-sm font-semibold uppercase tracking-wider text-muted-foreground/70">Capítulos</Label>
+            <div className="space-y-4 ">
+              <Label className="!text-2xl" >Capítulos</Label>
               {visibleCapitulos.length > 0 ? (
-                <div className="flex flex-wrap gap-x-8 gap-y-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
                   {visibleCapitulos.map((item) => (
                     <label key={item.value} className="flex items-center gap-2 text-sm cursor-pointer hover:text-primary transition-colors">
                       <Checkbox
@@ -353,6 +365,24 @@ export default function CrearBanqueoClient({ hasPro }: { hasPro: boolean }) {
                       <span>{item.label}</span>
                     </label>
                   ))}
+                  {visibleCapitulos.length > 0 && capitulos.length == 0 && (
+                    <Button
+                      size={'xs'}
+                      variant={'secondary'}
+                      onClick={() => setCapitulos(visibleCapitulos.map((item) => item.value))}
+                    >
+                      Seleccionar todas
+                    </Button>
+                  )}
+                  {visibleCapitulos.length > 0 && capitulos.length > 0 && (
+                    <Button
+                      size={'xs'}
+                      variant={'secondary'}
+                      onClick={() => setCapitulos([])}
+                    >
+                      Limpiar selección
+                    </Button>
+                  )}
                 </div>
               ) : (
                 <p className="text-sm text-muted-foreground">Sin capítulos para las áreas seleccionadas</p>
@@ -362,10 +392,10 @@ export default function CrearBanqueoClient({ hasPro }: { hasPro: boolean }) {
 
           {/* Temas — only when capítulos selected */}
           {capitulos.length > 0 && (
-            <div className="space-y-4 border-t pt-6">
-              <Label className="text-sm font-semibold uppercase tracking-wider text-muted-foreground/70">Temas</Label>
+            <div className="space-y-4 ">
+              <Label className="!text-2xl" >Temas</Label>
               {visibleTemas.length > 0 ? (
-                <div className="flex flex-wrap gap-x-8 gap-y-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
                   {visibleTemas.map((item) => (
                     <label key={item.value} className="flex items-center gap-2 text-sm cursor-pointer hover:text-primary transition-colors">
                       <Checkbox
@@ -375,6 +405,25 @@ export default function CrearBanqueoClient({ hasPro }: { hasPro: boolean }) {
                       <span>{item.label}</span>
                     </label>
                   ))}
+
+                  {visibleTemas.length > 0 && temas.length == 0 && (
+                    <Button
+                      size={'xs'}
+                      variant={'secondary'}
+                      onClick={() => setTemas(visibleTemas.map((item) => item.value))}
+                    >
+                      Seleccionar todas
+                    </Button>
+                  )}
+                  {visibleTemas.length > 0 && temas.length > 0 && (
+                    <Button
+                      size={'xs'}
+                      variant={'secondary'}
+                      onClick={() => setTemas([])}
+                    >
+                      Limpiar selección
+                    </Button>
+                  )}
                 </div>
               ) : (
                 <p className="text-sm text-muted-foreground">Sin temas para los capítulos seleccionados</p>
@@ -383,10 +432,10 @@ export default function CrearBanqueoClient({ hasPro }: { hasPro: boolean }) {
           )}
 
           {/* Gestión */}
-          <div className="space-y-4 border-t pt-6">
-            <Label className="text-sm font-semibold uppercase tracking-wider text-muted-foreground/70">Gestión</Label>
+          <div className="space-y-4 ">
+            <Label className="!text-2xl" >Gestión</Label>
             {allGestiones.length > 0 ? (
-              <div className="flex flex-wrap gap-x-8 gap-y-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
                 {allGestiones.map((item) => (
                   <label key={item.value} className="flex items-center gap-2 text-sm cursor-pointer hover:text-primary transition-colors">
                     <Checkbox
@@ -403,10 +452,10 @@ export default function CrearBanqueoClient({ hasPro }: { hasPro: boolean }) {
           </div>
 
           {/* Dificultad */}
-          <div className="space-y-4 border-t pt-6">
-            <Label className="text-sm font-semibold uppercase tracking-wider text-muted-foreground/70">Dificultad</Label>
+          <div className="space-y-4 ">
+            <Label className="!text-2xl" >Dificultad</Label>
             {allDificultades.length > 0 ? (
-              <div className="flex flex-wrap gap-x-8 gap-y-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
                 {allDificultades.map((item) => (
                   <label key={item.value} className="flex items-center gap-2 text-sm cursor-pointer hover:text-primary transition-colors">
                     <Checkbox
@@ -423,16 +472,11 @@ export default function CrearBanqueoClient({ hasPro }: { hasPro: boolean }) {
           </div>
         </div>
 
-        {!hasPro && (
-          <p className="text-sm text-muted-foreground">
-            Necesitas suscripción Pro activa para crear banqueos.
-          </p>
-        )}
         {error && <p className="text-sm text-destructive">{error}</p>}
 
         <div className="flex justify-end">
           <Button
-            disabled={!hasPro || isSubmitting || !catalog}
+            disabled={isSubmitting || !catalog}
             onClick={() => setIsConfirmOpen(true)}
             type="button"
           >

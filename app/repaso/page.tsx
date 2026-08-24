@@ -2,12 +2,22 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
-import { Badge } from "@/components/ui/badge";
+import {
+  Empty,
+  EmptyContent,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "@/components/ui/empty"
 import { Button } from "@/components/ui/button";
 import { ResultadoRespuesta } from "@/prisma/generated";
 import { getServerAuthSession } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { resolveUsuarioEstudianteIdFromSession } from "@/lib/subscription-access";
+import { Item, ItemActions, ItemContent, ItemDescription, ItemTitle } from "@/components/ui/item";
+import { CircleQuestionMark, Icon } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
 
 export const metadata: Metadata = {
   title: "Repaso",
@@ -111,7 +121,7 @@ export default async function RepasoPage() {
     pendientesByBanqueo.set(banqueoId, current);
   }
 
-  const rows = Array.from(pendientesByBanqueo.entries())
+  const BanqueosRepasar = Array.from(pendientesByBanqueo.entries())
     .map(([banqueoId, preguntas]) => {
       return {
         banqueoId,
@@ -122,53 +132,56 @@ export default async function RepasoPage() {
     .filter((item) => item.pendientes > 0);
 
   return (
-    <main className="mx-auto w-full max-w-4xl space-y-4 p-6">
-      <header className="space-y-1">
-        <h1 className="font-semibold text-2xl tracking-tight">Repaso</h1>
-        <p className="text-muted-foreground text-sm">
-          Preguntas erradas por banqueo y progreso de mejora por perfil.
-        </p>
-      </header>
+    <main className="mx-auto  container space-y-4 ">
+      <h1 className="text-3xl">Repaso</h1>
 
-      {rows.length === 0 ? (
-        <div className="rounded-lg border border-dashed p-6 text-sm text-muted-foreground">
-          No hay preguntas pendientes en tus intentos recientes.
-        </div>
+
+      {BanqueosRepasar.length === 0 ? (
+        <Empty>
+          <EmptyHeader>
+            <EmptyMedia variant="icon">
+              <CircleQuestionMark />
+            </EmptyMedia>
+            <EmptyTitle>No hay preguntas pendientes</EmptyTitle>
+            <EmptyDescription>No has tenido errores en los banqueos que has realizado</EmptyDescription>
+          </EmptyHeader>
+          <EmptyContent>
+            <Button render={<Link href="/banqueos" />}>Empezar un banqueo</Button>
+          </EmptyContent>
+        </Empty>
       ) : (
-        <section className="divide-y rounded-lg border">
-          {rows.map((item) => {
-            const stats = repasoStatsByBanqueo.get(item.banqueoId) ?? { total: 0, correctas: 0 };
-            const precision = stats.total > 0 ? Math.round((stats.correctas / stats.total) * 100) : 0;
+        <Card>
+          <CardContent>
 
-            return (
-              <article
-                className="flex flex-wrap items-center justify-between gap-3 p-4"
-                key={item.banqueoId}
-              >
-                <div>
-                  <div className="flex items-center gap-2">
-                    <p className="font-medium">{item.titulo}</p>
-                    <Badge
-                      className="border-amber-300 bg-amber-100 text-amber-900 dark:border-amber-500/40 dark:bg-amber-500/20 dark:text-amber-300"
-                      variant="outline"
-                    >
-                      Personal
-                    </Badge>
-                  </div>
-                  <p className="text-muted-foreground text-sm">
-                    {item.pendientes} pregunta{item.pendientes === 1 ? "" : "s"} por repasar
-                  </p>
-                  <p className="text-muted-foreground text-xs">
-                    Precision historica de repaso: {precision}% ({stats.correctas}/{stats.total})
-                  </p>
-                </div>
-                <Button render={<Link href={`/repaso/${item.banqueoId}`} />} size="sm">
-                  Ver repaso
-                </Button>
-              </article>
-            );
-          })}
-        </section>
+
+            {BanqueosRepasar.map((item) => {
+              const stats = repasoStatsByBanqueo.get(item.banqueoId) ?? { total: 0, correctas: 0 };
+
+              return (
+                <Item
+                  className="flex flex-wrap items-center justify-between gap-3 "
+                  key={item.banqueoId}
+                >
+                  <ItemContent>
+                    <ItemTitle>{item.titulo}</ItemTitle>
+                    <ItemDescription>
+                      {item.pendientes} pregunta{item.pendientes === 1 ? "" : "s"} por repasar
+                    </ItemDescription>
+                  </ItemContent>
+
+                  <ItemActions>
+                    <Button variant={'secondary'} render={<Link href={`/repaso/${item.banqueoId}`} />} size="sm">
+                      Repasar erradas
+                    </Button>
+                    <Button render={<Link href={`/repaso/${item.banqueoId}?mode=all`} />} variant={'outline'} size="sm">
+                      Repasar todo
+                    </Button>
+                  </ItemActions>
+                </Item>
+              );
+            })}
+          </CardContent>
+        </Card>
       )}
     </main>
   );

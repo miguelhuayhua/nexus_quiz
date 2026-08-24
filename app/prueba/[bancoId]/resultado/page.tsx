@@ -2,7 +2,7 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 
-import { BanqueoTipo, PreguntaEstado, ResultadoRespuesta } from "@/prisma/generated";
+import { BanqueoTipo, PreguntaDificultad, PreguntaEstado, ResultadoRespuesta } from "@/prisma/generated";
 import { prisma } from "@/lib/prisma";
 import { getServerAuthSession } from "@/lib/auth";
 import { compareRespuesta, normalizeSolucion, parseRespuesta } from "@/lib/evaluacion-eval";
@@ -12,12 +12,13 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { ModeToggle } from "@/components/ui/mode-toggle";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ResultadoInsights } from "./resultado-insights";
-import { ResultadoPie } from "./resultado-chart";
+import { ResultadoInsights } from "../estadisticas/resultado-insights";
+import { ResultadoPie } from "../estadisticas/resultado-chart";
 import {
   hasActiveProSubscription,
   resolveUsuarioEstudianteIdFromSession,
 } from "@/lib/subscription-access";
+import SolucionarioClient from "./client";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -35,6 +36,30 @@ type Props = {
   searchParams?: SearchParams | Promise<SearchParams>;
 };
 
+function normalizeOpcionesForStats(opciones: unknown): { value: string }[] {
+  if (!Array.isArray(opciones)) return [];
+  return opciones
+    .map((item) => {
+      if (item && typeof item === "object") {
+        const candidate = item as Record<string, unknown>;
+        const rawValue = candidate.value;
+        const rawUrl = candidate.url;
+        const value =
+          typeof rawValue === "string" || typeof rawValue === "number"
+            ? String(rawValue)
+            : typeof rawUrl === "string"
+              ? rawUrl
+              : "";
+        return value ? { value } : null;
+      }
+      if (typeof item === "string" || typeof item === "number") {
+        return { value: String(item) };
+      }
+      return null;
+    })
+    .filter((item): item is { value: string } => item !== null);
+}
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const resolvedParams = await Promise.resolve(params);
   const banco = await prisma.banqueo.findUnique({
@@ -48,6 +73,48 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
+export type SolucionarioEvaluacion = {
+  id: string;
+  titulo: string;
+  descripcion?: string | null;
+  tipo: string;
+  gestion: number;
+  intentoId?: string;
+};
+type PreguntaTipo = "ABIERTA" | "CERRADA";
+
+export type SolucionarioPregunta = {
+  id: string;
+  codigo: string;
+  temaNombre?: string | null;
+  temaDescripcion?: string | null;
+  enunciado: string;
+  explicacion?: string | null;
+  tipo: PreguntaTipo;
+  opciones?: any;
+  assets?: any;
+  solucionKind?: string | null;
+  solucionValue?: any;
+  dificultad?: "DIFICIL" | "MEDIO" | "SENCILLO";
+  tasaAciertoHistorica?: number;
+  stats: {
+    bien: number;
+    mal: number;
+    omitidas: number;
+    total: number;
+    tasaAcierto: number;
+    optionStats: {
+      key: string;
+      count: number;
+      porcentaje: number;
+      recentResponders: {
+        id: string;
+        avatar: string | null;
+        nombre: string;
+      }[];
+    }[];
+  };
+};
 type Resumen = {
   total: number;
   correctas: number;
@@ -95,7 +162,20 @@ type ComparativoResumen = {
   };
 };
 
+function normalizeChoiceValue(value: unknown): string {
+  if (value && typeof value === "object") {
+    const candidate = value as Record<string, unknown>;
+    if (candidate.value !== undefined) return String(candidate.value).trim().toLowerCase();
+    if (candidate.url !== undefined) return String(candidate.url).trim().toLowerCase();
+  }
+  return String(value ?? "").trim().toLowerCase();
+}
+function inferPreguntaTipo(opciones: unknown): "ABIERTA" | "CERRADA" {
+  return Array.isArray(opciones) && opciones.length > 0 ? "CERRADA" : "ABIERTA";
+}
 export default async function EvaluacionResultadoPage({ params, searchParams }: Props) {
+
+
   const session = await getServerAuthSession();
   if (!session?.user?.id && !session?.user?.email) {
     return notFound();
@@ -142,8 +222,8 @@ export default async function EvaluacionResultadoPage({ params, searchParams }: 
           select: {
             preguntaId: true,
             respuesta: true,
-            esCorrecta: true,
             resultado: true,
+
           },
         },
       },
@@ -158,7 +238,6 @@ export default async function EvaluacionResultadoPage({ params, searchParams }: 
           select: {
             preguntaId: true,
             respuesta: true,
-            esCorrecta: true,
             resultado: true,
           },
         },
@@ -170,286 +249,254 @@ export default async function EvaluacionResultadoPage({ params, searchParams }: 
     return notFound();
   }
 
-  const respuestas = getRespuestasMap(intentoFinal.respuestasIntentos);
-  const preguntas = getPreguntasFromBanco(banco.preguntas);
-  const resumen = buildResumen(preguntas, intentoFinal.respuestasIntentos, intentoFinal.tiempoDuracion);
 
-  const cohortIntentos = await prisma.intentos.findMany({
+  const cohortRows = await prisma.respuestasIntentos.findMany({
     where: {
-      banqueoId: banco.id,
-    },
-    select: {
-      id: true,
-      usuarioEstudianteId: true,
-      tiempoDuracion: true,
-      correctas: true,
-      incorrectas: true,
-      creadoEn: true,
-      respuestasIntentos: {
-        select: {
-          preguntaId: true,
-          esCorrecta: true,
+      intentos: {
+        banqueoId: banco.id,
+        usuarioEstudianteId: {
+          not: usuarioEstudianteId,
         },
       },
-      usuariosEstudiantes: {
+    },
+    select: {
+      preguntaId: true,
+      respuesta: true,
+      resultado: true,
+      actualizadoEn: true,
+      intentos: {
         select: {
-          id: true,
-          avatar: true,
-          usuario: true,
-          correo: true,
-          estudiantes: {
+          usuarioEstudianteId: true,
+          usuariosEstudiantes: {
             select: {
-              nombre: true,
-              apellido: true,
+              avatar: true,
+              usuario: true,
+              correo: true,
+              estudiantes: {
+                select: {
+                  nombre: true,
+                  apellido: true,
+                },
+              },
             },
           },
         },
       },
     },
-    orderBy: [{ actualizadoEn: "desc" }, { creadoEn: "desc" }],
-  });
-
-  const preguntaStats = buildPreguntaStats(preguntas, cohortIntentos, respuestas);
-  const ranking = buildRanking({ cohortIntentos });
-  const nivelLabel = banco.tipo === BanqueoTipo.PRO ? "PRO" : "BASIC";
-  const comparativo = buildComparativo({
-    resumen,
-    intentoFinal: {
-      id: intentoFinal.id,
-      usuarioEstudianteId: intentoFinal.usuarioEstudianteId ?? null,
-      correctas: intentoFinal.correctas,
-      incorrectas: intentoFinal.incorrectas,
-      tiempoDuracion: intentoFinal.tiempoDuracion,
+    orderBy: {
+      actualizadoEn: "desc",
     },
-    cohortIntentos,
-  });
-  const respuestasGlobales = buildRespuestasGlobales({
-    cohortIntentos: cohortIntentos.map((item) => ({
-      correctas: item.correctas,
-      incorrectas: item.incorrectas,
-    })),
-    totalPreguntas: preguntas.length,
   });
 
-  const areas = Array.from(
-    new Set(banco.preguntas.flatMap((pregunta) => pregunta.areas.map((item) => item.titulo))),
+  const questionMeta = new Map(
+    banco.preguntas.map((pregunta) => [
+      pregunta.id,
+      {
+        kind: extractSolucionKind(pregunta.solucion) ?? undefined,
+        optionKeys: normalizeOpcionesForStats(pregunta.opciones).map((opt) => normalizeChoiceValue(opt.value)),
+      },
+    ]),
   );
-  const capitulos = Array.from(
-    new Set(banco.preguntas.flatMap((pregunta) => pregunta.capitulos.map((item) => item.titulo))),
-  );
+
+  const statsByPregunta = new Map<
+    string,
+    {
+      bien: number;
+      mal: number;
+      omitidas: number;
+      total: number;
+      optionCounts: Map<string, number>;
+      optionRecentResponders: Map<
+        string,
+        {
+          id: string;
+          avatar: string | null;
+          nombre: string;
+        }[]
+      >;
+    }
+  >();
+
+  for (const pregunta of banco.preguntas) {
+    const optionCounts = new Map<string, number>();
+    const optionRecentResponders = new Map<string, { id: string; avatar: string | null; nombre: string }[]>();
+    for (const key of normalizeOpcionesForStats(pregunta.opciones).map((opt) => normalizeChoiceValue(opt.value))) {
+      optionCounts.set(key, 0);
+      optionRecentResponders.set(key, []);
+    }
+
+    statsByPregunta.set(pregunta.id, {
+      bien: 0,
+      mal: 0,
+      omitidas: 0,
+      total: 0,
+      optionCounts,
+      optionRecentResponders,
+    });
+  }
+
+  for (const row of cohortRows) {
+    const stat = statsByPregunta.get(row.preguntaId);
+    if (!stat) continue;
+
+    stat.total += 1;
+    if (row.resultado === ResultadoRespuesta.BIEN) stat.bien += 1;
+    else if (row.resultado === ResultadoRespuesta.MAL) stat.mal += 1;
+    else stat.omitidas += 1;
+
+    const meta = questionMeta.get(row.preguntaId);
+    const parsed = parseRespuesta(row.respuesta, meta?.kind);
+
+    const selectedValues = Array.isArray(parsed)
+      ? parsed.map((item) => normalizeChoiceValue(item))
+      : parsed === null
+        ? []
+        : [normalizeChoiceValue(parsed)];
+
+    for (const value of selectedValues) {
+      if (!value) continue;
+      const current = stat.optionCounts.get(value) ?? 0;
+      stat.optionCounts.set(value, current + 1);
+
+      const userId = row.intentos.usuarioEstudianteId;
+      if (!userId) continue;
+
+      const userData = row.intentos.usuariosEstudiantes;
+      const nombreCompleto =
+        `${userData?.estudiantes?.nombre ?? ""} ${userData?.estudiantes?.apellido ?? ""}`.trim();
+      const nombre = nombreCompleto || userData?.usuario || userData?.correo || "Usuario";
+      const avatar = userData?.avatar ?? null;
+
+      const currentUsers = stat.optionRecentResponders.get(value) ?? [];
+      if (currentUsers.length < 5 && !currentUsers.some((item) => item.id === userId)) {
+        currentUsers.push({
+          id: userId,
+          avatar,
+          nombre,
+        });
+      }
+      stat.optionRecentResponders.set(value, currentUsers);
+    }
+  }
+
+  const evaluacionPayload: SolucionarioEvaluacion = {
+    id: banco.id,
+    titulo: banco.titulo,
+    descripcion: null,
+    tipo: banco.tipo,
+    gestion:
+      banco.preguntas.length > 0
+        ? Math.max(...banco.preguntas.map((pregunta) => pregunta.gestion))
+        : new Date().getFullYear(),
+    intentoId: intentoFinal.id,
+  };
+
+  const preguntas: SolucionarioPregunta[] = banco.preguntas.map((pregunta) => {
+    const stat = statsByPregunta.get(pregunta.id) ?? {
+      bien: 0,
+      mal: 0,
+      omitidas: 0,
+      total: 0,
+      optionCounts: new Map<string, number>(),
+      optionRecentResponders: new Map<string, { id: string; avatar: string | null; nombre: string }[]>(),
+    };
+    const optionStats = normalizeOpcionesForStats(pregunta.opciones).map((opt) => {
+      const key = normalizeChoiceValue(opt.value);
+      const count = stat.optionCounts.get(key) ?? 0;
+      const porcentaje = stat.total > 0 ? Math.round((count / stat.total) * 100) : 0;
+      const recentResponders = stat.optionRecentResponders.get(key) ?? [];
+      return {
+        key,
+        count,
+        porcentaje,
+        recentResponders,
+      };
+    });
+
+    return {
+      id: pregunta.id,
+      codigo: pregunta.codigo,
+      temaNombre: pregunta.temas[0]?.titulo ?? null,
+      temaDescripcion: pregunta.temas[0]?.descripcion ?? null,
+      enunciado: pregunta.enunciado,
+      explicacion: pregunta.explicacion,
+      dificultad: pregunta.dificultad ?? PreguntaDificultad.MEDIO,
+      tasaAciertoHistorica: pregunta.tasaAcierto ?? 0,
+      tipo: inferPreguntaTipo(pregunta.opciones),
+      opciones: pregunta.opciones,
+      assets: [],
+      solucionKind: extractSolucionKind(pregunta.solucion),
+      solucionValue: extractSolucionValue(pregunta.solucion),
+      stats: {
+        bien: stat.bien,
+        mal: stat.mal,
+        omitidas: stat.omitidas,
+        total: stat.total,
+        tasaAcierto: stat.total > 0 ? Math.round((stat.bien / stat.total) * 100) : 0,
+        optionStats,
+      },
+    };
+  });
+
+  // ─── User reactions (like/dislike) ──────────────────────────────────
+  const preguntaIds = preguntas.map((p) => p.id);
+  const userReactions = await prisma.reaccionesPreguntas.findMany({
+    where: {
+      preguntaId: { in: preguntaIds },
+      usuarioEstudianteId,
+    },
+    select: {
+      preguntaId: true,
+      tipo: true,
+    },
+  });
+  const reaccionesMap: Record<string, "LIKE" | "DISLIKE"> = {};
+  for (const r of userReactions) {
+    reaccionesMap[r.preguntaId] = r.tipo as "LIKE" | "DISLIKE";
+  }
+
+  const respuestas = getRespuestasMap(intentoFinal.respuestasIntentos);
+  const resumen = buildResumen(preguntas, intentoFinal.respuestasIntentos, intentoFinal.tiempoDuracion);
+
+
 
   return (
-    <main className="min-h-screen bg-background px-6 py-10 sm:px-10">
-      <div className="mx-auto container">
-        <div className="mb-2 flex w-full justify-end">
-          <ModeToggle />
-        </div>
-        <div className="flex flex-col items-center gap-4">
-          <header className="flex flex-col items-center gap-4">
-            <Badge variant="outline">{nivelLabel}</Badge>
-            <Label className="text-center">Resultado Final</Label>
-            <h1 className="text-center text-2xl font-bold">{banco.titulo}</h1>
-          </header>
+    <main className="min-h-screen p-4 py-10 space-y-4 max-w-5xl mx-auto">
 
-          <div className="flex w-full flex-wrap justify-center gap-6">
-            <Stat title="Progreso" value={`${resumen.total - resumen.sinResponder} / ${resumen.total}`} />
-            <Stat
-              title="Correctas"
-              value={String(resumen.correctas)}
-              valueClassName="text-emerald-600 dark:text-emerald-400"
-            />
-            <Stat title="Incorrectas" value={String(resumen.incorrectas)} valueClassName="text-destructive" />
-            <Stat title="Tiempo" value={formatDuration(resumen.tiempoEmpleado)} />
-          </div>
-        </div>
+      <h1 className="text-center text-3xl">{banco.titulo}</h1>
 
-        <div className="mx-auto mt-4 flex w-full max-w-3xl flex-col items-center gap-8">
-          <ResultadoPie
-            porcentaje={resumen.porcentaje}
-            puntos={resumen.puntosAcumulados}
-            total={resumen.totalPuntos}
-          />
-
-          <div className="flex flex-wrap justify-center gap-2">
-            <Button render={<Link href={`/prueba/${banco.id}/solucionario?intentoId=${intentoFinal.id}`} />}>
-              Ver solucionario
-            </Button>
-            <Button variant="outline" render={<Link href="/banqueos" />}>
-              Volver a banqueos
-            </Button>
-          </div>
-
-          <div className="w-full space-y-4">
-            <h3 className="text-center text-lg font-bold">Detalles Banqueo</h3>
-
-            <div className="grid grid-cols-1 divide-y rounded-xl border bg-muted/5 md:grid-cols-2 md:divide-x md:divide-y-0">
-              <div className="space-y-2 p-6">
-                <Label className="text-sm">Areas</Label>
-                <div className="flex flex-wrap gap-2">
-                  {areas.map((item) => (
-                    <Badge key={item} variant="outline">
-                      {item}
-                    </Badge>
-                  ))}
-                  {areas.length === 0 && (
-                    <span className="text-sm italic text-muted-foreground">No asignado</span>
-                  )}
-                </div>
-              </div>
-
-              <div className="space-y-2 p-6">
-                <Label className="text-sm">Capitulos</Label>
-                <div className="flex flex-wrap gap-2">
-                  {capitulos.map((item) => (
-                    <Badge key={item} variant="outline">
-                      {item}
-                    </Badge>
-                  ))}
-                  {capitulos.length === 0 && (
-                    <span className="text-sm italic text-muted-foreground">No asignado</span>
-                  )}
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <Tabs className="w-full" defaultValue="estadisticas">
-            <TabsList className="mx-auto">
-              <TabsTrigger value="estadisticas">Estadisticas</TabsTrigger>
-              <TabsTrigger value="ranking">Ranking</TabsTrigger>
-            </TabsList>
-
-            <TabsContent className="w-full space-y-3 pt-2" value="estadisticas">
-              <h3 className="text-center text-lg font-bold">Estadistica por pregunta</h3>
-              <ResultadoInsights
-                preguntaStats={preguntaStats}
-                ranking={ranking}
-                comparativo={comparativo}
-                respuestasGlobales={respuestasGlobales}
-              />
-
-              <div className="grid gap-3 md:grid-cols-3">
-                <StatComparativo
-                  title="Puntaje vs demás"
-                  yo={`${comparativo.yo.puntaje}`}
-                  promedio={`${comparativo.otros.puntajePromedio.toFixed(1)}`}
-                  delta={comparativo.delta.puntaje}
-                />
-                <StatComparativo
-                  title="Acierto % vs demás"
-                  yo={`${comparativo.yo.porcentaje}%`}
-                  promedio={`${comparativo.otros.porcentajePromedio.toFixed(1)}%`}
-                  delta={comparativo.delta.porcentaje}
-                />
-                <StatComparativo
-                  title="Tiempo vs demás"
-                  yo={formatDuration(comparativo.yo.tiempo)}
-                  promedio={formatDuration(Math.round(comparativo.otros.tiempoPromedio))}
-                  delta={-comparativo.delta.tiempo}
-                  invert
-                />
-              </div>
-
-              <div className="grid gap-3 md:grid-cols-2">
-                <Stat
-                  title="Posicion actual"
-                  value={`${comparativo.ranking.posicion} / ${comparativo.ranking.total}`}
-                />
-                <Stat title="Percentil" value={`${comparativo.ranking.percentil}%`} />
-              </div>
-
-              <div className="overflow-x-auto rounded-xl border">
-                <table className="w-full text-sm">
-                  <thead>
-                    <tr className="border-b bg-muted/30 text-left">
-                      <th className="px-3 py-2">Pregunta</th>
-                      <th className="px-3 py-2 text-center">Bien</th>
-                      <th className="px-3 py-2 text-center">Mal</th>
-                      <th className="px-3 py-2 text-center">Intentos</th>
-                      <th className="px-3 py-2 text-center">Acierto</th>
-                      <th className="px-3 py-2 text-center">Error</th>
-                      <th className="px-3 py-2 text-center">Tu resultado</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {preguntaStats.map((item) => (
-                      <tr className="border-b last:border-0" key={item.preguntaId}>
-                        <td className="px-3 py-2">
-                          <p className="font-medium">{item.codigo}</p>
-                          <p className="line-clamp-1 text-muted-foreground text-xs">{item.enunciado}</p>
-                        </td>
-                        <td className="px-3 py-2 text-center text-emerald-600">{item.bien}</td>
-                        <td className="px-3 py-2 text-center text-destructive">{item.mal}</td>
-                        <td className="px-3 py-2 text-center">{item.totalIntentos}</td>
-                        <td className="px-3 py-2 text-center">{item.porcentajeAcierto}%</td>
-                        <td className="px-3 py-2 text-center">{item.porcentajeError}%</td>
-                        <td className="px-3 py-2 text-center">
-                          <Badge
-                            variant={
-                              item.miEstado === "BIEN"
-                                ? "success"
-                                : item.miEstado === "MAL"
-                                  ? "destructive"
-                                  : "outline"
-                            }
-                          >
-                            {item.miEstado === "BIEN"
-                              ? "Bien"
-                              : item.miEstado === "MAL"
-                                ? "Fallada"
-                                : "Sin responder"}
-                          </Badge>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </TabsContent>
-
-            <TabsContent className="w-full space-y-3 pt-2" value="ranking">
-              <h3 className="text-center text-lg font-bold">Ranking global</h3>
-              <p className="text-center text-muted-foreground text-sm">
-                Ordenado por puntaje y tiempo en intentos recientes del banqueo.
-              </p>
-              <div className="overflow-x-auto rounded-xl border">
-                <table className="w-full text-sm">
-                  <thead>
-                    <tr className="border-b bg-muted/30 text-left">
-                      <th className="px-3 py-2">#</th>
-                      <th className="px-3 py-2">Estudiante</th>
-                      <th className="px-3 py-2 text-center">Aciertos</th>
-                      <th className="px-3 py-2 text-center">Puntos</th>
-                      <th className="px-3 py-2 text-center">Acierto %</th>
-                      <th className="px-3 py-2 text-center">Tiempo prom.</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {ranking.map((item) => (
-                      <tr className="border-b last:border-0" key={item.estudianteId}>
-                        <td className="px-3 py-2 font-semibold">{item.rank}</td>
-                        <td className="px-3 py-2">
-                          <div className="flex items-center gap-2">
-                            <Avatar className="size-8">
-                              <AvatarImage alt={item.nombre} src={item.avatar ?? ""} />
-                              <AvatarFallback>{getInitial(item.nombre)}</AvatarFallback>
-                            </Avatar>
-                            <span className="font-medium">{item.nombre}</span>
-                          </div>
-                        </td>
-                        <td className="px-3 py-2 text-center font-semibold text-emerald-600">{item.correctas}</td>
-                        <td className="px-3 py-2 text-center">{item.puntos}</td>
-                        <td className="px-3 py-2 text-center">{item.porcentaje}%</td>
-                        <td className="px-3 py-2 text-center">{formatDuration(item.tiempoPromedio)}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </TabsContent>
-          </Tabs>
-        </div>
+      <div className="flex w-full flex-wrap justify-center gap-6">
+        <Stat title="Progreso" value={`${resumen.total - resumen.sinResponder} / ${resumen.total}`} />
+        <Stat
+          title="Correctas"
+          value={String(resumen.correctas)}
+          valueClassName="text-emerald-600 dark:text-emerald-400"
+        />
+        <Stat title="Incorrectas" value={String(resumen.incorrectas)} valueClassName="text-destructive" />
+        <Stat title="Tiempo" value={formatDuration(resumen.tiempoEmpleado)} />
       </div>
+
+      <ResultadoPie
+        porcentaje={resumen.porcentaje}
+        puntos={resumen.puntosAcumulados}
+        total={resumen.totalPuntos}
+      />
+
+      <div className="flex flex-wrap justify-center gap-2">
+        <Button
+          variant={'secondary'}
+          render={<Link href={`/prueba/${banco.id}/estadisticas?intentoId=${intentoFinal.id}`} />}>
+          Ver estadísticas
+        </Button>
+        <Button variant="outline" render={<Link href="/banqueos" />}>
+          Volver a banqueos
+        </Button>
+      </div>
+      <h2 className="text-3xl text-center my-10">
+        Solucionario
+      </h2>
+      <SolucionarioClient evaluacion={evaluacionPayload} preguntas={preguntas} respuestas={respuestas} reacciones={reaccionesMap} />
+
     </main>
   );
 }
@@ -465,40 +512,12 @@ function Stat({
 }) {
   return (
     <div className="text-center">
-      <p className="mb-1 text-xs font-bold text-muted-foreground">{title}</p>
-      <p className={`text-2xl font-bold ${valueClassName ?? "text-foreground"}`}>{value}</p>
+      <p className="mb-1 text-sm text-muted-foreground">{title}</p>
+      <p className={`text-3xl font-medium ${valueClassName ?? "text-foreground"}`}>{value}</p>
     </div>
   );
 }
 
-function StatComparativo({
-  title,
-  yo,
-  promedio,
-  delta,
-  invert = false,
-}: {
-  title: string;
-  yo: string;
-  promedio: string;
-  delta: number;
-  invert?: boolean;
-}) {
-  const isGood = invert ? delta >= 0 : delta >= 0;
-  return (
-    <div className="rounded-lg border p-3">
-      <p className="mb-2 text-xs font-semibold text-muted-foreground">{title}</p>
-      <p className="text-sm">Tu resultado: <span className="font-semibold">{yo}</span></p>
-      <p className="text-sm text-muted-foreground">
-        Prom. de los demás: <span className="font-semibold text-foreground">{promedio}</span>
-      </p>
-      <p className={`mt-2 text-xs font-semibold ${isGood ? "text-emerald-600" : "text-destructive"}`}>
-        {delta >= 0 ? "+" : ""}
-        {delta.toFixed(1)} {invert ? "seg vs promedio" : "vs promedio"}
-      </p>
-    </div>
-  );
-}
 
 async function loadBancoConAcceso(bancoId: string) {
   return prisma.banqueo.findFirst({
@@ -517,15 +536,21 @@ async function loadBancoConAcceso(bancoId: string) {
           id: true,
           codigo: true,
           enunciado: true,
+          explicacion: true,
+          dificultad: true,
+          tasaAcierto: true,
+          opciones: true,
           solucion: true,
-          areas: {
+          gestion: true,
+          areas: true,
+          capitulos: true,
+          temas: {
             select: {
               titulo: true,
+              descripcion: true,
             },
-          },
-          capitulos: {
-            select: {
-              titulo: true,
+            orderBy: {
+              titulo: "asc",
             },
           },
         },
@@ -533,7 +558,6 @@ async function loadBancoConAcceso(bancoId: string) {
     },
   });
 }
-
 function getPreguntasFromBanco(
   preguntas: {
     id: string;
@@ -577,7 +601,7 @@ function getRespuestasMap(
 }
 
 function buildResumen(
-  preguntas: PreguntaItem[],
+  preguntas: SolucionarioPregunta[],
   respuestasIntentos: {
     resultado: ResultadoRespuesta;
   }[],

@@ -2,9 +2,6 @@ import type { NextAuthOptions } from "next-auth";
 import { getServerSession } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 
-const isProduction = process.env.NODE_ENV === "production";
-const cookieDomain = isProduction ? ".cicap.tech" : ".cicap.tech";
-
 export const authOptions: NextAuthOptions = {
   providers: [
     // This app only consumes an existing shared session.
@@ -17,22 +14,6 @@ export const authOptions: NextAuthOptions = {
       },
     }),
   ],
-  session: {
-    strategy: "jwt",
-  },
-  cookies: {
-    sessionToken: {
-      name: "__Secure-next-auth.session-token",
-      options: {
-        httpOnly: true,
-        sameSite: "lax",
-        path: "/",
-        secure: true,
-        domain: cookieDomain,
-      },
-    },
-  },
-  useSecureCookies: true,
   pages: {
     signIn: "/",
     error: "/",

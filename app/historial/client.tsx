@@ -26,7 +26,14 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useDataTable } from "@/hooks/use-data-table";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
 import { formatDateTime } from "@/lib/utils";
 
 export type HistorialIntentoRow = {
@@ -319,25 +326,59 @@ export default function HistorialClient({
     [cohortPuntajesPorcentaje, personalPuntajesPorcentaje],
   );
 
-  const { table } = useDataTable({
-    data: intentos,
-    columns,
-    pageCount: Math.ceil(Math.max(intentos.length, 1) / 8),
-    initialState: { pagination: { pageIndex: 0, pageSize: 8 } },
-    getRowId: (row) => row.id,
-  });
+
 
   return (
     <Tabs className="w-full" defaultValue="tabla">
-      <TabsList className="bg-muted/40 p-1">
+      <TabsList >
         <TabsTrigger value="tabla">Tabla</TabsTrigger>
         <TabsTrigger value="graficos">Graficos</TabsTrigger>
       </TabsList>
 
-      <TabsContent value="tabla" className="mt-3">
-        <DataTable table={table}>
-          <DataTableToolbar table={table} />
-        </DataTable>
+      <TabsContent value="tabla" >
+
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Banqueo</TableHead>
+              <TableHead>Fecha</TableHead>
+              <TableHead>Puntaje</TableHead>
+              <TableHead>Acciones</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {intentos.map((item, index) => (
+              <TableRow key={index}>
+                <TableCell className="font-medium">{item.bancoTitulo}</TableCell>
+                <TableCell>{(item.iniciadoEn)}</TableCell>
+                <TableCell>{item.puntajePorcentaje}%</TableCell>
+                <TableCell>
+                  <div className="flex items-center gap-2">
+                    {item.estado === "EN_PROGRESO" && (
+                      <Button
+                        size="icon-sm"
+                        variant="default"
+                        render={<Link href={resolveResumePath(item)} />}
+                        title="Reanudar prueba"
+                      >
+                        <Play className="size-4" />
+                      </Button>
+                    )}
+
+                    <Button size={'sm'}
+                      variant={'outline'}
+                      render={<Link href={`${resolveHistorialBasePath(item)}/resultado?intentoId=${item.id}`} />}>
+                      Ver resultado
+                    </Button>
+
+                  </div>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+
+
       </TabsContent>
 
       <TabsContent value="graficos" className="mt-3 space-y-4">

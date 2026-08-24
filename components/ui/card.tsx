@@ -1,244 +1,103 @@
-"use client";
+import * as React from "react"
 
-import { mergeProps } from "@base-ui/react/merge-props";
-import { useRender } from "@base-ui/react/use-render";
-
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils"
 
 function Card({
   className,
-  render,
+  size = "default",
   ...props
-}: useRender.ComponentProps<"div">) {
-  const defaultProps = {
-    className: cn(
-      "relative flex flex-col rounded-2xl border bg-card not-dark:bg-clip-padding text-card-foreground shadow-xs/5 before:pointer-events-none before:absolute before:inset-0 before:rounded-[calc(var(--radius-2xl)-1px)] before:shadow-[0_1px_--theme(--color-black/4%)] dark:before:shadow-[0_-1px_--theme(--color-white/6%)]",
-      className,
-    ),
-    "data-slot": "card",
-  };
-
-  return useRender({
-    defaultTagName: "div",
-    props: mergeProps<"div">(defaultProps, props),
-    render,
-  });
+}: React.ComponentProps<"div"> & { size?: "default" | "sm" }) {
+  return (
+    <div
+      data-slot="card"
+      data-size={size}
+      className={cn(
+        "group/card flex flex-col h-fit justify-center    bg-card py-(--card-spacing) text-sm text-card-foreground ring-1 ring-foreground/10 [--card-spacing:--spacing(4)] has-data-[slot=card-footer]:pb-0  data-[size=sm]:[--card-spacing:--spacing(3)] data-[size=sm]:has-data-[slot=card-footer]:pb-0 *:[img:first-child]:rounded-t-xl *:[img:last-child]:rounded-b-xl p-0",
+        className
+      )}
+      {...props}
+    />
+  )
 }
 
-function CardFrame({
-  className,
-  render,
-  ...props
-}: useRender.ComponentProps<"div">) {
-  const defaultProps = {
-    className: cn(
-      "flex flex-col relative rounded-2xl border bg-card before:bg-muted/72 not-dark:bg-clip-padding text-card-foreground shadow-xs/5 before:pointer-events-none before:absolute before:inset-0 before:rounded-[calc(var(--radius-2xl)-1px)] before:shadow-[0_1px_--theme(--color-black/4%)] dark:before:shadow-[0_-1px_--theme(--color-white/6%)] *:data-[slot=card]:-m-px *:not-last:data-[slot=card]:rounded-b-xl *:not-last:data-[slot=card]:before:rounded-b-[calc(var(--radius-xl)-1px)] *:not-first:data-[slot=card]:rounded-t-xl *:not-first:data-[slot=card]:before:rounded-t-[calc(var(--radius-xl)-1px)] *:data-[slot=card]:[clip-path:inset(-1rem_1px)] *:data-[slot=card]:first:[clip-path:inset(1px_1px_-1rem_1px_round_calc(var(--radius-2xl)-1px))] *:data-[slot=card]:last:[clip-path:inset(-1rem_1px_1px_1px_round_calc(var(--radius-2xl)-1px))] *:data-[slot=card]:shadow-none *:data-[slot=card]:before:hidden *:data-[slot=card]:bg-clip-padding",
-      className,
-    ),
-    "data-slot": "card-frame",
-  };
-
-  return useRender({
-    defaultTagName: "div",
-    props: mergeProps<"div">(defaultProps, props),
-    render,
-  });
+function CardHeader({ className, ...props }: React.ComponentProps<"div">) {
+  return (
+    <div
+      data-slot="card-header"
+      className={cn(
+        " spacey-y-1 px-4 pt-4  ",
+        className
+      )}
+      {...props}
+    />
+  )
 }
 
-function CardFrameHeader({
-  className,
-  render,
-  ...props
-}: useRender.ComponentProps<"div">) {
-  const defaultProps = {
-    className: cn("relative flex flex-col px-6 py-4", className),
-    "data-slot": "card-frame-header",
-  };
-
-  return useRender({
-    defaultTagName: "div",
-    props: mergeProps<"div">(defaultProps, props),
-    render,
-  });
+function CardTitle({ className, ...props }: React.ComponentProps<"div">) {
+  return (
+    <div
+      data-slot="card-title"
+      className={cn(
+        "font-heading flex  items-center   gap-2 text-lg font-medium ",
+        className
+      )}
+      {...props}
+    />
+  )
 }
 
-function CardFrameTitle({
-  className,
-  render,
-  ...props
-}: useRender.ComponentProps<"div">) {
-  const defaultProps = {
-    className: cn("font-semibold text-sm", className),
-    "data-slot": "card-frame-title",
-  };
-
-  return useRender({
-    defaultTagName: "div",
-    props: mergeProps<"div">(defaultProps, props),
-    render,
-  });
+function CardDescription({ className, ...props }: React.ComponentProps<"div">) {
+  return (
+    <div
+      data-slot="card-description"
+      className={cn("text-xs text-muted-foreground", className)}
+      {...props}
+    />
+  )
 }
 
-function CardFrameDescription({
-  className,
-  render,
-  ...props
-}: useRender.ComponentProps<"div">) {
-  const defaultProps = {
-    className: cn("text-muted-foreground text-sm", className),
-    "data-slot": "card-frame-description",
-  };
-
-  return useRender({
-    defaultTagName: "div",
-    props: mergeProps<"div">(defaultProps, props),
-    render,
-  });
+function CardAction({ className, ...props }: React.ComponentProps<"div">) {
+  return (
+    <div
+      data-slot="card-action"
+      className={cn(
+        "col-start-2 row-span-2 row-start-1 self-start justify-self-end",
+        className
+      )}
+      {...props}
+    />
+  )
 }
 
-function CardFrameFooter({
-  className,
-  render,
-  ...props
-}: useRender.ComponentProps<"div">) {
-  const defaultProps = {
-    className: cn("px-6 py-4", className),
-    "data-slot": "card-frame-footer",
-  };
-
-  return useRender({
-    defaultTagName: "div",
-    props: mergeProps<"div">(defaultProps, props),
-    render,
-  });
+function CardContent({ className, ...props }: React.ComponentProps<"div">) {
+  return (
+    <div
+      data-slot="card-content"
+      className={cn("p-4 space-y-4 relative", className)}
+      {...props}
+    />
+  )
 }
 
-function CardHeader({
-  className,
-  render,
-  ...props
-}: useRender.ComponentProps<"div">) {
-  const defaultProps = {
-    className: cn(
-      "grid auto-rows-min grid-rows-[auto_auto] items-start gap-1.5 p-6 in-[[data-slot=card]:has(>[data-slot=card-panel])]:pb-4 has-data-[slot=card-action]:grid-cols-[1fr_auto]",
-      className,
-    ),
-    "data-slot": "card-header",
-  };
-
-  return useRender({
-    defaultTagName: "div",
-    props: mergeProps<"div">(defaultProps, props),
-    render,
-  });
-}
-
-function CardTitle({
-  className,
-  render,
-  ...props
-}: useRender.ComponentProps<"div">) {
-  const defaultProps = {
-    className: cn("font-semibold text-lg leading-none", className),
-    "data-slot": "card-title",
-  };
-
-  return useRender({
-    defaultTagName: "div",
-    props: mergeProps<"div">(defaultProps, props),
-    render,
-  });
-}
-
-function CardDescription({
-  className,
-  render,
-  ...props
-}: useRender.ComponentProps<"div">) {
-  const defaultProps = {
-    className: cn("text-muted-foreground text-sm", className),
-    "data-slot": "card-description",
-  };
-
-  return useRender({
-    defaultTagName: "div",
-    props: mergeProps<"div">(defaultProps, props),
-    render,
-  });
-}
-
-function CardAction({
-  className,
-  render,
-  ...props
-}: useRender.ComponentProps<"div">) {
-  const defaultProps = {
-    className: cn(
-      "col-start-2 row-span-2 row-start-1 self-start justify-self-end inline-flex",
-      className,
-    ),
-    "data-slot": "card-action",
-  };
-
-  return useRender({
-    defaultTagName: "div",
-    props: mergeProps<"div">(defaultProps, props),
-    render,
-  });
-}
-
-function CardPanel({
-  className,
-  render,
-  ...props
-}: useRender.ComponentProps<"div">) {
-  const defaultProps = {
-    className: cn(
-      "flex-1 p-6 in-[[data-slot=card]:has(>[data-slot=card-header]:not(.border-b))]:pt-0 in-[[data-slot=card]:has(>[data-slot=card-footer]:not(.border-t))]:pb-0",
-      className,
-    ),
-    "data-slot": "card-panel",
-  };
-
-  return useRender({
-    defaultTagName: "div",
-    props: mergeProps<"div">(defaultProps, props),
-    render,
-  });
-}
-
-function CardFooter({
-  className,
-  render,
-  ...props
-}: useRender.ComponentProps<"div">) {
-  const defaultProps = {
-    className: cn(
-      "flex items-center p-6 in-[[data-slot=card]:has(>[data-slot=card-panel])]:pt-4",
-      className,
-    ),
-    "data-slot": "card-footer",
-  };
-
-  return useRender({
-    defaultTagName: "div",
-    props: mergeProps<"div">(defaultProps, props),
-    render,
-  });
+function CardFooter({ className, ...props }: React.ComponentProps<"div">) {
+  return (
+    <div
+      data-slot="card-footer"
+      className={cn(
+        "flex items-center bg-muted space-x-2 px-4 border-t py-2",
+        className
+      )}
+      {...props}
+    />
+  )
 }
 
 export {
   Card,
-  CardFrame,
-  CardFrameHeader,
-  CardFrameTitle,
-  CardFrameDescription,
-  CardFrameFooter,
+  CardHeader,
+  CardFooter,
+  CardTitle,
   CardAction,
   CardDescription,
-  CardFooter,
-  CardHeader,
-  CardPanel,
-  CardPanel as CardContent,
-  CardTitle,
-};
+  CardContent,
+}

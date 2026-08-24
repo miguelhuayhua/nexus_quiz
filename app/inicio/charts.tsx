@@ -10,6 +10,8 @@ import {
     Line,
     LineChart,
     XAxis,
+    BarChart,
+    Bar,
 } from "recharts"
 
 import {
@@ -25,6 +27,7 @@ import {
     ChartTooltipContent,
     type ChartConfig,
 } from "@/components/ui/chart"
+import { FlashCardsType } from "./page"
 
 // ─── Radar Chart ────────────────────────────────────────────────────────
 
@@ -45,65 +48,37 @@ const radarConfig = {
 } satisfies ChartConfig
 
 export function AreaRadarChart({ data }: AreaRadarChartProps) {
-    if (!data.length) {
-        return (
-            <Card>
-                <CardHeader>
-                    <CardTitle>Progreso por Área</CardTitle>
-                    <CardDescription>
-                        Tu rendimiento en cada área del banco de preguntas.
-                    </CardDescription>
-                </CardHeader>
-                <CardContent>
-                    <div className="flex h-[300px] items-center justify-center">
-                        <p className="text-muted-foreground text-sm">
-                            Aún no hay datos para mostrar. ¡Empieza un banqueo!
-                        </p>
-                    </div>
-                </CardContent>
-            </Card>
-        )
-    }
+
 
     return (
-        <Card>
-            <CardHeader>
-                <CardTitle>Progreso por Área</CardTitle>
-                <CardDescription>
-                    Tu rendimiento en cada área del banco de preguntas.
-                </CardDescription>
-            </CardHeader>
-            <CardContent>
-                <ChartContainer
-                    config={radarConfig}
-                    className="mx-auto aspect-square h-[300px] w-full"
-                >
-                    <RadarChart data={data}>
-                        <ChartTooltip
-                            cursor={false}
-                            content={<ChartTooltipContent />}
-                        />
-                        <PolarAngleAxis dataKey="area" tick={{ fontSize: 11 }} />
-                        <PolarGrid
-                            className="fill-primary/10 stroke-primary/20"
-                            gridType="polygon"
-                        />
-                        <Radar
-                            dataKey="puntos"
-                            fill="var(--color-puntos)"
-                            fillOpacity={0.5}
-                            stroke="var(--color-puntos)"
-                            strokeWidth={2}
-                            dot={{
-                                r: 4,
-                                fill: "var(--color-puntos)",
-                                fillOpacity: 1,
-                            }}
-                        />
-                    </RadarChart>
-                </ChartContainer>
-            </CardContent>
-        </Card>
+
+        <ChartContainer
+            config={radarConfig}
+        >
+            <RadarChart data={data}>
+                <ChartTooltip
+                    cursor={false}
+                    content={<ChartTooltipContent />}
+                />
+                <PolarAngleAxis dataKey="area" tick={{ fontSize: 11 }} />
+                <PolarGrid
+                    className="fill-primary/10 stroke-primary/20"
+                    gridType="polygon"
+                />
+                <Radar
+                    dataKey="puntos"
+                    fill="var(--color-puntos)"
+                    fillOpacity={0.5}
+                    stroke="var(--color-puntos)"
+                    strokeWidth={2}
+                    dot={{
+                        r: 4,
+                        fill: "var(--color-puntos)",
+                        fillOpacity: 1,
+                    }}
+                />
+            </RadarChart>
+        </ChartContainer>
     )
 }
 
@@ -125,17 +100,13 @@ const lineConfig = {
     },
     correctas: {
         label: "Correctas",
-        color: "var(--success)",
     },
     incorrectas: {
         label: "Incorrectas",
-        color: "var(--destructive)",
     },
 } satisfies ChartConfig
 
 export function ActivityLineChart({ data }: ActivityLineChartProps) {
-    const [activeChart, setActiveChart] =
-        React.useState<"correctas" | "incorrectas">("correctas")
 
     const total = React.useMemo(
         () => ({
@@ -155,7 +126,7 @@ export function ActivityLineChart({ data }: ActivityLineChartProps) {
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
-                    <div className="flex h-[250px] items-center justify-center">
+                    <div className="flex  items-center justify-center">
                         <p className="text-muted-foreground text-sm">
                             Aún no hay actividad registrada.
                         </p>
@@ -166,42 +137,38 @@ export function ActivityLineChart({ data }: ActivityLineChartProps) {
     }
 
     return (
-        <Card className="py-4 sm:py-0">
-            <CardHeader className="flex flex-col items-stretch border-b !p-0 sm:flex-row">
-                <div className="flex flex-1 flex-col justify-center gap-1 px-6 pb-3 sm:pb-0">
-                    <CardTitle>Actividad Reciente</CardTitle>
-                    <CardDescription>
-                        Respuestas en los últimos 30 días
-                    </CardDescription>
-                </div>
-                <div className="flex">
-                    {(["correctas", "incorrectas"] as const).map((key) => (
-                        <button
-                            key={key}
-                            type="button"
-                            data-active={activeChart === key}
-                            className="data-[active=true]:bg-muted/50 flex flex-1 flex-col justify-center gap-1 border-t px-6 py-4 text-left even:border-l sm:border-t-0 sm:border-l sm:px-8 sm:py-6"
-                            onClick={() => setActiveChart(key)}
-                        >
-                            <span className="text-muted-foreground text-xs">
-                                {lineConfig[key].label}
-                            </span>
-                            <span className="text-lg leading-none font-bold sm:text-3xl">
-                                {total[key].toLocaleString()}
-                            </span>
-                        </button>
-                    ))}
+        <Card  >
+            <CardHeader >
+                <CardTitle>Actividad Reciente</CardTitle>
+                <CardDescription>
+                    Respuestas en los últimos 30 días
+                </CardDescription>
+                <div className="flex pt-6">
+                    <div className="flex flex-1 flex-col justify-center gap-1 text-center">
+                        <span className="text-muted-foreground ">
+                            {lineConfig["correctas"].label}
+                        </span>
+                        <span className="text-2xl text-secondary">
+                            {total["correctas"].toLocaleString()}
+                        </span>
+                    </div>
+                    <div className="flex flex-1 flex-col justify-center gap-1  text-center">
+                        <span className="text-muted-foreground ">
+                            {lineConfig["incorrectas"].label}
+                        </span>
+                        <span className="text-2xl text-primary">
+                            {total["incorrectas"].toLocaleString()}
+                        </span>
+                    </div>
                 </div>
             </CardHeader>
-            <CardContent className="px-2 sm:p-6">
+            <CardContent >
                 <ChartContainer
                     config={lineConfig}
-                    className="aspect-auto h-[250px] w-full"
                 >
                     <LineChart
                         accessibilityLayer
                         data={data}
-                        margin={{ left: 12, right: 12 }}
                     >
                         <CartesianGrid vertical={false} />
                         <XAxis
@@ -221,8 +188,7 @@ export function ActivityLineChart({ data }: ActivityLineChartProps) {
                         <ChartTooltip
                             content={
                                 <ChartTooltipContent
-                                    className="w-[150px]"
-                                    nameKey="views"
+                                    className="w-40"
                                     labelFormatter={(value) => {
                                         return new Date(value as string).toLocaleDateString("es-ES", {
                                             month: "short",
@@ -234,9 +200,18 @@ export function ActivityLineChart({ data }: ActivityLineChartProps) {
                             }
                         />
                         <Line
-                            dataKey={activeChart}
+                            dataKey={"correctas"}
                             type="monotone"
-                            stroke={`var(--color-${activeChart})`}
+                            stroke={`var(--color-secondary)`}
+                            strokeWidth={2}
+                            label='Correctas'
+                            dot={false}
+                        />
+                        <Line
+                            dataKey={"incorrectas"}
+                            type="monotone"
+                            label='Incorrectas'
+                            stroke={`var(--color-primary)`}
                             strokeWidth={2}
                             dot={false}
                         />
@@ -246,3 +221,50 @@ export function ActivityLineChart({ data }: ActivityLineChartProps) {
         </Card>
     )
 }
+
+
+const chartConfig = {
+    dia: {
+        label: "Día ",
+    },
+    actividad: {
+        label: "Nro. Cards",
+        color: "var(--color-chart-1)",
+    }
+} satisfies ChartConfig
+
+export function FlashCardsActivity({ data }: { data: FlashCardsType }) {
+
+    return (
+
+        <ChartContainer
+            config={chartConfig}
+        >
+            <BarChart
+                accessibilityLayer
+                data={data}
+
+            >
+                <CartesianGrid vertical={false} />
+                <XAxis
+                    dataKey="dia"
+
+                />
+                <ChartTooltip
+                    content={
+                        <ChartTooltipContent
+                            nameKey="actividad"
+                            labelFormatter={(value) => {
+                                return value
+                            }}
+                        />
+                    }
+                />
+                <Bar fill="var(--secondary)"
+                    radius={[10, 10, 0, 0]}
+                    dataKey={"actividad"} />
+            </BarChart>
+        </ChartContainer>
+    )
+}
+

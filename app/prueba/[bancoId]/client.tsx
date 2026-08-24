@@ -1,6 +1,8 @@
 ﻿"use client";
 /* eslint-disable @typescript-eslint/no-explicit-any */
-
+import {
+  Progress
+} from "@/components/ui/progress"
 import * as React from "react";
 import Image from "next/image";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
@@ -8,7 +10,6 @@ import { Timer, Pause, Play, ChevronLeft, ChevronRight, MoreHorizontal } from "l
 import { motion, AnimatePresence } from "framer-motion";
 
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { ModeToggle } from "@/components/ui/mode-toggle";
@@ -110,11 +111,7 @@ export default function EvaluacionTake({ evaluacion }: { evaluacion: EvaluacionF
 
   const baseTimeLeft = evaluacion.initialTimeLeft ?? evaluacion.tiempoSegundos;
 
-  const preguntasBase = React.useMemo(() => {
-    return evaluacion.preguntas.map((p, i) => ({ ...p, originalIndex: i + 1 }));
-  }, [evaluacion.preguntas]);
 
-  const [preguntas, setPreguntas] = React.useState<PreguntaRender[]>(preguntasBase);
 
   const [currentIndex, setCurrentIndex] = React.useState(evaluacion.initialCurrentIndex ?? 0);
 
@@ -514,13 +511,8 @@ export default function EvaluacionTake({ evaluacion }: { evaluacion: EvaluacionF
         )}
       </AnimatePresence>
 
-      <div className="flex flex-col items-center gap-3 bg-background/90 backdrop-blur-sm">
-        {/* Title Header Top */}
-        <header className="text-center space-y-2 w-full pt-4">
-          <h1 className="text-xl font-bold">{evaluacion.titulo}</h1>
-        </header>
+      <h1 className="text-2xl">{evaluacion.titulo}</h1>
 
-      </div>
       {/* Question Content with Animation */}
       <div className="container max-w-2xl w-full relative">
 
@@ -537,17 +529,12 @@ export default function EvaluacionTake({ evaluacion }: { evaluacion: EvaluacionF
           >
 
             <div className="flex items-center justify-between">
-              <h2 className="text-sm font-bold text-primary">
+              <h2 className="text-sm  text-primary">
                 Pregunta {currentIndex + 1}.-
               </h2>
-              {currentQuestion.dificultad && (
-                <Badge variant={currentQuestion.dificultad === "SENCILLO" ? "secondary" : currentQuestion.dificultad === "MEDIO" ? "default" : "destructive"}>
-                  {currentQuestion.dificultad === "SENCILLO" ? "BAJA" : currentQuestion.dificultad === "MEDIO" ? "MEDIA" : "ALTA"}
-                </Badge>
-              )}
             </div>
 
-            <p className="text-sm font-medium leading-relaxed">{currentQuestion.enunciado}</p>
+            <p className="text-sm">{currentQuestion.enunciado}</p>
 
             {currentQuestion.assets?.map((asset, i) => (
               <div key={i} className="flex justify-center">
@@ -568,7 +555,7 @@ export default function EvaluacionTake({ evaluacion }: { evaluacion: EvaluacionF
                       return (
                         <div
                           key={o.value}
-                          className={`flex items-center gap-3 p-4 rounded-xl border transition-all cursor-pointer ${selected ? "border-primary bg-primary/5 shadow-sm" : "border-border/60 hover:bg-muted/30"}`}
+                          className={`flex items-center gap-3 p-4 border transition-all cursor-pointer ${selected ? "border-primary bg-primary/5 shadow-sm" : "border-border/60 hover:bg-muted/30"}`}
                           onClick={() => {
                             const next = !selected
                               ? [...current, String(o.value)]
@@ -597,13 +584,13 @@ export default function EvaluacionTake({ evaluacion }: { evaluacion: EvaluacionF
                       return (
                         <Label
                           key={o.value}
-                          className={`flex items-center gap-3 p-4 rounded-xl border cursor-pointer transition-all ${isSelected ? "border-primary bg-primary/5 shadow-sm" : "border-border/60 hover:bg-muted/30"}`}
+                          className={`flex items-center gap-3 p-4  border cursor-pointer transition-all ${isSelected ? "border-primary bg-primary/5 shadow-sm" : "border-border/60 hover:bg-muted/30"}`}
                         >
                           <RadioGroupItem value={String(o.value)} className="sr-only" />
-                          <div className={`size-4 rounded-full border flex items-center justify-center text-[10px] ${isSelected ? "bg-primary border-primary text-primary-foreground" : "border-muted-foreground"}`}>
+                          <div className={`size-4 rounded-full border flex items-center justify-center  ${isSelected ? "bg-primary border-primary text-primary-foreground" : "border-muted-foreground"}`}>
                             {isSelected && <div className="size-2 rounded-full bg-current" />}
                           </div>
-                          <span className="font-bold text-primary w-4">{letter}.</span>
+                          <span className=" text-primary w-4">{letter}.</span>
                           <div className="flex-1 text-sm font-normal">
                             {o.kind === "IMAGEN" ? <Image src={o.value} alt="Opción" width={400} height={400} className="rounded aspect-auto h-auto w-fit border" /> : <span>{o.label}</span>}
                           </div>
@@ -647,7 +634,7 @@ export default function EvaluacionTake({ evaluacion }: { evaluacion: EvaluacionF
               onClick={() => setPageGroup((g) => Math.max(0, g - 1))}
               title="Grupo anterior"
             >
-              <MoreHorizontal className="size-4" />
+              <MoreHorizontal />
             </Button>
           )}
 
@@ -662,7 +649,6 @@ export default function EvaluacionTake({ evaluacion }: { evaluacion: EvaluacionF
                 <Button
                   key={page}
                   size="icon-sm"
-                  variant="default"
                   onClick={() => {
                     setDirection(page > currentIndex ? 1 : -1);
                     setCurrentIndex(page);
@@ -674,30 +660,19 @@ export default function EvaluacionTake({ evaluacion }: { evaluacion: EvaluacionF
             }
 
             return (
-              <button
+              <Button
                 key={page}
                 type="button"
+                size='icon-sm'
+                variant={isAnswered ? "secondary" : "outline"}
                 onClick={() => {
                   setDirection(page > currentIndex ? 1 : -1);
                   setCurrentIndex(page);
                 }}
-                style={
-                  isAnswered
-                    ? {
-                      backgroundColor: "rgba(100, 100, 120, 0.4)",
-                      color: "rgba(160, 160, 180, 0.65)",
-                      border: "none",
-                    }
-                    : {
-                      backgroundColor: "transparent",
-                      color: "inherit",
-                      border: "1px solid rgba(140, 140, 160, 0.5)",
-                    }
-                }
-                className="flex size-8 sm:size-7 items-center justify-center rounded-lg text-sm font-medium transition-colors cursor-pointer"
+
               >
                 {page + 1}
-              </button>
+              </Button>
             );
           })}
 
@@ -709,7 +684,7 @@ export default function EvaluacionTake({ evaluacion }: { evaluacion: EvaluacionF
               onClick={() => setPageGroup((g) => Math.min(totalGroups - 1, g + 1))}
               title="Grupo siguiente"
             >
-              <MoreHorizontal className="size-4" />
+              <MoreHorizontal />
             </Button>
           )}
         </nav>
@@ -719,7 +694,6 @@ export default function EvaluacionTake({ evaluacion }: { evaluacion: EvaluacionF
             variant="ghost"
             onClick={goPrev}
             disabled={currentIndex === 0}
-            className="font-bold"
           >
             <ChevronLeft />
             Atrás
@@ -728,7 +702,6 @@ export default function EvaluacionTake({ evaluacion }: { evaluacion: EvaluacionF
             <Button
               variant="ghost"
               onClick={goNext}
-              className="font-bold"
             >
               Siguiente
               <ChevronRight />
@@ -736,7 +709,6 @@ export default function EvaluacionTake({ evaluacion }: { evaluacion: EvaluacionF
           ) : (
             <Button
               onClick={() => setIsFinalizeDialogOpen(true)}
-              className="font-bold"
             >
               Finalizar
             </Button>
@@ -745,8 +717,10 @@ export default function EvaluacionTake({ evaluacion }: { evaluacion: EvaluacionF
       </div>
 
       {/* Fixed Bottom Bar */}
-      <footer className="fixed bottom-0 left-0 right-0 border-t backdrop-blur-md p-4 z-50">
-        <div className="container max-w-4xl mx-auto flex items-center justify-between gap-4">
+      <footer className="fixed bottom-0 left-0 right-0 border-t backdrop-blur-md  z-50">
+        <Progress value={(answeredIds.size * 100) / evaluacion.preguntas.length} />
+
+        <div className="container max-w-4xl mx-auto flex items-center p-4 justify-between gap-4">
           <div className="flex items-center gap-2">
             <ModeToggle />
             <div className="flex items-center gap-2 px-2 bg-muted/30 rounded-full h-9">

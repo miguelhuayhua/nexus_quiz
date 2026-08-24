@@ -3,20 +3,22 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
-  BriefcaseBusinessIcon,
-  BookOpenCheckIcon,
-  CircleIcon,
-  ClipboardListIcon,
-  HistoryIcon,
-  HouseIcon,
-  SparklesIcon,
+  Diamond,
+  TableProperties,
+  Square,
+  CircleCheck,
+  Rows3,
+  Rss,
+  Folder,
+  GalleryHorizontalEnd,
+  Circle,
+  Settings,
 } from "lucide-react";
 import { FaFacebook, FaInstagram, FaTiktok, FaYoutube } from "react-icons/fa";
-
+import Image from "next/image";
 import { NavUser } from "@/components/auth/nav-user";
 import { Navbar } from "@/components/auth/navbar";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Group, GroupSeparator } from "@/components/ui/group";
 import {
@@ -33,6 +35,8 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils";
+import { NEXUS_HOST } from "@/helpers/globals";
+import { Toaster } from "sonner";
 
 type LayoutUser = {
   email?: string | null;
@@ -74,7 +78,7 @@ function getNavbarTitle(pathname: string): string {
     return pathname === "/repaso" ? "Área de repaso" : "Detalle de repaso";
   }
 
-  return "Nexus Preguntas";
+  return "";
 }
 
 function AppSidebar({
@@ -99,11 +103,12 @@ function AppSidebar({
   const userName = user?.name?.trim() || "Usuario";
   const userEmail = user?.email?.trim() || "Sin correo";
   const userPlan = user?.plan ?? "FREE";
-  const planLabel = userPlan === "PRO" ? "PRO" : "BASIC";
-  const PlanIcon = userPlan === "PRO" ? SparklesIcon : CircleIcon;
 
   return (
     <Sidebar collapsible="icon" variant="inset" {...props}>
+      <Image src={'/logo_icon.png'} alt="Logo"
+        className="mx-auto"
+        width={50} height={50} />
       <SidebarContent>
         <SidebarGroup>
           <SidebarMenu className="mx-auto pl-1">
@@ -113,7 +118,7 @@ function AppSidebar({
                 isActive={isActivePath("/inicio")}
                 render={<Link href="/inicio" />}
               >
-                <HouseIcon />
+                <Circle />
                 <span>Inicio</span>
               </SidebarMenuButton>
             </SidebarMenuItem>
@@ -123,18 +128,8 @@ function AppSidebar({
                 isActive={isActivePath("/banqueos")}
                 render={<Link href="/banqueos" />}
               >
-                <ClipboardListIcon />
-                <span>Banqueos</span>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-            <SidebarMenuItem>
-              <SidebarMenuButton
-                className={getMenuButtonClassName(isActivePath("/repaso"))}
-                isActive={isActivePath("/repaso")}
-                render={<Link href="/repaso" />}
-              >
-                <BookOpenCheckIcon />
-                <span>Repaso</span>
+                <Rows3 />
+                <span>Banqueo Nexus</span>
               </SidebarMenuButton>
             </SidebarMenuItem>
             <SidebarMenuItem>
@@ -147,14 +142,51 @@ function AppSidebar({
                 isActive={misBanqueosIsActive}
                 render={<Link href="/mis-banqueos" />}
               >
-                <BriefcaseBusinessIcon />
-                <span className="flex items-center gap-2">
-                  Mis banqueos
-                  <Badge className="gap-1 border-yellow-400 bg-yellow-50 text-yellow-800 dark:border-yellow-500/50 dark:bg-yellow-500/20 dark:text-yellow-300" variant="outline">
-                    <SparklesIcon className="size-3" />
-                    Pro
-                  </Badge>
+                <Square />
+                <span>
+                  Generador de bancos
+
                 </span>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+            <SidebarMenuItem>
+              <SidebarMenuButton
+                className={getMenuButtonClassName(isActivePath("/repaso"))}
+                isActive={isActivePath("/repaso")}
+                render={<Link href="/repaso" />}
+              >
+                <CircleCheck />
+                <span>Repaso Preguntas</span>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+            <SidebarMenuItem>
+              <SidebarMenuButton
+                className={getMenuButtonClassName(isActivePath("/flashcards"))}
+                isActive={isActivePath("/flashcards")}
+                render={<Link href="/flashcards" />}
+              >
+                <Diamond />
+                <span>Flashcards</span>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+            <SidebarMenuItem>
+              <SidebarMenuButton
+                className={getMenuButtonClassName(isActivePath("/simulacros"))}
+                isActive={isActivePath("/simulacros")}
+                render={<Link href="/simulacros" />}
+              >
+                <Rss />
+                <span>Simulacros Nexus</span>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+            <SidebarMenuItem>
+              <SidebarMenuButton
+                className={getMenuButtonClassName(isActivePath("/material"))}
+                isActive={isActivePath("/material")}
+                render={<Link href="/material" />}
+              >
+                <Folder />
+                <span>Material</span>
               </SidebarMenuButton>
             </SidebarMenuItem>
             <SidebarMenuItem>
@@ -163,7 +195,7 @@ function AppSidebar({
                 isActive={isActivePath("/historial")}
                 render={<Link href="/historial" />}
               >
-                <HistoryIcon />
+                <GalleryHorizontalEnd />
                 <span>Historial</span>
               </SidebarMenuButton>
             </SidebarMenuItem>
@@ -176,25 +208,16 @@ function AppSidebar({
           {open || isMobile ? (
             <div className="rounded-lg border bg-background/70 px-2 py-2 text-left">
               <div className="flex items-center gap-2">
-                <Avatar className="size-9">
+                <Avatar className={`${userPlan == "PRO" ? "border-yellow-500" : ""} border-2`} >
                   <AvatarImage alt={userName} src={user?.image ?? ""} />
                   <AvatarFallback>{userInitial}</AvatarFallback>
                 </Avatar>
-                <div className="min-w-0 flex-1">
-                  <p className="truncate font-medium text-sm">{userName}</p>
-                  <p className="truncate text-muted-foreground text-xs">{userEmail}</p>
-                </div>
-                <Badge
-                  className={
-                    userPlan === "PRO"
-                      ? "border-yellow-400 bg-yellow-50 text-yellow-800 dark:border-yellow-500/50 dark:bg-yellow-500/20 dark:text-yellow-300"
-                      : undefined
-                  }
-                  variant="outline"
-                >
-                  <PlanIcon className="size-3" />
-                  {planLabel}
-                </Badge>
+                <p className="truncate text-xs">{userName}</p>
+                <Button render={<Link
+                  target="_blank"
+                  href={`${NEXUS_HOST}/dashboard/configuracion/perfil`} />} size={"icon-sm"} variant={"ghost"}>
+                  <Settings />
+                </Button>
               </div>
             </div>
           ) : (
@@ -213,9 +236,7 @@ function AppSidebar({
             </div>
           )}
 
-          {open && (
-            <p className="text-center text-muted-foreground text-xs">Nuestras redes sociales</p>
-          )}
+
           <Group className="mx-auto" orientation={socialOrientation}>
             <Button
               aria-label="Facebook"
@@ -268,15 +289,16 @@ export function AppLayoutShell({
   user: LayoutUser | null;
 }>) {
   const pathname = usePathname();
-  const isFullScreenExam = /^\/prueba\/[^/]+(?:\/(?:resultado|solucionario))?$/.test(pathname);
+  const isFullScreenExam = /^\/prueba\/[^/]+(?:\/(?:resultado|solucionario|estadisticas))?$/.test(pathname);
   const pathSegments = pathname.split("/").filter(Boolean);
   const isMisBanqueoScopedRoute =
     pathSegments[0] === "mis-banqueos" &&
     pathSegments.length >= 3 &&
     pathSegments[1] !== "crear";
+  const isFlashcardsScopedRoute = pathname === "/flashcards/prueba"
   const title = getNavbarTitle(pathname);
 
-  if (isFullScreenExam || isMisBanqueoScopedRoute) {
+  if (isFullScreenExam || isMisBanqueoScopedRoute || isFlashcardsScopedRoute) {
     return <>{children}</>;
   }
 
@@ -285,8 +307,11 @@ export function AppLayoutShell({
       <AppSidebar user={user} />
       <SidebarInset className="overflow-hidden">
         <Navbar title={title} user={user} />
-        {children}
+        <div className="p-4">
+          {children}
+        </div>
       </SidebarInset>
+      <Toaster />
     </SidebarProvider>
   );
 }
