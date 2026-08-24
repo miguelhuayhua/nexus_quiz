@@ -32,7 +32,7 @@ import {
 } from "@/components/ui/empty"
 import { useParams, useRouter } from "next/navigation"
 import Loading from "@/components/ui/loading"
-import { Card, CardContent, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardDescription, CardTitle } from "@/components/ui/card"
 import { Label } from "@/components/ui/label";
 import { PreguntasGET } from "../api/preguntas/get";
 import { fetcher } from "@/helpers/fetchers";
@@ -83,7 +83,35 @@ export default function CursoClient() {
             <h1 className="text-3xl">FlashCards</h1>
 
             <p className="text-muted-foreground">Encuentra banqueos creados por la comunidad y por tus profesores para practicar tus conocimientos.</p>
+            {
+                !user?.isPro && (
+                    <Card className="bg-gradient-to-br from-green-600  to-green-900">
 
+                        <CardContent >
+                            <div className="flex items-center lg:gap-30 gap-4">
+
+                                <div className="space-y-1" >
+                                    <CardTitle >
+                                        Sube a premium y desbloqueda todo el contenido
+                                    </CardTitle>
+                                    <CardDescription className="text-white/70">
+                                        Modo pro, acceso a banqueos ilimitados, simulacros semanales a nivel nacional, ranking en vivo, activación en menos de 10 minutos por Whatsapp.
+                                    </CardDescription>
+                                </div>
+                                <Button
+                                    variant={'outline'}
+                                    className="bg-white text-foreground"
+                                    render={<Link href={sendWhatsapp("Hola, quiero subir a Pro en el Banqueo de Nexus Educa")} target="_blank" />}
+                                >
+                                    Hablar por Whatsapp
+                                </Button>
+                            </div>
+
+
+                        </CardContent>
+                    </Card>
+                )
+            }
             <Card>
                 <CardContent>
                     <Button size={'sm'} onClick={() => {
@@ -186,7 +214,7 @@ export default function CursoClient() {
             </Card>
             <Card>
                 <CardContent>
-                    {preguntas.length === 0 && <Empty>
+                    {(preguntas.length === 0 && !loading) && <Empty>
                         <EmptyHeader>
                             <EmptyMedia variant="icon">
                                 <Search />
@@ -206,7 +234,7 @@ export default function CursoClient() {
                                             <div className="flex justify-between ">
                                                 <CardTitle >Tarjetas Disponibles: {preguntas.length}
                                                     {
-                                                        !user?.isPro && - <span className="text-primary">Max 15</span>
+                                                        !user?.isPro && (<span className="text-primary">Max 15</span>)
                                                     }
 
                                                 </CardTitle>

@@ -8,6 +8,7 @@ import {
 } from "@/lib/subscription-access";
 import { AppProviders } from "@/providers/app-providers";
 import "./globals.css";
+import { redirect } from "next/navigation";
 
 const poppins = Poppins({
   variable: "--font-poppins",
@@ -30,6 +31,7 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const session = await getServerAuthSession();
+  if (!session) return redirect(`${process.env.MAIN_PROJECT_URL}/login`);
   let userPlan: "FREE" | "PRO" = "FREE";
 
   if (session?.user) {
@@ -49,12 +51,12 @@ export default async function RootLayout({
             user={
               session?.user
                 ? {
-                    email: session.user.email,
-                    image: session.user.image,
-                    name: session.user.name,
-                    registrado: session.user.registrado,
-                    plan: userPlan,
-                  }
+                  email: session.user.email,
+                  image: session.user.image,
+                  name: session.user.name,
+                  registrado: session.user.registrado,
+                  plan: userPlan,
+                }
                 : null
             }
           >

@@ -32,13 +32,15 @@ import {
 import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/input-group"
 import { useParams } from "next/navigation"
 import Loading from "@/components/ui/loading"
-import { Card, CardContent } from "@/components/ui/card"
+import { Card, CardContent, CardDescription, CardTitle } from "@/components/ui/card"
 import { Label } from "@/components/ui/label";
 import { fetcher, fetchResource } from "@/helpers/fetchers";
 import { MaterialesGET } from "../api/materiales/get";
 import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
 import Link from "next/link";
 import { GestionesGET } from "../api/materiales/gestiones/get";
+import { UsuarioGET } from "../api/usuario/get";
+import { sendWhatsapp } from "@/helpers/whatsapp";
 
 
 
@@ -61,7 +63,10 @@ export default function CursoClient() {
 
   const [material, setMaterial] = React.useState<MaterialesGET[number] | null>(null);
 
-
+  const [user, setUser] = React.useState<UsuarioGET>(null);
+  React.useEffect(() => {
+    fetcher<UsuarioGET>('/usuario').then(setUser);
+  }, []);
   return (
     <div className="container mx-auto  space-y-4">
       <h1 className="text-3xl">Materiales Nexus</h1>
@@ -118,7 +123,7 @@ export default function CursoClient() {
       <Card>
         <CardContent>
           {
-            materiales.length == 0 && (
+            (materiales.length == 0 && !loading) && (
               <Empty>
                 <EmptyHeader>
                   <EmptyMedia variant="icon">
@@ -134,33 +139,61 @@ export default function CursoClient() {
           }
           {
             loading ? (
-              <div className="flex items-center justify-center"> <Loading /> </div>
+              <Loading />
             ) : (
 
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
 
                 {
-                  materiales.map(material => {
-                    return (
-                      <Item variant='outline' key={material.id} >
+                  user?.isPro ? (
+                    materiales.map(material => {
+                      return (
+                        <Item variant='outline' key={material.id} >
 
-                        <ItemContent>
-                          <ItemTitle >
+                          <ItemContent>
+                            <ItemTitle >
 
-                            {material.titulo}
+                              {material.titulo}
 
-                          </ItemTitle>
-                        </ItemContent>
-                        <ItemActions>
+                            </ItemTitle>
+                          </ItemContent>
+                          <ItemActions>
 
-                          <Button size="sm" variant="secondary" onClick={() => setMaterial(material)}>
-                            Ver Material
+                            <Button size="sm" variant="secondary" onClick={() => setMaterial(material)}>
+                              Ver Material
 
+                            </Button>
+                          </ItemActions>
+                        </Item>
+                      )
+                    })
+                  ) : (
+                    <Card className="bg-gradient-to-br col-span-2 sm:col-span-4 lg:col-span-4 from-green-600  to-green-900">
+
+                      <CardContent >
+                        <div className="flex items-center lg:gap-30 gap-4">
+
+                          <div className="space-y-1" >
+                            <CardTitle >
+                              Sube a premium y desbloqueda todo el contenido
+                            </CardTitle>
+                            <CardDescription className="text-white/70">
+                              Modo pro, acceso a banqueos ilimitados, simulacros semanales a nivel nacional, ranking en vivo, activación en menos de 10 minutos por Whatsapp.
+                            </CardDescription>
+                          </div>
+                          <Button
+                            variant={'outline'}
+                            className="bg-white text-foreground"
+                            render={<Link href={sendWhatsapp("Hola, quiero subir a Pro en el Banqueo de Nexus Educa")} target="_blank" />}
+                          >
+                            Hablar por Whatsapp
                           </Button>
-                        </ItemActions>
-                      </Item>
-                    )
-                  })
+                        </div>
+
+
+                      </CardContent>
+                    </Card>
+                  )
                 }
               </div>
             )}

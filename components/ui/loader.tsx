@@ -2,6 +2,7 @@
 import { ReactNode, useMemo } from "react";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
+import Image from "next/image";
 
 interface LoaderProps {
   children?: ReactNode;
@@ -48,10 +49,12 @@ export function Loader({
               ease: [0.6, 0.05, -0.01, 0.9], // Custom bezier for slow start, fast spin
             }}
           >
-            <img
+            <Image
               src="/logo_icon.png"
               alt="Loading..."
-              className="h-full w-full object-contain drop-shadow-[0_0_8px_rgba(255,255,255,0.5)] dark:drop-shadow-[0_0_8px_rgba(255,255,255,0.5)]"
+              className="aspect-square min-w-30 size-30 p-7"
+              width={150}
+              height={150}
             />
           </motion.div>
         )}

@@ -13,7 +13,7 @@ import {
   ComboboxPopup,
   ComboboxValue,
 } from "@/components/ui/combobox"
-import { Eye, Search, Play } from 'lucide-react'
+import { Search, Play, Lock } from 'lucide-react'
 import Link from 'next/link'
 import { Badge } from "@/components/ui/badge"
 import {
@@ -34,7 +34,7 @@ import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/in
 import { useParams } from "next/navigation"
 import Loading from "@/components/ui/loading"
 import { BanqueosGET } from "../api/banqueos/get"
-import { formatDateTime } from "@/lib/utils"
+import { cn, formatDateTime } from "@/lib/utils"
 import { Separator } from "@/components/ui/separator"
 import { Card, CardContent } from "@/components/ui/card"
 import { Label } from "@/components/ui/label";
@@ -42,6 +42,8 @@ import { AreasGET } from "../api/areas/get";
 import { TemasGET } from "../api/temas/get";
 import { CapitulosGET } from "../api/capitulos/get";
 import { fetcher } from "@/helpers/fetchers";
+import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
+import { UsuarioGET } from "../api/usuario/get";
 
 
 
@@ -75,7 +77,10 @@ export default function CursoClient() {
     fetcher<TemasGET>(`/temas?capitulos=${selectedCapitulos.join(',')}`).then(setTemas);
   }, [selectedCapitulos]);
   const [banqueo, setBanqueo] = React.useState<BanqueosGET[number] | null>(null);
-
+  const [user, setUser] = React.useState<UsuarioGET>(null);
+  React.useEffect(() => {
+    fetcher<UsuarioGET>('/usuario').then(setUser);
+  }, []);
 
   return (
     <div className="container mx-auto  space-y-4">
@@ -123,9 +128,9 @@ export default function CursoClient() {
                 <ComboboxPopup>
                   <ComboboxEmpty>Áreas no encontradas</ComboboxEmpty>
                   <ComboboxList>
-                    {areas.map(area => (
-                      <ComboboxItem key={area.id} value={area.id}>
-                        {area.titulo}
+                    {(area => (
+                      <ComboboxItem key={area.value} value={area.value}>
+                        {area.label}
                       </ComboboxItem>
                     ))}
                   </ComboboxList>
@@ -156,9 +161,9 @@ export default function CursoClient() {
                 <ComboboxPopup>
                   <ComboboxEmpty>Capítulos no encontrados</ComboboxEmpty>
                   <ComboboxList>
-                    {capitulos.map(capitulo => (
-                      <ComboboxItem key={capitulo.id} value={capitulo.id}>
-                        {capitulo.titulo}
+                    {(capitulo => (
+                      <ComboboxItem key={capitulo.value} value={capitulo.value}>
+                        {capitulo.label}
                       </ComboboxItem>
                     ))}
                   </ComboboxList>
@@ -182,9 +187,9 @@ export default function CursoClient() {
                 </ComboboxChips>                                <ComboboxPopup>
                   <ComboboxEmpty>Temas no encontrados</ComboboxEmpty>
                   <ComboboxList>
-                    {temas.map(tema => (
-                      <ComboboxItem key={tema.id} value={tema.id}>
-                        {tema.titulo}
+                    {(tema => (
+                      <ComboboxItem key={tema.value} value={tema.value}>
+                        {tema.label}
                       </ComboboxItem>
                     ))}
                   </ComboboxList>
@@ -197,8 +202,24 @@ export default function CursoClient() {
       <Card>
         <CardContent>
           {
+            (bancos.length === 0 && !loading) && (<>
+              <Empty >
+                <EmptyHeader>
+                  <EmptyMedia variant="icon">
+                    <Search />
+                  </EmptyMedia>
+                  <EmptyTitle>Sin resultados</EmptyTitle>
+                  <EmptyDescription>
+                    No se encontraron banqueos disponibles para los filtros seleccionados.
+                  </EmptyDescription>
+                </EmptyHeader>
+
+              </Empty>
+            </>)
+          }
+          {
             loading ? (
-              <div className="flex items-center justify-center"> <Loading /> </div>
+              <Loading />
             ) : (
               bancos.map(banqueo => {
                 return (
@@ -228,9 +249,12 @@ export default function CursoClient() {
                     </ItemContent>
                     <ItemActions>
 
-                      <Button size="sm" variant="secondary" onClick={() => setBanqueo(banqueo)}>
+                      <Button
+                        className={cn(banqueo.tipo == "PRO" && "bg-amber-600")}
+                        disabled={(!user?.isPro && banqueo.tipo === 'PRO')}
+                        size="sm" variant="secondary" onClick={() => setBanqueo(banqueo)}>
+                        {(!user?.isPro && banqueo.tipo === 'PRO') && <Lock />}
                         Intentar ahora
-
                       </Button>
                     </ItemActions>
                   </Item>

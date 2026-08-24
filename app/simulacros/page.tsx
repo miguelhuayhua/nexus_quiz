@@ -38,7 +38,7 @@ import Loading from "@/components/ui/loading"
 import { BanqueosGET } from "../api/banqueos/get"
 import { formatDateTime } from "@/lib/utils"
 import { Separator } from "@/components/ui/separator"
-import { Card, CardContent } from "@/components/ui/card"
+import { Card, CardContent, CardDescription, CardTitle } from "@/components/ui/card"
 import { Label } from "@/components/ui/label";
 import { AreasGET } from "../api/areas/get";
 import { TemasGET } from "../api/temas/get";
@@ -47,6 +47,7 @@ import { UsuarioGET } from "../api/usuario/get";
 import { fetcher } from "@/helpers/fetchers";
 import { BanqueosSimulacrosGET } from "../api/banqueos/simulacros/get";
 import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
+import { sendWhatsapp } from "@/helpers/whatsapp";
 
 
 
@@ -83,6 +84,7 @@ export default function CursoClient() {
     fetcher<TemasGET>(`/temas?capitulos=${selectedCapitulos.join(',')}`).then(setTemas);
   }, [selectedCapitulos]);
   const [banqueo, setBanqueo] = React.useState<BanqueosGET[number] | null>(null);
+
 
 
   return (
@@ -131,9 +133,9 @@ export default function CursoClient() {
                 <ComboboxPopup>
                   <ComboboxEmpty>Áreas no encontradas</ComboboxEmpty>
                   <ComboboxList>
-                    {areas.map(area => (
-                      <ComboboxItem key={area.id} value={area.id}>
-                        {area.titulo}
+                    {(area => (
+                      <ComboboxItem key={area.value} value={area.value}>
+                        {area.label}
                       </ComboboxItem>
                     ))}
                   </ComboboxList>
@@ -164,9 +166,9 @@ export default function CursoClient() {
                 <ComboboxPopup>
                   <ComboboxEmpty>Capítulos no encontrados</ComboboxEmpty>
                   <ComboboxList>
-                    {capitulos.map(capitulo => (
-                      <ComboboxItem key={capitulo.id} value={capitulo.id}>
-                        {capitulo.titulo}
+                    {(capitulo => (
+                      <ComboboxItem key={capitulo.value} value={capitulo.value}>
+                        {capitulo.label}
                       </ComboboxItem>
                     ))}
                   </ComboboxList>
@@ -190,9 +192,9 @@ export default function CursoClient() {
                 </ComboboxChips>                                <ComboboxPopup>
                   <ComboboxEmpty>Temas no encontrados</ComboboxEmpty>
                   <ComboboxList>
-                    {temas.map(tema => (
-                      <ComboboxItem key={tema.id} value={tema.id}>
-                        {tema.titulo}
+                    {(tema => (
+                      <ComboboxItem key={tema.value} value={tema.value}>
+                        {tema.label}
                       </ComboboxItem>
                     ))}
                   </ComboboxList>
@@ -202,12 +204,13 @@ export default function CursoClient() {
           </div>
         </CardContent>
       </Card>
+
       <Card>
         <CardContent>
           {
-            bancos.length === 0 && (
+            (bancos.length === 0 && !loading) && (
               <Empty>
-                <EmptyMedia>
+                <EmptyMedia variant={'icon'}>
                   <Search />
                 </EmptyMedia>
                 <EmptyHeader>
@@ -221,44 +224,72 @@ export default function CursoClient() {
           }
           {
             loading ? (
-              <div className="flex items-center justify-center"> <Loading /> </div>
+              <Loading />
             ) : (
-              bancos.map(banqueo => {
-                return (
-                  <Item variant='outline' key={banqueo.id} >
+              <>
+                {user?.isPro ? bancos.map(banqueo => {
+                  return (
+                    <Item variant='outline' key={banqueo.id} >
 
-                    <ItemContent>
-                      <ItemTitle >
+                      <ItemContent>
+                        <ItemTitle >
 
-                        {banqueo.titulo}
+                          {banqueo.titulo}
 
-                      </ItemTitle>
-                      <div className="flex gap-2">
-                        <Badge variant={'secondary'} className={`${banqueo.tipo === 'PRO' && 'bg-amber-700'}`}>
-                          {banqueo.tipo}
-                        </Badge>
-                        <Badge variant={'outline'}>
-                          {banqueo.duracion} min
-                        </Badge>
-                        <Badge variant={"outline"}>
-                          {banqueo.maxPreguntas} preguntas
-                        </Badge>
+                        </ItemTitle>
+                        <div className="flex gap-2">
+                          <Badge variant={'secondary'} className={`${banqueo.tipo === 'PRO' && 'bg-amber-700'}`}>
+                            {banqueo.tipo}
+                          </Badge>
+                          <Badge variant={'outline'}>
+                            {banqueo.duracion} min
+                          </Badge>
+                          <Badge variant={"outline"}>
+                            {banqueo.maxPreguntas} preguntas
+                          </Badge>
 
+                        </div>
+                        <p className="text-muted-foreground text-xs">
+                          Publicado el: {formatDateTime(banqueo.creadoEn)}
+                        </p>
+                      </ItemContent>
+                      <ItemActions>
+
+                        <Button size="sm" variant="secondary" onClick={() => setBanqueo(banqueo)}>
+                          Intentar ahora
+
+                        </Button>
+                      </ItemActions>
+                    </Item>
+                  )
+                }) :
+                  <Card className="bg-gradient-to-br from-green-600  to-green-900">
+
+                    <CardContent >
+                      <div className="flex items-center lg:gap-30 gap-4">
+
+                        <div className="space-y-1" >
+                          <CardTitle >
+                            Sube a premium y desbloqueda todo el contenido
+                          </CardTitle>
+                          <CardDescription className="text-white/70">
+                            Modo pro, acceso a banqueos ilimitados, simulacros semanales a nivel nacional, ranking en vivo, activación en menos de 10 minutos por Whatsapp.
+                          </CardDescription>
+                        </div>
+                        <Button
+                          variant={'outline'}
+                          className="bg-white text-foreground"
+                          render={<Link href={sendWhatsapp("Hola, quiero subir a Pro en el Banqueo de Nexus Educa")} target="_blank" />}
+                        >
+                          Hablar por Whatsapp
+                        </Button>
                       </div>
-                      <p className="text-muted-foreground text-xs">
-                        Publicado el: {formatDateTime(banqueo.creadoEn)}
-                      </p>
-                    </ItemContent>
-                    <ItemActions>
 
-                      <Button size="sm" variant="secondary" onClick={() => setBanqueo(banqueo)}>
-                        Intentar ahora
 
-                      </Button>
-                    </ItemActions>
-                  </Item>
-                )
-              })
+                    </CardContent>
+                  </Card>
+                }
+              </>
             )}
 
 
