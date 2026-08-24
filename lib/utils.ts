@@ -8,8 +8,9 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 
-export const formatDate = (date: Date | null | undefined) => {
+export const formatDate = (date: Date | null | undefined | string) => {
   if (!date) return "Sin especificar"
+  if (typeof date === "string") date = new Date(date);
   return format(date, "dd/MMM/yyyy", { locale: es })
 }
 

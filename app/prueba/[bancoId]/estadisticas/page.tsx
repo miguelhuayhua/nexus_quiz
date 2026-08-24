@@ -1,22 +1,19 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 
-import { BanqueoTipo, PreguntaEstado, ResultadoRespuesta } from "@/prisma/generated";
+import { PreguntaEstado, } from "@/prisma/generated";
 import { prisma } from "@/lib/prisma";
 import { getServerAuthSession } from "@/lib/auth";
 import { compareRespuesta, normalizeSolucion, parseRespuesta } from "@/lib/evaluacion-eval";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 import { ResultadoInsights } from "./resultado-insights";
-import {
-    hasActiveProSubscription,
-    resolveUsuarioEstudianteIdFromSession,
-} from "@/lib/subscription-access";
+
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
-import { intentos, preguntas, respuestasIntentos } from "@prisma/client";
+import { preguntas } from "@prisma/client";
 
 type Props = {
     params: Promise<{ bancoId: string }>;
@@ -154,7 +151,6 @@ export default async function EvaluacionResultadoPage({ params, searchParams }: 
 
             <ResultadoInsights
                 preguntaStats={preguntaStats}
-                ranking={ranking}
                 comparativo={comparativo}
                 respuestasGlobales={respuestasGlobales}
             />

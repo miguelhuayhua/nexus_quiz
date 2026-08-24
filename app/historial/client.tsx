@@ -1,15 +1,10 @@
 ﻿"use client";
 
 import * as React from "react";
-import { type ColumnDef } from "@tanstack/react-table";
 import Link from "next/link";
 import { Bar, BarChart, CartesianGrid, Cell, Pie, PieChart, XAxis, YAxis } from "recharts";
-import { MoreHorizontal, Play, Eye, FileText } from "lucide-react";
+import { Play } from "lucide-react";
 
-import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header";
-import { DataTable } from "@/components/data-table/data-table";
-import { DataTableToolbar } from "@/components/data-table/data-table-toolbar";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   ChartContainer,
@@ -19,12 +14,7 @@ import {
   ChartTooltipContent,
   type ChartConfig,
 } from "@/components/ui/chart";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Table,
@@ -34,7 +24,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { formatDateTime } from "@/lib/utils";
+import { formatDate } from "@/lib/utils";
+import { MisIntentos } from "./page";
 
 export type HistorialIntentoRow = {
   id: string;
@@ -55,26 +46,15 @@ export type HistorialIntentoRow = {
   tiempoDuracion: number;
 };
 
-function resolveHistorialBasePath(row: HistorialIntentoRow) {
+function resolveHistorialBasePath(row: MisIntentos[number]) {
   return row.bancoTipoCreado === "ESTUDIANTE" ? `/mis-banqueos/${row.bancoId}` : `/prueba/${row.bancoId}`;
 }
 
-function resolveResumePath(row: HistorialIntentoRow) {
+function resolveResumePath(row: MisIntentos[number]) {
   const base = row.bancoTipoCreado === "ESTUDIANTE" ? `/mis-banqueos/${row.bancoId}/prueba` : `/prueba/${row.bancoId}`;
   return `${base}?intentoId=${row.id}`;
 }
 
-const ESTADO_LABELS: Record<HistorialIntentoRow["estado"], string> = {
-  EN_PROGRESO: "En progreso",
-  FINALIZADO: "Finalizado",
-  ABANDONADO: "Abandonado",
-};
-
-const ESTADO_BADGE_VARIANT: Record<HistorialIntentoRow["estado"], "default" | "success" | "secondary" | "destructive"> = {
-  EN_PROGRESO: "default",
-  FINALIZADO: "success",
-  ABANDONADO: "destructive",
-};
 
 const precisionChartConfig = {
   precision: {
@@ -134,7 +114,7 @@ export default function HistorialClient({
   intentos,
   cohortPuntajesPorcentaje,
 }: {
-  intentos: HistorialIntentoRow[];
+  intentos: MisIntentos;
   cohortPuntajesPorcentaje: number[];
 }) {
   const totalRespuestasGlobales = React.useMemo(
@@ -145,154 +125,6 @@ export default function HistorialClient({
       }, 0),
     [intentos],
   );
-
-  const columns = React.useMemo<ColumnDef<HistorialIntentoRow>[]>(
-    () => [
-      {
-        id: "banqueo",
-        accessorFn: (row) => row.bancoTitulo,
-        header: ({ column }) => <DataTableColumnHeader column={column} label="Banqueo" />,
-        cell: ({ row }) => (
-          <div className="space-y-1">
-            <p className="font-medium">{row.original.bancoTitulo}</p>
-            <p className="text-muted-foreground text-xs">Intento #{row.original.numero}</p>
-          </div>
-        ),
-        meta: {
-          label: "Banqueo",
-          placeholder: "Buscar banqueo...",
-          variant: "text",
-        },
-        enableColumnFilter: true,
-      },
-      {
-        id: "tipo",
-        accessorFn: (row) => row.bancoTipoCreado,
-        header: ({ column }) => <DataTableColumnHeader column={column} label="Tipo" />,
-        cell: ({ row }) =>
-          row.original.bancoTipoCreado === "ESTUDIANTE" ? (
-            <Badge variant="default">Personal</Badge>
-          ) : (
-            <div className="flex flex-wrap items-center gap-1.5">
-              <Badge
-                className={
-                  row.original.bancoTipo === "PRO"
-                    ? "border-amber-300 bg-amber-100 text-amber-900 dark:border-amber-500/40 dark:bg-amber-500/20 dark:text-amber-300"
-                    : undefined
-                }
-                variant="outline"
-              >
-                {row.original.bancoTipo === "PRO" ? "PRO" : "BASIC"}
-              </Badge>
-              <Badge variant="outline">General</Badge>
-            </div>
-          ),
-      },
-      {
-        id: "estado",
-        accessorFn: (row) => row.estado,
-        header: ({ column }) => <DataTableColumnHeader column={column} label="Estado" />,
-        cell: ({ row }) => (
-          <Badge variant={ESTADO_BADGE_VARIANT[row.original.estado]}>
-            {ESTADO_LABELS[row.original.estado]}
-          </Badge>
-        ),
-      },
-      {
-        id: "fecha",
-        accessorFn: (row) => row.enviadoEn,
-        header: ({ column }) => <DataTableColumnHeader column={column} label="Fecha" />,
-        cell: ({ row }) => formatDateTime(new Date(row.original.enviadoEn)),
-      },
-      {
-        id: "respondidas",
-        accessorFn: (row) => row.respondidas,
-        header: ({ column }) => <DataTableColumnHeader column={column} label="Respondidas" />,
-        cell: ({ row }) => `${row.original.respondidas}/${row.original.totalPreguntas}`,
-      },
-      {
-        id: "correctas",
-        accessorFn: (row) => row.correctas,
-        header: ({ column }) => <DataTableColumnHeader column={column} label="Correctas" />,
-        cell: ({ row }) => (
-          <span className="font-medium text-emerald-600 dark:text-emerald-400">
-            {row.original.estado === "EN_PROGRESO" ? "-" : row.original.correctas}
-          </span>
-        ),
-      },
-      {
-        id: "incorrectas",
-        accessorFn: (row) => row.incorrectas,
-        header: ({ column }) => <DataTableColumnHeader column={column} label="Incorrectas" />,
-        cell: ({ row }) => (
-          <span className="font-medium text-destructive">
-            {row.original.estado === "EN_PROGRESO" ? "-" : row.original.incorrectas}
-          </span>
-        ),
-      },
-      {
-        id: "precision",
-        accessorFn: (row) => row.precision,
-        header: ({ column }) => <DataTableColumnHeader column={column} label="Precision" />,
-        cell: ({ row }) =>
-          row.original.estado === "EN_PROGRESO" ? "-" : `${row.original.precision}%`,
-      },
-      {
-        id: "puntaje",
-        accessorFn: (row) => row.puntajePorcentaje,
-        header: ({ column }) => <DataTableColumnHeader column={column} label="Puntaje" />,
-        cell: ({ row }) =>
-          row.original.estado === "EN_PROGRESO" ? "-" : `${row.original.puntajePorcentaje}%`,
-      },
-      {
-        id: "accion",
-        accessorFn: (row) => row.id,
-        header: () => null,
-        cell: ({ row }) => {
-          const basePath = resolveHistorialBasePath(row.original);
-          const isEnProgreso = row.original.estado === "EN_PROGRESO";
-
-          return (
-            <div className="flex items-center gap-2">
-              {isEnProgreso && (
-                <Button
-                  size="icon-sm"
-                  variant="default"
-                  render={<Link href={resolveResumePath(row.original)} />}
-                  title="Reanudar prueba"
-                >
-                  <Play className="size-4" />
-                </Button>
-              )}
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button size="icon-sm" variant="ghost">
-                    <MoreHorizontal className="size-4" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuItem asChild>
-                    <Link href={`${basePath}/resultado?intentoId=${row.original.id}`}>
-                      <Eye className="mr-2 size-4" />
-                      Ver resultado
-                    </Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
-                    <Link href={`${basePath}/solucionario?intentoId=${row.original.id}`}>
-                      <FileText className="mr-2 size-4" />
-                      Ver solucionario
-                    </Link>
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
-          );
-        },
-      },
-    ],
-    [],
-  );
-
   const precisionByIntento = React.useMemo(
     () =>
       intentos
@@ -350,8 +182,8 @@ export default function HistorialClient({
             {intentos.map((item, index) => (
               <TableRow key={index}>
                 <TableCell className="font-medium">{item.bancoTitulo}</TableCell>
-                <TableCell>{(item.iniciadoEn)}</TableCell>
-                <TableCell>{item.puntajePorcentaje}%</TableCell>
+                <TableCell className="text-xs">{formatDate(item.iniciadoEn)}</TableCell>
+                <TableCell><span className="text-green-300">{item.correctas}</span>{`/${item.totalPreguntas}`}</TableCell>
                 <TableCell>
                   <div className="flex items-center gap-2">
                     {item.estado === "EN_PROGRESO" && (

@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 
 import { getServerAuthSession } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import HistorialClient, { type HistorialIntentoRow } from "./client";
+import HistorialClient from "./client";
 
 export const metadata: Metadata = {
   title: "Historial",
@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 };
 
 const getMisIntentos = async (correo: string) => {
-  return await prisma.intentos.findMany({
+  const intentos = await prisma.intentos.findMany({
     where: {
       usuariosEstudiantes: {
         correo,
@@ -43,7 +43,37 @@ const getMisIntentos = async (correo: string) => {
       actualizadoEn: "desc",
     },
   });
+  return intentos.map((item, index) => {
+    const totalPreguntas = item.banqueo.preguntas.length;
+    const respondidas = item.respuestasIntentos.filter((resp) => resp.respondida).length;
+    const precision = respondidas > 0 ? Math.round((item.correctas / respondidas) * 100) : 0;
+    const puntajePorcentaje =
+      totalPreguntas > 0 ? Math.round((item.correctas / totalPreguntas) * 100) : 0;
+
+    return {
+      ...item,
+      id: item.id,
+      numero: index + 1,
+      estado: item.estado,
+      iniciadoEn: item.creadoEn.toISOString(),
+      enviadoEn: item.actualizadoEn.toISOString(),
+      bancoId: item.banqueoId,
+      banqueo: item.banqueo,
+      bancoTitulo: item.banqueo.titulo,
+      bancoTipo: item.banqueo.tipo,
+      bancoTipoCreado: item.banqueo.tipoCreado,
+      respondidas,
+      totalPreguntas,
+      correctas: item.correctas,
+      incorrectas: item.incorrectas,
+      precision,
+      puntajePorcentaje,
+      tiempoDuracion: item.tiempoDuracion,
+    };
+  });
 }
+
+
 export type MisIntentos = Awaited<ReturnType<typeof getMisIntentos>>;
 export default async function HistorialPage() {
   const session = await getServerAuthSession();
@@ -58,32 +88,7 @@ export default async function HistorialPage() {
     })
     .filter((item) => Number.isFinite(item));
 
-  const intentos: HistorialIntentoRow[] = misIntentos.map((item, index) => {
-    const totalPreguntas = item.banqueo.preguntas.length;
-    const respondidas = item.respuestasIntentos.filter((resp) => resp.respondida).length;
-    const precision = respondidas > 0 ? Math.round((item.correctas / respondidas) * 100) : 0;
-    const puntajePorcentaje =
-      totalPreguntas > 0 ? Math.round((item.correctas / totalPreguntas) * 100) : 0;
-
-    return {
-      id: item.id,
-      numero: index + 1,
-      estado: item.estado as HistorialIntentoRow["estado"],
-      iniciadoEn: item.creadoEn.toISOString(),
-      enviadoEn: item.actualizadoEn.toISOString(),
-      bancoId: item.banqueoId,
-      bancoTitulo: item.banqueo.titulo,
-      bancoTipo: item.banqueo.tipo,
-      bancoTipoCreado: item.banqueo.tipoCreado,
-      respondidas,
-      totalPreguntas,
-      correctas: item.correctas,
-      incorrectas: item.incorrectas,
-      precision,
-      puntajePorcentaje,
-      tiempoDuracion: item.tiempoDuracion,
-    };
-  });
+  const intentos = misIntentos
 
   return (
     <main className="mx-auto container space-y-4">

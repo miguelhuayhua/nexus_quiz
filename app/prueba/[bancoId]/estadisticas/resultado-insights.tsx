@@ -6,8 +6,6 @@ import {
   BarChart,
   CartesianGrid,
   Cell,
-  Line,
-  LineChart,
   Pie,
   PieChart,
   XAxis,
@@ -26,9 +24,9 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 const respuestasConfig = {
-  bien: { label: "Bien", color: "#16a34a" },
-  mal: { label: "Mal", color: "#dc2626" },
-  noRespondidas: { label: "No respondidas", color: "#94a3b8" },
+  bien: { label: "Bien %", color: "#16a34a" },
+  mal: { label: "Mal %", color: "#dc2626" },
+  noRespondidas: { label: "No respondidas %", color: "#94a3b8" },
 } satisfies ChartConfig;
 
 const dificultadConfig = {
@@ -36,10 +34,6 @@ const dificultadConfig = {
   mal: { label: "Incorrectas", color: "#dc2626" },
 } satisfies ChartConfig;
 
-const rankingConfig = {
-  puntos: { label: "Puntos", color: "#2563eb" },
-  intentos: { label: "Intentos", color: "#f59e0b" },
-} satisfies ChartConfig;
 
 const comparativoConfig = {
   yo: { label: "Tu resultado", color: "#0ea5e9" },
@@ -57,11 +51,6 @@ type PreguntaStat = {
   porcentajeError: number;
 };
 
-type RankingRow = {
-  estudianteId: string;
-  nombre: string;
-  intentos: number;
-};
 
 type ComparativoResumen = {
   yo: {
@@ -78,12 +67,10 @@ type ComparativoResumen = {
 
 export function ResultadoInsights({
   preguntaStats = [],
-  ranking = [],
   comparativo,
   respuestasGlobales,
 }: {
   preguntaStats?: PreguntaStat[];
-  ranking?: RankingRow[];
   comparativo?: ComparativoResumen;
   respuestasGlobales?: {
     bien: number;
@@ -149,14 +136,6 @@ export function ResultadoInsights({
     [preguntaStats],
   );
 
-  const rankingData = React.useMemo(
-    () =>
-      (ranking || []).slice(0, 12).map((item) => ({
-        estudiante: item.nombre ? (item.nombre.split(" ")[0] ?? item.nombre) : "Estudiante",
-        intentos: item.intentos || 0,
-      })),
-    [ranking],
-  );
 
   const comparativoData = React.useMemo(
     () => [
@@ -231,7 +210,9 @@ export function ResultadoInsights({
         <CardContent className="min-w-0">
           <ChartContainer config={respuestasConfig} className="h-[300px] w-full aspect-auto min-w-0">
             <PieChart>
-              <ChartTooltip content={<ChartTooltipContent nameKey="name" />} />
+              <ChartTooltip content={<ChartTooltipContent
+                className="w-50"
+                nameKey="name" />} />
               <Pie data={respuestasPieData} dataKey="value" nameKey="name" innerRadius={60}>
                 <Label
                   content={({ viewBox }) => {
@@ -324,37 +305,7 @@ export function ResultadoInsights({
         </CardContent>
       </Card>
 
-      {/* Card 4: Top estudiantes */}
-      <Card className="col-span-1 lg:col-span-3 min-w-0">
-        <CardHeader>
-          <CardTitle>Top estudiantes: puntos e intentos</CardTitle>
-        </CardHeader>
-        <CardContent className="min-w-0">
-          <ChartContainer config={rankingConfig} className="h-[240px] w-full aspect-auto min-w-0">
-            <LineChart data={rankingData} accessibilityLayer>
-              <CartesianGrid vertical={false} />
-              <XAxis dataKey="estudiante" tickLine={false} axisLine={false} />
-              <YAxis allowDecimals={false} tickLine={false} axisLine={false} />
-              <ChartTooltip content={<ChartTooltipContent />} />
-              <ChartLegend content={<ChartLegendContent />} />
-              <Line
-                dataKey="puntos"
-                type="monotone"
-                stroke="var(--color-puntos)"
-                strokeWidth={2}
-                dot={{ r: 3 }}
-              />
-              <Line
-                dataKey="intentos"
-                type="monotone"
-                stroke="var(--color-intentos)"
-                strokeWidth={2}
-                dot={{ r: 3 }}
-              />
-            </LineChart>
-          </ChartContainer>
-        </CardContent>
-      </Card>
+
     </div>
   );
 }
