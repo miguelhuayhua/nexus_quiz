@@ -317,7 +317,6 @@ export default async function EvaluacionResultadoPage({ params, searchParams }: 
             <h3 className="text-center text-lg font-bold">Estadistica por pregunta</h3>
             <ResultadoInsights
               preguntaStats={preguntaStats}
-              ranking={ranking}
               comparativo={comparativo}
               respuestasGlobales={respuestasGlobales}
             />

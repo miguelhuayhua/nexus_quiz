@@ -1,15 +1,15 @@
 # Etapa de construcción
-FROM node:20-alpine AS builder
+FROM node:22-alpine AS builder
 
 WORKDIR /app
 
+RUN corepack enable
 # Copiar archivos de dependencias
-COPY package.json package-lock.json* ./
+COPY package.json pnpm-lock.yaml ./
 COPY prisma ./prisma/
 
 # Instalar dependencias
-RUN npm ci
-
+RUN pnpm install --frozen-lockfile --ignore-scripts
 # Copiar todo
 COPY . .
 
@@ -20,14 +20,17 @@ ENV DATABASE_URL=${DATABASE_URL}
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
 # Generar Prisma Client
-RUN npx prisma generate
+RUN pnpm prisma generate
 
 # Build de Next.js
-RUN npm run build
+RUN pnpm build
 
 # ---- Producción ----
-FROM node:20-alpine AS runner
+FROM node:22-alpine AS runner 
+
 WORKDIR /app
+
+RUN corepack enable
 
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
@@ -39,6 +42,8 @@ COPY --from=builder /app/.next/static ./.next/static
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/prisma ./prisma
 
+# Permitir escritura de caché
+RUN mkdir -p /app/.next/cache && chown -R node:node /app
 # Usar usuario 'node' para seguridad  
 USER node
 

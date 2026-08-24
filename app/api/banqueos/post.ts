@@ -6,13 +6,14 @@ import {
     BanqueoTipoCreado,
     EstadoIntento,
     PreguntaEstado,
-} from "@/prisma/generated";
+} from "@prisma/client";
 import { getServerAuthSession } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import {
     hasActiveProSubscription,
     resolveUsuarioEstudianteIdFromSession,
 } from "@/lib/subscription-access";
+
 
 export default async function POST(request: Request) {
     try {

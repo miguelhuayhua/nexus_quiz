@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/prisma";
+import { checkAuth } from "@/app/api/auth/checkauth";
 import { NextRequest, NextResponse } from "next/server";
-import { checkAuth } from "../auth/checkauth";
 const getBancos = async (search: string, take: number, skip: number) => {
     return await prisma.banqueo.findMany({
         take,
